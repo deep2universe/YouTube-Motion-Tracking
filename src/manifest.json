@@ -1,6 +1,6 @@
 {
   "name": "YouTube™ motion tracking",
-  "description": "YouTube™ AI extension for motion tracking",
+  "description": "YouTube™ AI extension for for animating videos",
   "version": "1.0",
   "manifest_version": 3,
   "background": {

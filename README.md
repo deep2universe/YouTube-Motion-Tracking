@@ -5,7 +5,7 @@ Some examples from this [Video source](https://www.youtube.com/watch?v=eRjUmsB9l
 ![Logo](assets/logo128.png)  
 _The logo was designed by a 3 year old girl._
 
-YouTube™ motion tracking is a Chrome AI extension to visualize videos.
+YouTube™ motion tracking is a Chrome AI extension for animating videos.
 
 Pose estimation is done with [TensorFlow.js](https://www.tensorflow.org/js)  
 Particle animation is done with [Proton](https://github.com/drawcall/Proton)
@@ -66,13 +66,7 @@ In the upper right corner you have to activate the developer mode.
 ![developer mode](assets/developerMode.png)
 <a name="loadExtension"></a>
 ## Load extension
-Click this button to load the extension.  
-Then select the build ```dist``` Folder from this repository.
-
-<a name="checkExtension"></a>
-## Check extension installation
-You should now see the following entry.  
-![extension](assets/extension.png)
+Load the build ```dist``` Folder from this repository.  
 
 <a name="checkChromeSettings"></a>
 ## Check Chrome settings

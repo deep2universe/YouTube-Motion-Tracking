@@ -1,7 +1,7 @@
 {
-  "name": "VideoArt",
+  "name": "YouTube™ motion tracking",
   "version": "1.0.0",
-  "description": "YouTube™ AI pose art extension",
+  "description": "YouTube™ AI extension for for animating videos",
   "scripts": {
     "copyHTML": "cp src/*.html dist/",
     "copyManifest": "cp src/manifest.json dist/",
@@ -15,6 +15,7 @@
     "extension",
     "YouTube",
     "visualization",
+    "animation",
     "video",
     "AI",
     "pose",
@@ -25,7 +26,9 @@
     "tensorflow",
     "tf",
     "tfjs",
-    "madewithtfjs"
+    "madewithtfjs",
+    "motion",
+    "you tube"
   ],
   "author": "Mario M.",
   "license": "MIT",
