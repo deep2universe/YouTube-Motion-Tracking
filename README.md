@@ -34,7 +34,7 @@ We use these keypoints to place animations on top of the YouTube™ video.
 <a name="clone"></a>
 ## Download this repository
 ```shell
-git clone https://github.com/deep2universe/YouTubeMotionTracking.git
+git clone https://github.com/deep2universe/YouTube-Motion-Tracking.git
 ```
 
 <a name="Build"></a>
