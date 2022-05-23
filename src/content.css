@@ -1,0 +1,83 @@
+.posedream-video-popup{
+    display: none;
+    position: absolute;
+    overflow:scroll;
+    overflow-x:hidden;
+    border-radius: 2px;
+    background: rgba(28,28,28,0.9);
+    text-shadow: 0 0 2px rgba(0,0,0,0.5);
+    -webkit-transition: opacity .1s cubic-bezier(0,0,0.2,1);
+    transition: opacity .1s cubic-bezier(0,0,0.2,1);
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    width: 350px; height: 300px; right: 160px; bottom: 70px; z-index: 71
+}
+
+.pdVideoButton {
+    background-color:transparent;
+    border-radius:4px;
+    border:1px solid #dcdcdc;
+    display:inline-block;
+    cursor:pointer;
+    color: #777777;
+    font-family:Arial;
+    font-size:15px;
+    text-decoration:none;
+}
+.pdVideoButton:hover {
+    background-color:transparent;
+}
+.pdVideoButton:active {
+    position:relative;
+    top:1px;
+}
+
+.containerButton {
+    width: 100%;
+    padding-top: 20px;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.rowButton {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -5px;
+    margin-left: -5px;
+}
+
+.col-3-Button {
+    position: relative;
+    width: 100%;
+    padding-right: 5px;
+    padding-left: 5px;
+    -ms-flex: 0 0 20%;
+    flex: 0 0 20%;
+    max-width: 20%;
+    font-size: xx-large;
+    align-content: center;
+    align-items: center;
+}
+
+.selectButton{
+    border: beige 1px solid;
+    border-radius: 16px;
+}
+
+.col-3-Button:hover{
+    font-size: xxx-large;
+}
+
+.animalButton {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+}

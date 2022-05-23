@@ -1,0 +1,44 @@
+{
+  "name": "VideoArt",
+  "version": "1.0.0",
+  "description": "YouTube™ AI pose art extension",
+  "scripts": {
+    "copyHTML": "cp src/*.html dist/",
+    "copyManifest": "cp src/manifest.json dist/",
+    "copyImages": "cp -r src/images dist/",
+    "copyCSS": "cp src/*.css dist/",
+    "copy": "npm run copyManifest && npm run copyHTML && npm run copyImages && npm run copyCSS",
+    "build:parcel": "parcel build src/*.html src/*.js --public-url ./ && npm run copy"
+  },
+  "keywords": [
+    "Chrome",
+    "extension",
+    "YouTube",
+    "visualization",
+    "video",
+    "AI",
+    "pose",
+    "pose tracking",
+    "tracking",
+    "dream",
+    "style",
+    "tensorflow",
+    "tf",
+    "tfjs",
+    "madewithtfjs"
+  ],
+  "author": "Mario M.",
+  "license": "MIT",
+  "dependencies": {
+    "@parcel/config-webextension": "^2.5.0",
+    "@tensorflow-models/pose-detection": "^2.0.0",
+    "@tensorflow/tfjs-backend-webgl": "^3.16.0",
+    "@tensorflow/tfjs-converter": "^3.16.0",
+    "@tensorflow/tfjs-core": "^3.16.0",
+    "proton-engine": "^5.4.3"
+  },
+  "devDependencies": {
+    "buffer": "^6.0.3",
+    "process": "^0.11.10"
+  }
+}
