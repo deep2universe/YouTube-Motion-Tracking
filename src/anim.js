@@ -33,6 +33,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
     this.particlesEffectType = 0;
     this.attractionBehaviour = null;
     this.attractionBehaviours = [];
+    this.repulsionBehaviour = null;
     this.nosePosition = {
         x: 400,
         y: 200
@@ -353,6 +354,22 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
             this.currentAnimation = "particle";
             this.particlesEffectType = 14;
             this.initParticles();
+        }else if (animationId == "particleFireFly"){
+            this.currentAnimation = "particle";
+            this.particlesEffectType = 15;
+            this.initParticles();
+        }else if (animationId == "particleFireFlyColor"){
+            this.currentAnimation = "particle";
+            this.particlesEffectType = 16;
+            this.initParticles();
+        }else if (animationId == "particleSpit"){
+            this.currentAnimation = "particle";
+            this.particlesEffectType = 17;
+            this.initParticles();
+        }else if (animationId == "particle2BallHeadExp"){
+            this.currentAnimation = "particle";
+            this.particlesEffectType = 18;
+            this.initParticles();
         }
     }
 
@@ -421,8 +438,8 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         } else if (this.particlesEffectType === 1) {
             // ### Two head balls
             this.proton = new Proton();
-            this.protonEmitterArray[0] = this.createImageEmitter(this.canvas.width / 2 + this.conf.radius, this.canvas.height / 2, '#4F1500', '#0029FF');
-            this.protonEmitterArray[1] = this.createImageEmitter(this.canvas.width / 2 - this.conf.radius, this.canvas.height / 2, '#004CFE', '#6600FF');
+            this.protonEmitterArray[0] = this.createImageEmitter(this.canvas.width / 2 + this.conf.radius, this.canvas.height / 2, '#4F1500', '#0029FF', 3.5);
+            this.protonEmitterArray[1] = this.createImageEmitter(this.canvas.width / 2 - this.conf.radius, this.canvas.height / 2, '#004CFE', '#6600FF', 3.5);
 
             this.tryWebGLRendererInit();
 
@@ -675,13 +692,6 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
             this.protonEmitterArray[0].emit();
             this.proton.addEmitter(this.protonEmitterArray[0]);
 
-            let renderer = new Proton.CanvasRenderer(this.canvas);
-            // renderer.onProtonUpdate = function() {
-            //     this.ctx.fillStyle = "rgba(0, 0, 0, 0.07)";
-            //     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-            // };
-
-            //this.proton.addRenderer(renderer);
             this.tryWebGLRendererInit();
         }else if (this.particlesEffectType == 14){
             this.proton = new Proton();
@@ -710,17 +720,148 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
             this.protonEmitterArray[0].emit();
             this.proton.addEmitter(this.protonEmitterArray[0]);
 
-            // let renderer = new Proton.WebGLRenderer(this.canvas);
-            // renderer.blendFunc("SRC_ALPHA", "ONE");
+            this.tryWebGLRendererInit();
+        }else if (this.particlesEffectType == 15){
+            // particleFireFly
+            this.proton = new Proton();
+            this.protonEmitterArray[0] = new Proton.Emitter();
+
+            this.protonEmitterArray[0].damping = 0.0075;
+            this.protonEmitterArray[0].rate = new Proton.Rate(1480);
+
+            let particleImage = new Image();
+            particleImage.src = chrome.runtime.getURL("/images/particle.png");
+            particleImage.onload = () => {
+                this.protonEmitterArray[0].addInitialize(new Proton.Body(particleImage, 64));
+            }
+
+            this.protonEmitterArray[0].addInitialize(new Proton.Position(new Proton.RectZone(0, 0, this.canvas.width, this.canvas.height)));
+            this.protonEmitterArray[0].addInitialize(new Proton.Mass(1), new Proton.Radius(Proton.getSpan(5, 10)));
+
+            this.nosePosition = {
+                x: this.canvas.width / 2,
+                y: this.canvas.height / 2
+            };
+            this.repulsionBehaviour = new Proton.Repulsion(this.nosePosition, 0, 0);
+            let crossZoneBehaviour = new Proton.CrossZone(new Proton.RectZone(-2, 0, this.canvas.width, this.canvas.height), 'cross');
+            this.protonEmitterArray[0].addBehaviour(this.repulsionBehaviour, crossZoneBehaviour);
+            this.protonEmitterArray[0].addBehaviour(new Proton.Scale(Proton.getSpan(.1, .4)));
+            this.protonEmitterArray[0].addBehaviour(new Proton.Alpha(.5));
+            this.protonEmitterArray[0].addBehaviour(new Proton.RandomDrift(10, 10, .2));
+
+            this.protonEmitterArray[0].addBehaviour({
+                initialize: function(particle) {
+                    particle.tha = Math.random() * Math.PI;
+                    particle.thaSpeed = 0.015 * Math.random() + 0.005;
+                },
+
+                applyBehaviour: function(particle) {
+                    particle.tha += particle.thaSpeed;
+                    particle.alpha = Math.abs(Math.cos(particle.tha));
+                }
+            });
+
+            this.protonEmitterArray[0].emit('once');
+            this.proton.addEmitter(this.protonEmitterArray[0]);
+
+            // let renderer = new Proton.CanvasRenderer(this.canvas);
             // this.proton.addRenderer(renderer);
             this.tryWebGLRendererInit();
+
+        }else if (this.particlesEffectType == 16){
+            // particleFireFlyColor
+            this.proton = new Proton();
+            this.protonEmitterArray[0] = new Proton.Emitter();
+
+            this.protonEmitterArray[0].damping = 0.0075;
+            this.protonEmitterArray[0].rate = new Proton.Rate(1480);
+
+            let particleImage = new Image();
+            particleImage.src = chrome.runtime.getURL("/images/particle.png");
+            particleImage.onload = () => {
+                this.protonEmitterArray[0].addInitialize(new Proton.Body(particleImage, 64));
+            }
+
+            this.protonEmitterArray[0].addInitialize(new Proton.Position(new Proton.RectZone(0, 0, this.canvas.width, this.canvas.height)));
+            this.protonEmitterArray[0].addInitialize(new Proton.Mass(1), new Proton.Radius(Proton.getSpan(5, 10)));
+            this.protonEmitterArray[0].addBehaviour(new Proton.Color('rgba(255,200,0,0.16)', '#ffff00'));
+
+            this.nosePosition = {
+                x: this.canvas.width / 2,
+                y: this.canvas.height / 2
+            };
+            this.repulsionBehaviour = new Proton.Repulsion(this.nosePosition, 0, 0);
+            let crossZoneBehaviour = new Proton.CrossZone(new Proton.RectZone(-2, 0, this.canvas.width, this.canvas.height), 'cross');
+            this.protonEmitterArray[0].addBehaviour(this.repulsionBehaviour, crossZoneBehaviour);
+            this.protonEmitterArray[0].addBehaviour(new Proton.Scale(Proton.getSpan(.1, 3.4)));
+            this.protonEmitterArray[0].addBehaviour(new Proton.Alpha(.5));
+            this.protonEmitterArray[0].addBehaviour(new Proton.RandomDrift(10, 10, .2));
+
+            this.protonEmitterArray[0].addBehaviour({
+                initialize: function(particle) {
+                    particle.tha = Math.random() * Math.PI;
+                    particle.thaSpeed = 0.015 * Math.random() + 0.005;
+                },
+
+                applyBehaviour: function(particle) {
+                    particle.tha += particle.thaSpeed;
+                    particle.alpha = Math.abs(Math.cos(particle.tha));
+                }
+            });
+
+            this.protonEmitterArray[0].emit('once');
+            this.proton.addEmitter(this.protonEmitterArray[0]);
+
+            // let renderer = new Proton.CanvasRenderer(this.canvas);
+            // this.proton.addRenderer(renderer);
+            this.tryWebGLRendererInit();
+        }else if (this.particlesEffectType == 17){
+            // particleSpit
+            this.proton = new Proton();
+            this.protonEmitterArray[0] = new Proton.Emitter();
+
+            //this.protonEmitterArray[0].damping = 0.0075;
+            this.protonEmitterArray[0].rate = new Proton.Rate(new Proton.Span(10, 15), new Proton.Span(.05, .1));
+
+            let particleImage = new Image();
+            particleImage.src = chrome.runtime.getURL("/images/particle.png");
+            particleImage.onload = () => {
+                this.protonEmitterArray[0].addInitialize(new Proton.Body(particleImage));
+            }
+
+            this.protonEmitterArray[0].addInitialize(new Proton.Mass(1));
+            this.protonEmitterArray[0].addInitialize(new Proton.Life(1, 3));
+            this.protonEmitterArray[0].addInitialize(new Proton.Position(new Proton.CircleZone(0, 0, 20)));
+            this.protonEmitterArray[0].addInitialize(new Proton.Velocity(new Proton.Span(5, 8), new Proton.Span(-15, 15), 'polar'));
+            this.protonEmitterArray[0].addBehaviour(new Proton.RandomDrift(10, 10, .05));
+
+            this.protonEmitterArray[0].addBehaviour(new Proton.Alpha(0.1, 1));
+            this.protonEmitterArray[0].addBehaviour(new Proton.Scale(new Proton.Span(2, 3.5), 0));
+            this.protonEmitterArray[0].addBehaviour(new Proton.G(6));
+            this.protonEmitterArray[0].addBehaviour(new Proton.Color('#FF0026', ['#ffff00', '#ffff11'], Infinity, Proton.easeOutSine));
+
+            this.protonEmitterArray[0].p.x = this.canvas.width / 2;
+            this.protonEmitterArray[0].p.y = this.canvas.height / 2 + 150;
+            this.protonEmitterArray[0].emit();
+            this.proton.addEmitter(this.protonEmitterArray[0]);
+
+            this.tryWebGLRendererInit();
+        }else if (this.particlesEffectType === 18) {
+            // particle2BallHeadExp
+            this.proton = new Proton();
+            this.protonEmitterArray[0] = this.createImageEmitter(this.canvas.width / 2 + this.conf.radius, this.canvas.height / 2, '#9b2c03', '#ffd500', 1);
+            this.protonEmitterArray[1] = this.createImageEmitter(this.canvas.width / 2 - this.conf.radius, this.canvas.height / 2, '#8c00fe', '#ff2600', 1);
+
+            this.tryWebGLRendererInit();
+
+
         }
 
         this.startParticleInit = false;
 
     }
 
-    this.createImageEmitter = function (x, y, color1, color2) {
+    this.createImageEmitter = function (x, y, color1, color2, scaleStart) {
         var emitter = new Proton.Emitter();
         emitter.rate = new Proton.Rate(new Proton.Span(5, 7), new Proton.Span(.01, .02));
 
@@ -735,7 +876,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
 
         emitter.addBehaviour(new Proton.Alpha(1, 0));
         emitter.addBehaviour(new Proton.Color(color1, color2));
-        emitter.addBehaviour(new Proton.Scale(3.5, 0.1));
+        emitter.addBehaviour(new Proton.Scale(scaleStart, 0.1));
         emitter.addBehaviour(new Proton.CrossZone(new Proton.RectZone(0, 0, this.canvas.width, this.canvas.height), 'dead'));
         var attractionBehaviour = new Proton.Attraction(this.nosePosition, 0, 0);
         this.attractionBehaviours.push(attractionBehaviour);
@@ -1121,6 +1262,27 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
             case 14:
                 this.protonEmitterArray[0].p.x = keypoints[0].x;
                 this.protonEmitterArray[0].p.y = keypoints[0].y-150;
+                break;
+            case 15:
+                this.nosePosition.x = keypoints[0].x;
+                this.nosePosition.y = keypoints[0].y;
+                this.repulsionBehaviour.reset(this.nosePosition, 10, 150);
+                break;
+            case 16:
+                this.nosePosition.x = keypoints[0].x;
+                this.nosePosition.y = keypoints[0].y;
+                this.repulsionBehaviour.reset(this.nosePosition, 20, 250);
+                break;
+            case 17:
+                this.protonEmitterArray[0].p.x = keypoints[0].x;
+                this.protonEmitterArray[0].p.y = keypoints[0].y-100;
+                break;
+            case 18:
+                this.protonEmitterArray[0].p.x = keypoints[0].x + this.conf.radius * Math.sin(Math.PI / 2 + this.conf.tha);
+                this.protonEmitterArray[0].p.y = keypoints[0].y + this.conf.radius * Math.cos(Math.PI / 2 + this.conf.tha);
+                this.protonEmitterArray[1].p.x = keypoints[0].x + this.conf.radius * Math.sin(-Math.PI / 2 + this.conf.tha);
+                this.protonEmitterArray[1].p.y = keypoints[0].y + this.conf.radius * Math.cos(-Math.PI / 2 + this.conf.tha);
+                this.conf.tha += .1;
                 break;
             default:
                 break;

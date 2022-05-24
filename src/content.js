@@ -45,7 +45,12 @@ var allAnimationIDs=["skeleton",
     "particleBodyGlow",
     "particleBurningMan",
     "particleCyclone",
-    "particleSun"];
+    "particleSun",
+    "particleFireFly",
+    "particleFireFlyColor",
+    "particleHandsTrackFromBorder",
+    "particleSpit"];
+var currentAnimation = "skeleton";  // used for resize event to init particles if needed
 var randomSwitchSec=10;             // sec between animation switch
 var randomSwitchIntervalID=null;    // interval for random animation switch
 
@@ -111,6 +116,7 @@ chrome.runtime.onMessage.addListener(
 function setNewAnimation(animationId){
     if(anim !== null){
         anim.setNewAnimation(animationId);
+        currentAnimation=animationId;
     }
 
 }
@@ -128,6 +134,7 @@ function initVideoPlayerPopup(){
 <input type="range" min="2" max="60" value="10" id="randomRange" onclick="document.dispatchEvent(new CustomEvent('changeRandomInterval', { detail: {interval:this.value} }));">
 </div>
 
+<hr class="sep">
 
 <div class="containerButton">
     <div class="rowButton">
@@ -159,6 +166,12 @@ function initVideoPlayerPopup(){
         <div id="particle2BallHead" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particle2BallHead'} }));">🐼</span></div>
         <div id="particleCyclone" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particleCyclone'} }));">🐝</span></div>
         <div id="particleSun" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particleSun'} }));">🐬</span></div>
+    </div>
+    <div class="rowButton">
+        <div id="particleFireFly" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particleFireFly'} }));">🪰</span></div>
+        <div id="particleFireFlyColor" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particleFireFlyColor'} }));">🪲</span></div>
+        <div id="particleSpit" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particleSpit'} }));">🦐</span></div>
+        <div id="particle2BallHeadExp" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particle2BallHeadExp'} }));">🦚</span></div>
     </div>
 </div>
     `;
@@ -320,6 +333,8 @@ const resizeObserver = new ResizeObserver(entries => {
         anim = new Anim(mainVideo,canvas, canvasGL, ctx, webGLtx);
     }else{
         anim.updateCanvas(mainVideo,canvas, canvasGL, ctx, webGLtx);
+        // use new size and init animations
+        anim.setNewAnimation(currentAnimation);
     }
 
 });

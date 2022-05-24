@@ -11,7 +11,7 @@
     -moz-user-select: none;
     -ms-user-select: none;
     -webkit-user-select: none;
-    width: 350px; height: 300px; right: 160px; bottom: 70px; z-index: 71
+    width: 350px; height: 350px; right: 160px; bottom: 70px; z-index: 71
 }
 
 .pdVideoButton {
@@ -80,4 +80,9 @@
     cursor: pointer;
     overflow: hidden;
     outline: none;
+}
+
+hr.sep {
+    margin-top: 15px;
+    border-top: 1px dotted lightsteelblue;
 }
