@@ -1,6 +1,7 @@
 import Proton from "proton-engine";
 import * as detectUtils from "./detectUtils";
 import * as poseDetection from '@tensorflow-models/pose-detection';
+import {AnimEnum} from "./animEnum";
 
 /**
  * Class to handle animations
@@ -11,6 +12,7 @@ import * as poseDetection from '@tensorflow-models/pose-detection';
  * this.initParticles -> init Proton particle system. called if new animation starts with 'particle'
  * this.updateKeypoint -> get pose detection from tensorflow and update current animation
  * this.updateParticles -> for 'particle' animation update emitter and behaviour
+ * this.updateCanvas -> if main video is resized set new width/height for canvas and context
  *
  *
  * @param mainVideo
@@ -30,7 +32,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
 
     this.proton = null;
     this.protonEmitterArray = [];
-    this.particlesEffectType = 0;
+    this.particleID = 0;
     this.attractionBehaviour = null;
     this.attractionBehaviours = [];
     this.repulsionBehaviour = null;
@@ -50,25 +52,193 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
     this.conf = {radius: 170, tha: 0};
     this.rendererGL;
     this.startParticleInit = true; //
-    this.currentAnimation = "skeleton";
+    this.currentAnimation = AnimEnum.skeleton.name;
     this.skeletonLineSize=1;
 
+    this.PARTICLE = "particle";
+
     /**
-     * Get update about video and canvas from content.js
-     * Need this for calculation of the animations
+     * Switch and prepare current animation.
      *
-     * @param mainVideo watched video
-     * @param canvas 2d canvas
-     * @param canvasGL webGL canvas
-     * @param ctx 2d canvas context
-     * @param webGLtx webGL canvas context
+     * @param animationId new animation ID
      */
-    this.updateCanvas = function (mainVideo, canvas, canvasGL, ctx, webGLtx){
-        this.mainVideo = mainVideo;
-        this.canvas = canvas;
-        this.canvasGL = canvasGL;
-        this.ctx = ctx;
-        this.webGLtx = webGLtx;
+    this.setNewAnimation = function (animationId) {
+        this.clearWebGL();
+        if (animationId === AnimEnum.skeleton.name) {
+            this.currentAnimation = AnimEnum.skeleton.name;
+
+        } else if (animationId === AnimEnum.skeleton3Times.name) {
+            this.currentAnimation = AnimEnum.skeleton3Times.name;
+
+        } else if (animationId === AnimEnum.skeleton5Times.name) {
+            this.currentAnimation = AnimEnum.skeleton5Times.name;
+
+        } else if (animationId === AnimEnum.puppetsPlayer.name) {
+            this.currentAnimation = AnimEnum.puppetsPlayer.name;
+
+        } else if (animationId === AnimEnum.spiderWeb.name) {
+            this.currentAnimation = AnimEnum.spiderWeb.name;
+
+        } else if (animationId === AnimEnum.particleHandsBall.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleHandsBall.id;
+
+        } else if (animationId === AnimEnum.particle2BallHead.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particle2BallHead.id;
+
+        } else if (animationId === AnimEnum.particleRightHandLine.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleRightHandLine.id;
+
+        } else if (animationId === AnimEnum.particleNoseGravity.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleNoseGravity.id;
+
+        } else if (animationId === AnimEnum.particleNoseSupernova.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleNoseSupernova.id;
+
+        } else if (animationId === AnimEnum.particleHandsTrackFromBorder.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleHandsTrackFromBorder.id;
+
+        } else if (animationId === AnimEnum.particleUpperBodyGlow.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleUpperBodyGlow.id;
+
+        } else if (animationId === AnimEnum.particleGlowPainting.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleGlowPainting.id;
+
+        } else if (animationId === AnimEnum.particlePainting.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particlePainting.id;
+
+        } else if (animationId === AnimEnum.particlePaintRandomDrift.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particlePaintRandomDrift.id;
+
+        } else if (animationId === AnimEnum.particleCometThrower.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleCometThrower.id;
+
+        } else if (animationId === AnimEnum.particleBodyGlow.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleBodyGlow.id;
+
+        } else if (animationId === AnimEnum.particleBurningMan.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleBurningMan.id;
+
+        }else if (animationId === AnimEnum.particleCyclone.name){
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleCyclone.id;
+
+        }else if (animationId === AnimEnum.particleSun.name){
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleSun.id;
+
+        }else if (animationId === AnimEnum.particleFireFly.name){
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleFireFly.id;
+
+        }else if (animationId === AnimEnum.particleFireFlyColor.name){
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleFireFlyColor.id;
+
+        }else if (animationId === AnimEnum.particleSpit.name){
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleSpit.id;
+
+        }else if (animationId === AnimEnum.particle2BallHeadExp.name){
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particle2BallHeadExp.id;
+        }
+
+        if(this.currentAnimation === this.PARTICLE){
+            this.initParticles();
+        }
+    }
+
+    /**
+     * Prepare particle system
+     */
+    this.initParticles = function () {
+        if (!this.currentAnimation.startsWith(this.PARTICLE)) {
+            return;
+        }
+        this.startParticleInit = true;
+
+        if(this.proton !== null){
+            this.proton.destroy();
+        }
+        this.protonEmitterArray = [];
+
+        // clear canvas2D content
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        if (this.particleID === AnimEnum.particleHandsBall.id) {
+            this.cParticleHandsBall();
+
+        } else if (this.particleID === AnimEnum.particle2BallHead.id) {
+            this.cParticle2BallHead();
+
+        } else if (this.particleID === AnimEnum.particleRightHandLine.id) {
+            this.cParticleRightHandLine();
+
+        } else if (this.particleID === AnimEnum.particleNoseGravity.id) {
+            this.cParticleNoseGravity();
+
+        } else if (this.particleID === AnimEnum.particleNoseSupernova.id) {
+            this.cParticleNoseSupernova();
+
+        } else if (this.particleID === AnimEnum.particleHandsTrackFromBorder.id) {
+            this.cParticleHandsTrackFromBorder();
+
+        } else if (this.particleID === AnimEnum.particleUpperBodyGlow.id) {
+            this.cParticleUpperBodyGlow();
+
+        } else if (this.particleID === AnimEnum.particleGlowPainting.id) {
+            this.cParticleGlowPainting();
+
+        } else if (this.particleID === AnimEnum.particlePainting.id) {
+            this.cParticlePainting();
+
+        } else if (this.particleID === AnimEnum.particlePaintRandomDrift.id) {
+            this.cParticlePaintRandomDrift();
+
+        } else if (this.particleID === AnimEnum.particleCometThrower.id) {
+            this.cParticleCometThrower();
+
+        } else if (this.particleID === AnimEnum.particleBodyGlow.id) {
+            this.cParticleBodyGlow();
+
+        } else if (this.particleID === AnimEnum.particleBurningMan.id) {
+            this.cParticleBurningMan();
+
+        }else if (this.particleID === AnimEnum.particleCyclone.id){
+            this.cParticleCyclone();
+
+        }else if (this.particleID === AnimEnum.particleSun.id){
+            this.cParticleSun();
+
+        }else if (this.particleID === AnimEnum.particleFireFly.id){
+            this.cParticleFireFly();
+
+        }else if (this.particleID === AnimEnum.particleFireFlyColor.id){
+            this.cParticleFireFlyColor();
+
+        }else if (this.particleID === AnimEnum.particleSpit.id){
+            this.cParticleSpit();
+
+        }else if (this.particleID === AnimEnum.particle2BallHeadExp.id) {
+            this.cParticle2BallHeadExp();
+
+        }
+
+        this.startParticleInit = false;
+
     }
 
     /**
@@ -79,17 +249,17 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
      */
     this.updateKeypoint = function (pose, canvasPoseCoordinates) {
 
-        if (this.currentAnimation === "skeleton") {
+        if (this.currentAnimation === AnimEnum.skeleton.name) {
 
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.drawKeyPoints(canvasPoseCoordinates);
             this.drawSkeleton(canvasPoseCoordinates);
 
-        }else if (this.currentAnimation === "particle") {
+        }else if (this.currentAnimation === this.PARTICLE) {
 
             this.updateParticles(canvasPoseCoordinates);
 
-        }else if (this.currentAnimation === "skeleton3Times") {
+        }else if (this.currentAnimation === AnimEnum.skeleton3Times.name) {
 
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.drawKeyPoints(canvasPoseCoordinates);
@@ -103,7 +273,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
             this.drawKeyPoints(canvasPoseCoordinates);
             this.drawSkeleton(canvasPoseCoordinates);
 
-        }else if (this.currentAnimation === "skeleton5Times") {
+        }else if (this.currentAnimation === AnimEnum.skeleton5Times.name) {
 
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.drawKeyPoints(canvasPoseCoordinates);
@@ -125,12 +295,12 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
             this.drawKeyPoints(canvasPoseCoordinates);
             this.drawSkeleton(canvasPoseCoordinates);
 
-        }else if (this.currentAnimation === "puppetsPlayer") {
+        }else if (this.currentAnimation === AnimEnum.puppetsPlayer.name) {
 
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.drawPuppets(canvasPoseCoordinates);
 
-        }else if (this.currentAnimation === "spiderWeb") {
+        }else if (this.currentAnimation === AnimEnum.spiderWeb.name) {
 
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.drawSpiderWeb(canvasPoseCoordinates);
@@ -138,10 +308,237 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
     }
 
     /**
+     * Update particles emitter position on specific keypoints.
+     *
+     * Mapping emitter to pos in keypoints-array
+     *                  0: nose
+     *                  1: left_eye
+     *                  2: right_eye
+     *                  3: left_ear
+     *                  4: right_ear
+     *                  5: left_shoulder
+     *                  6: right_shoulder
+     *                  7: left_elbow
+     *                  8: right_elbow
+     *                  9: left_wrist
+     *                  10: right_wrist
+     *                  11: left_hip
+     *                  12: right_hip
+     *                  13: left_knee
+     *                  14: right_knee
+     *                  15: left_ankle
+     *                  16: right_ankle
+     *
+     * @param keypoints from detector
+     */
+    this.updateParticles = function (keypoints) {
+        if (keypoints === undefined) {
+            return;
+        }
+
+        if (this.startParticleInit === true) {
+            return;
+        }
+
+        if (this.protonEmitterArray.length === 0) {
+            return;
+        }
+
+        // in case of new video reinit current particle effect
+        if(this.protonEmitterArray[0].p === null){
+            this.initParticles();
+        }
+
+        switch (this.particleID) {
+            case AnimEnum.particleHandsBall.id:
+                this.protonEmitterArray[0].p.x = keypoints[10].x;
+                this.protonEmitterArray[0].p.y = keypoints[10].y;
+
+                this.protonEmitterArray[1].p.x = keypoints[9].x;
+                this.protonEmitterArray[1].p.y = keypoints[9].y;
+                break;
+            case AnimEnum.particle2BallHead.id: // circle head effect. center is nose
+                this.protonEmitterArray[0].p.x = keypoints[0].x + this.conf.radius * Math.sin(Math.PI / 2 + this.conf.tha);
+                this.protonEmitterArray[0].p.y = keypoints[0].y + this.conf.radius * Math.cos(Math.PI / 2 + this.conf.tha);
+                this.protonEmitterArray[1].p.x = keypoints[0].x + this.conf.radius * Math.sin(-Math.PI / 2 + this.conf.tha);
+                this.protonEmitterArray[1].p.y = keypoints[0].y + this.conf.radius * Math.cos(-Math.PI / 2 + this.conf.tha);
+                this.conf.tha += .1;
+                break;
+            case AnimEnum.particleRightHandLine.id:
+                this.protonEmitterArray[0].p.x = keypoints[10].x;
+                this.protonEmitterArray[0].p.y = keypoints[10].y;
+                break;
+            case AnimEnum.particleNoseGravity.id:
+                this.nosePosition.x = keypoints[0].x;
+                this.nosePosition.y = keypoints[0].y;
+                this.protonEmitterArray[0].p.x = keypoints[0].x;
+                this.protonEmitterArray[0].p.y = keypoints[0].y;
+                break;
+            case AnimEnum.particleNoseSupernova.id:
+                this.protonEmitterArray[0].p.x = keypoints[0].x;
+                this.protonEmitterArray[0].p.y = keypoints[0].y;
+                break;
+            case AnimEnum.particleHandsTrackFromBorder.id:
+                this.leftHandPosition.x = keypoints[9].x;
+                this.leftHandPosition.y = keypoints[9].y;
+                this.rightHandPosition.x = keypoints[10].x;
+                this.rightHandPosition.y = keypoints[10].y
+                break;
+            case AnimEnum.particleUpperBodyGlow.id:
+                this.protonEmitterArray[0].p.x = keypoints[9].x;
+                this.protonEmitterArray[0].p.y = keypoints[9].y;
+                this.protonEmitterArray[1].p.x = keypoints[7].x;
+                this.protonEmitterArray[1].p.y = keypoints[7].y;
+                this.protonEmitterArray[2].p.x = keypoints[5].x;
+                this.protonEmitterArray[2].p.y = keypoints[5].y;
+                this.protonEmitterArray[3].p.x = keypoints[6].x;
+                this.protonEmitterArray[3].p.y = keypoints[6].y;
+                this.protonEmitterArray[4].p.x = keypoints[8].x;
+                this.protonEmitterArray[4].p.y = keypoints[8].y;
+                this.protonEmitterArray[5].p.x = keypoints[10].x;
+                this.protonEmitterArray[5].p.y = keypoints[10].y;
+                break;
+            case AnimEnum.particleGlowPainting.id:
+                this.leftRightWristUpdate(keypoints);
+                break;
+            case AnimEnum.particlePainting.id:
+                this.leftRightWristUpdate(keypoints);
+                break;
+            case AnimEnum.particlePaintRandomDrift.id:
+                this.leftRightWristUpdate(keypoints);
+                break;
+            case AnimEnum.particleCometThrower.id:
+                this.leftRightWristUpdate(keypoints);
+                break;
+            case AnimEnum.particleBodyGlow.id:
+                this.protonEmitterArray[0].p.x = keypoints[9].x;
+                this.protonEmitterArray[0].p.y = keypoints[9].y;
+                this.protonEmitterArray[1].p.x = keypoints[7].x;
+                this.protonEmitterArray[1].p.y = keypoints[7].y;
+                this.protonEmitterArray[2].p.x = keypoints[5].x;
+                this.protonEmitterArray[2].p.y = keypoints[5].y;
+                this.protonEmitterArray[3].p.x = keypoints[6].x;
+                this.protonEmitterArray[3].p.y = keypoints[6].y;
+                this.protonEmitterArray[4].p.x = keypoints[8].x;
+                this.protonEmitterArray[4].p.y = keypoints[8].y;
+                this.protonEmitterArray[5].p.x = keypoints[10].x;
+                this.protonEmitterArray[5].p.y = keypoints[10].y;
+
+                this.protonEmitterArray[6].p.x = keypoints[11].x;
+                this.protonEmitterArray[6].p.y = keypoints[11].y;
+                this.protonEmitterArray[7].p.x = keypoints[13].x;
+                this.protonEmitterArray[7].p.y = keypoints[13].y;
+                this.protonEmitterArray[8].p.x = keypoints[15].x;
+                this.protonEmitterArray[8].p.y = keypoints[15].y;
+                this.protonEmitterArray[9].p.x = keypoints[12].x;
+                this.protonEmitterArray[9].p.y = keypoints[12].y;
+                this.protonEmitterArray[10].p.x = keypoints[14].x;
+                this.protonEmitterArray[10].p.y = keypoints[14].y;
+                this.protonEmitterArray[11].p.x = keypoints[16].x;
+                this.protonEmitterArray[11].p.y = keypoints[16].y;
+                break;
+            case AnimEnum.particleBurningMan.id:
+                this.protonEmitterArray[0].p.x = keypoints[9].x;
+                this.protonEmitterArray[0].p.y = keypoints[9].y;
+                this.protonEmitterArray[1].p.x = keypoints[7].x;
+                this.protonEmitterArray[1].p.y = keypoints[7].y;
+                this.protonEmitterArray[2].p.x = keypoints[5].x;
+                this.protonEmitterArray[2].p.y = keypoints[5].y;
+                this.protonEmitterArray[3].p.x = keypoints[6].x;
+                this.protonEmitterArray[3].p.y = keypoints[6].y;
+                this.protonEmitterArray[4].p.x = keypoints[8].x;
+                this.protonEmitterArray[4].p.y = keypoints[8].y;
+                this.protonEmitterArray[5].p.x = keypoints[10].x;
+                this.protonEmitterArray[5].p.y = keypoints[10].y;
+
+                this.protonEmitterArray[6].p.x = keypoints[11].x;
+                this.protonEmitterArray[6].p.y = keypoints[11].y;
+                this.protonEmitterArray[7].p.x = keypoints[13].x;
+                this.protonEmitterArray[7].p.y = keypoints[13].y;
+                this.protonEmitterArray[8].p.x = keypoints[15].x;
+                this.protonEmitterArray[8].p.y = keypoints[15].y;
+                this.protonEmitterArray[9].p.x = keypoints[12].x;
+                this.protonEmitterArray[9].p.y = keypoints[12].y;
+                this.protonEmitterArray[10].p.x = keypoints[14].x;
+                this.protonEmitterArray[10].p.y = keypoints[14].y;
+                this.protonEmitterArray[11].p.x = keypoints[16].x;
+                this.protonEmitterArray[11].p.y = keypoints[16].y;
+
+                this.protonEmitterArray[12].p.x = keypoints[5].x;
+                this.protonEmitterArray[12].p.y = keypoints[5].y;
+                this.protonEmitterArray[13].p.x = keypoints[6].x;
+                this.protonEmitterArray[13].p.y = keypoints[6].y;
+
+                this.protonEmitterArray[14].p.x = keypoints[15].x;
+                this.protonEmitterArray[14].p.y = keypoints[15].y;
+                this.protonEmitterArray[15].p.x = keypoints[16].x;
+                this.protonEmitterArray[15].p.y = keypoints[16].y;
+
+                this.protonEmitterArray[16].p.x = keypoints[0].x;
+                this.protonEmitterArray[16].p.y = keypoints[0].y;
+                this.protonEmitterArray[17].p.x = keypoints[3].x;
+                this.protonEmitterArray[17].p.y = keypoints[3].y;
+                this.protonEmitterArray[18].p.x = keypoints[4].x;
+                this.protonEmitterArray[18].p.y = keypoints[4].y;
+                break;
+            case AnimEnum.particleCyclone.id:
+                this.protonEmitterArray[0].p.x = keypoints[0].x;
+                this.protonEmitterArray[0].p.y = keypoints[0].y;
+                break;
+            case AnimEnum.particleSun.id:
+                this.protonEmitterArray[0].p.x = keypoints[0].x;
+                this.protonEmitterArray[0].p.y = keypoints[0].y-150;
+                break;
+            case AnimEnum.particleFireFly.id:
+                this.nosePosition.x = keypoints[0].x;
+                this.nosePosition.y = keypoints[0].y;
+                this.repulsionBehaviour.reset(this.nosePosition, 10, 150);
+                break;
+            case AnimEnum.particleFireFlyColor.id:
+                this.nosePosition.x = keypoints[0].x;
+                this.nosePosition.y = keypoints[0].y;
+                this.repulsionBehaviour.reset(this.nosePosition, 20, 250);
+                break;
+            case AnimEnum.particleSpit.id:
+                this.protonEmitterArray[0].p.x = keypoints[0].x;
+                this.protonEmitterArray[0].p.y = keypoints[0].y-100;
+                break;
+            case AnimEnum.particle2BallHeadExp.id:
+                this.protonEmitterArray[0].p.x = keypoints[0].x + this.conf.radius * Math.sin(Math.PI / 2 + this.conf.tha);
+                this.protonEmitterArray[0].p.y = keypoints[0].y + this.conf.radius * Math.cos(Math.PI / 2 + this.conf.tha);
+                this.protonEmitterArray[1].p.x = keypoints[0].x + this.conf.radius * Math.sin(-Math.PI / 2 + this.conf.tha);
+                this.protonEmitterArray[1].p.y = keypoints[0].y + this.conf.radius * Math.cos(-Math.PI / 2 + this.conf.tha);
+                this.conf.tha += .1;
+                break;
+            default:
+                break;
+
+        }
+    }
+
+    /**
+     * Get update about video and canvas from content.js
+     * Need this for calculation of the animations
+     *
+     * @param mainVideo watched video
+     * @param canvas 2d canvas
+     * @param canvasGL webGL canvas
+     * @param ctx 2d canvas context
+     * @param webGLtx webGL canvas context
+     */
+    this.updateCanvas = function (mainVideo, canvas, canvasGL, ctx, webGLtx){
+        this.mainVideo = mainVideo;
+        this.canvas = canvas;
+        this.canvasGL = canvasGL;
+        this.ctx = ctx;
+        this.webGLtx = webGLtx;
+    }
+
+    /**
      * Particle animation frame
      */
      this.updateProton = function () {
-        if(!this.currentAnimation.startsWith("particle")){
+        if(!this.currentAnimation.startsWith(this.PARTICLE)){
             return;
         }
         if(this.proton !== null){
@@ -259,607 +656,476 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
 
     }
 
-    /**
-     * Switch and prepare current animation.
-     *
-     * @param animationId new animation ID
-     */
-    this.setNewAnimation = function (animationId) {
-        this.clearWebGL();
-        if (animationId === "skeleton") {
-            this.currentAnimation = "skeleton";
 
-        } else if (animationId === "skeleton3Times") {
-            this.currentAnimation = "skeleton3Times";
-
-        } else if (animationId === "skeleton5Times") {
-            this.currentAnimation = "skeleton5Times";
-
-        } else if (animationId === "puppetsPlayer") {
-            this.currentAnimation = "puppetsPlayer";
-
-        } else if (animationId === "spiderWeb") {
-            this.currentAnimation = "spiderWeb";
-
-        } else if (animationId === "particleHandsBall") {
-            this.currentAnimation = "particle";
-            this.particlesEffectType = 0;
-            this.initParticles();
-
-        } else if (animationId === "particle2BallHead") {
-            this.currentAnimation = "particle";
-            this.particlesEffectType = 1;
-            this.initParticles();
-
-        } else if (animationId === "particleRightHandLine") {
-            this.currentAnimation = "particle";
-            this.particlesEffectType = 2;
-            this.initParticles();
-
-        } else if (animationId === "particleNoseGravity") {
-            this.currentAnimation = "particle";
-            this.particlesEffectType = 3;
-            this.initParticles();
-
-        } else if (animationId === "particleNoseSupernova") {
-            this.currentAnimation = "particle";
-            this.particlesEffectType = 4;
-            this.initParticles();
-
-        } else if (animationId === "particleHandsTrackFromBorder") {
-            this.currentAnimation = "particle";
-            this.particlesEffectType = 5;
-            this.initParticles();
-
-        } else if (animationId === "particleUpperBodyGlow") {
-            this.currentAnimation = "particle";
-            this.particlesEffectType = 6;
-            this.initParticles();
-
-        } else if (animationId === "particleGlowPainting") {
-            this.currentAnimation = "particle";
-            this.particlesEffectType = 7;
-            this.initParticles();
-
-        } else if (animationId === "particlePainting") {
-            this.currentAnimation = "particle";
-            this.particlesEffectType = 8;
-            this.initParticles();
-
-        } else if (animationId === "particlePaintRandomDrift") {
-            this.currentAnimation = "particle";
-            this.particlesEffectType = 9;
-            this.initParticles();
-
-        } else if (animationId === "particleCometThrower") {
-            this.currentAnimation = "particle";
-            this.particlesEffectType = 10;
-            this.initParticles();
-
-        } else if (animationId === "particleBodyGlow") {
-            this.currentAnimation = "particle";
-            this.particlesEffectType = 11;
-            this.initParticles();
-
-        } else if (animationId === "particleBurningMan") {
-            this.currentAnimation = "particle";
-            this.particlesEffectType = 12;
-            this.initParticles();
-
-        }else if (animationId === "particleCyclone"){
-            this.currentAnimation = "particle";
-            this.particlesEffectType = 13;
-            this.initParticles();
-        }else if (animationId == "particleSun"){
-            this.currentAnimation = "particle";
-            this.particlesEffectType = 14;
-            this.initParticles();
-        }else if (animationId == "particleFireFly"){
-            this.currentAnimation = "particle";
-            this.particlesEffectType = 15;
-            this.initParticles();
-        }else if (animationId == "particleFireFlyColor"){
-            this.currentAnimation = "particle";
-            this.particlesEffectType = 16;
-            this.initParticles();
-        }else if (animationId == "particleSpit"){
-            this.currentAnimation = "particle";
-            this.particlesEffectType = 17;
-            this.initParticles();
-        }else if (animationId == "particle2BallHeadExp"){
-            this.currentAnimation = "particle";
-            this.particlesEffectType = 18;
-            this.initParticles();
+    this.cParticleHandsBall = function (){
+        this.proton = new Proton();
+        var emitter = new Proton.Emitter();
+        // right hand
+        emitter.addInitialize(new Proton.Mass(10));
+        let particleImage = new Image();
+        particleImage.src = chrome.runtime.getURL("/images/particle.png");
+        particleImage.onload = () => {
+            emitter.addInitialize(new Proton.Body(particleImage));
         }
+        emitter.addInitialize(new Proton.Life(.1, .4));
+        emitter.rate = new Proton.Rate(new Proton.Span(20, 20), .1);
+        emitter.addInitialize(new Proton.V(new Proton.Span(3, 5), new Proton.Span(0, 360), 'polar'));
+        emitter.addBehaviour(new Proton.Alpha(1, 0));
+        emitter.addBehaviour(new Proton.Color("#3366b2", "#1155b2"));
+        emitter.addBehaviour(new Proton.Scale(Proton.getSpan(1, 1.6), Proton.getSpan(0, .1)));
+        emitter.p.x = this.canvasGL.width / 2;
+        emitter.p.y = this.canvasGL.height / 2;
+        emitter.emit();
+        this.proton.addEmitter(emitter);
+        this.protonEmitterArray[0] = emitter;
+        // left hand
+        emitter = new Proton.Emitter();
+        emitter.addInitialize(new Proton.Mass(10));
+        let particleImage2 = new Image();
+        particleImage2.src = chrome.runtime.getURL("/images/particle.png");
+        particleImage2.onload = () => {
+            emitter.addInitialize(new Proton.Body(particleImage2));
+        }
+        emitter.addInitialize(new Proton.Life(.1, .4));
+        emitter.rate = new Proton.Rate(new Proton.Span(20, 20), .1);
+        emitter.addInitialize(new Proton.V(new Proton.Span(3, 5), new Proton.Span(0, 360), 'polar'));
+        emitter.addBehaviour(new Proton.Alpha(1, 0));
+        emitter.addBehaviour(new Proton.Color("#fdf753", "#f63a3f"));
+        emitter.addBehaviour(new Proton.Scale(Proton.getSpan(1, 1.6), Proton.getSpan(0, .1)));
+        emitter.p.x = this.canvasGL.width / 2;
+        emitter.p.y = this.canvasGL.height / 2;
+        emitter.emit();
+        this.proton.addEmitter(emitter);
+        this.protonEmitterArray[1] = emitter;
+
+        this.tryWebGLRendererInit();
+
     }
 
-    /**
-     * Prepare particle system
-     */
-    this.initParticles = function () {
-        if (!this.currentAnimation.startsWith("particle")) {
-            return;
+    this.cParticle2BallHead = function (){
+        this.proton = new Proton();
+        this.protonEmitterArray[0] = this.createImageEmitter(this.canvas.width / 2 + this.conf.radius, this.canvas.height / 2, '#4F1500', '#0029FF', 3.5);
+        this.protonEmitterArray[1] = this.createImageEmitter(this.canvas.width / 2 - this.conf.radius, this.canvas.height / 2, '#004CFE', '#6600FF', 3.5);
+
+        this.tryWebGLRendererInit();
+    }
+
+    this.cParticleRightHandLine = function (){
+        this.proton = new Proton();
+        this.protonEmitterArray[0] = new Proton.Emitter();
+        this.protonEmitterArray[0].rate = new Proton.Rate(new Proton.Span(1, 50));
+        this.protonEmitterArray[0].addInitialize(new Proton.Radius(2, 10));
+        this.protonEmitterArray[0].addInitialize(new Proton.Life(1, 3));
+        this.protonEmitterArray[0].addBehaviour(new Proton.Color('random'));
+        this.protonEmitterArray[0].addBehaviour(new Proton.RandomDrift(10, 0, .035));
+        this.protonEmitterArray[0].p.x = this.canvas.width / 2;
+        this.protonEmitterArray[0].p.y = this.canvas.height / 2;
+        this.protonEmitterArray[0].emit();
+        this.proton.addEmitter(this.protonEmitterArray[0]);
+
+        this.tryWebGLRendererInit();
+    }
+
+    this.cParticleNoseGravity = function (){
+        this.proton = new Proton();
+
+        this.protonEmitterArray[0] = new Proton.Emitter();
+        this.protonEmitterArray[0].damping = 0.0075;
+        this.protonEmitterArray[0].rate = new Proton.Rate(300);
+
+        let particleImage = new Image();
+        particleImage.src = chrome.runtime.getURL("/images/particle.png");
+        particleImage.onload = () => {
+            emitter.addInitialize(new Proton.Body(particleImage, 128, 128));
         }
-        this.startParticleInit = true;
 
-        if(this.proton !== null){
-            this.proton.destroy();
+        this.protonEmitterArray[0].addInitialize(new Proton.Mass(1), new Proton.Radius(Proton.getSpan(5, 10)));
+        this.protonEmitterArray[0].addInitialize(new Proton.Velocity(new Proton.Span(1, 3), new Proton.Span(0, 360), 'polar'));
+
+        this.nosePosition = {
+            x: this.canvas.width / 2,
+            y: this.canvas.height / 2
+        };
+        this.attractionBehaviour = new Proton.Attraction(this.nosePosition, 10, 1000);
+        this.protonEmitterArray[0].addBehaviour(this.attractionBehaviour, new Proton.Color('random'));
+        this.protonEmitterArray[0].addBehaviour(new Proton.Scale(Proton.getSpan(.1, .7)));
+
+        this.protonEmitterArray[0].p.x = this.canvas.width / 2;
+        this.protonEmitterArray[0].p.y = this.canvas.height / 2;
+        this.protonEmitterArray[0].emit('once');
+        this.proton.addEmitter(this.protonEmitterArray[0]);
+
+        this.tryWebGLRendererInit();
+    }
+
+    this.cParticleNoseSupernova = function (){
+        this.proton = new Proton();
+        this.protonEmitterArray[0] = new Proton.Emitter();
+        this.protonEmitterArray[0].rate = new Proton.Rate(new Proton.Span(5, 10), new Proton.Span(.05, .2));
+
+        let particleImage = new Image();
+        particleImage.src = chrome.runtime.getURL("/images/particle2.png");
+        particleImage.onload = () => {
+            this.protonEmitterArray[0].addInitialize(new Proton.Body(particleImage));
         }
-        this.protonEmitterArray = [];
 
-        // clear canvas2D content
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-        if (this.particlesEffectType === 0) {
-            // hand left + hand right
-            // ### Hand power balls
-            this.proton = new Proton();
-            var emitter = new Proton.Emitter();
-            // right hand
-            emitter.addInitialize(new Proton.Mass(10));
-            let particleImage = new Image();
-            particleImage.src = chrome.runtime.getURL("/images/particle.png");
-            particleImage.onload = () => {
-                emitter.addInitialize(new Proton.Body(particleImage));
-            }
-            emitter.addInitialize(new Proton.Life(.1, .4));
-            emitter.rate = new Proton.Rate(new Proton.Span(20, 20), .1);
-            emitter.addInitialize(new Proton.V(new Proton.Span(3, 5), new Proton.Span(0, 360), 'polar'));
-            emitter.addBehaviour(new Proton.Alpha(1, 0));
-            emitter.addBehaviour(new Proton.Color("#3366b2", "#1155b2"));
-            emitter.addBehaviour(new Proton.Scale(Proton.getSpan(1, 1.6), Proton.getSpan(0, .1)));
-            emitter.p.x = this.canvasGL.width / 2;
-            emitter.p.y = this.canvasGL.height / 2;
-            emitter.emit();
-            this.proton.addEmitter(emitter);
-            this.protonEmitterArray[0] = emitter;
-            // left hand
-            emitter = new Proton.Emitter();
-            emitter.addInitialize(new Proton.Mass(10));
-            let particleImage2 = new Image();
-            particleImage2.src = chrome.runtime.getURL("/images/particle.png");
-            particleImage2.onload = () => {
-                emitter.addInitialize(new Proton.Body(particleImage2));
-            }
-            emitter.addInitialize(new Proton.Life(.1, .4));
-            emitter.rate = new Proton.Rate(new Proton.Span(20, 20), .1);
-            emitter.addInitialize(new Proton.V(new Proton.Span(3, 5), new Proton.Span(0, 360), 'polar'));
-            emitter.addBehaviour(new Proton.Alpha(1, 0));
-            emitter.addBehaviour(new Proton.Color("#fdf753", "#f63a3f"));
-            emitter.addBehaviour(new Proton.Scale(Proton.getSpan(1, 1.6), Proton.getSpan(0, .1)));
-            emitter.p.x = this.canvasGL.width / 2;
-            emitter.p.y = this.canvasGL.height / 2;
-            emitter.emit();
-            this.proton.addEmitter(emitter);
-            this.protonEmitterArray[1] = emitter;
-
-            this.tryWebGLRendererInit();
-
-        } else if (this.particlesEffectType === 1) {
-            // ### Two head balls
-            this.proton = new Proton();
-            this.protonEmitterArray[0] = this.createImageEmitter(this.canvas.width / 2 + this.conf.radius, this.canvas.height / 2, '#4F1500', '#0029FF', 3.5);
-            this.protonEmitterArray[1] = this.createImageEmitter(this.canvas.width / 2 - this.conf.radius, this.canvas.height / 2, '#004CFE', '#6600FF', 3.5);
-
-            this.tryWebGLRendererInit();
-
-
-        } else if (this.particlesEffectType === 2) {
-            // ### Right hand line
-            this.proton = new Proton();
-            this.protonEmitterArray[0] = new Proton.Emitter();
-            this.protonEmitterArray[0].rate = new Proton.Rate(new Proton.Span(1, 50));
-            this.protonEmitterArray[0].addInitialize(new Proton.Radius(2, 10));
-            this.protonEmitterArray[0].addInitialize(new Proton.Life(1, 3));
-            this.protonEmitterArray[0].addBehaviour(new Proton.Color('random'));
-            this.protonEmitterArray[0].addBehaviour(new Proton.RandomDrift(10, 0, .035));
-            this.protonEmitterArray[0].p.x = this.canvas.width / 2;
-            this.protonEmitterArray[0].p.y = this.canvas.height / 2;
-            this.protonEmitterArray[0].emit();
-            this.proton.addEmitter(this.protonEmitterArray[0]);
-
-            // let renderer = new Proton.CanvasRenderer(this.canvas);
-            // this.proton.addRenderer(renderer);
-            this.tryWebGLRendererInit();
-        } else if (this.particlesEffectType === 3) {
-            // ### Nose gravity
-            this.proton = new Proton();
-
-            this.protonEmitterArray[0] = new Proton.Emitter();
-            this.protonEmitterArray[0].damping = 0.0075;
-            this.protonEmitterArray[0].rate = new Proton.Rate(300);
-
-            let particleImage = new Image();
-            particleImage.src = chrome.runtime.getURL("/images/particle.png");
-            particleImage.onload = () => {
-                emitter.addInitialize(new Proton.Body(particleImage, 128, 128));
-            }
-
-            this.protonEmitterArray[0].addInitialize(new Proton.Mass(1), new Proton.Radius(Proton.getSpan(5, 10)));
-            this.protonEmitterArray[0].addInitialize(new Proton.Velocity(new Proton.Span(1, 3), new Proton.Span(0, 360), 'polar'));
-
-            this.nosePosition = {
-                x: this.canvas.width / 2,
-                y: this.canvas.height / 2
-            };
-            this.attractionBehaviour = new Proton.Attraction(this.nosePosition, 10, 1000);
-            this.protonEmitterArray[0].addBehaviour(this.attractionBehaviour, new Proton.Color('random'));
-            this.protonEmitterArray[0].addBehaviour(new Proton.Scale(Proton.getSpan(.1, .7)));
-
-            this.protonEmitterArray[0].p.x = this.canvas.width / 2;
-            this.protonEmitterArray[0].p.y = this.canvas.height / 2;
-            this.protonEmitterArray[0].emit('once');
-            this.proton.addEmitter(this.protonEmitterArray[0]);
-
-            // let renderer = new Proton.CanvasRenderer(this.canvas);
-            // this.proton.addRenderer(renderer);
-            this.tryWebGLRendererInit();
-        } else if (this.particlesEffectType === 4) {
-            // ### Nose supernova
-            this.proton = new Proton();
-            this.protonEmitterArray[0] = new Proton.Emitter();
-            this.protonEmitterArray[0].rate = new Proton.Rate(new Proton.Span(5, 10), new Proton.Span(.05, .2));
-
-            let particleImage = new Image();
-            particleImage.src = chrome.runtime.getURL("/images/particle2.png");
-            particleImage.onload = () => {
-                this.protonEmitterArray[0].addInitialize(new Proton.Body(particleImage));
-            }
-
-            this.protonEmitterArray[0].addInitialize(new Proton.Body(image));
-            this.protonEmitterArray[0].addInitialize(new Proton.Mass(1));
-            this.protonEmitterArray[0].addInitialize(new Proton.Life(2, 4));
-            this.protonEmitterArray[0].addInitialize(new Proton.V(new Proton.Span(0.5, 1.5), new Proton.Span(0, 360), 'polar'));
-
-            this.protonEmitterArray[0].addBehaviour(new Proton.Alpha(1, [.7, 1]));
-            var scale = new Proton.Scale(1, 0);
-            this.protonEmitterArray[0].addBehaviour(scale);
-            this.protonEmitterArray[0].addBehaviour(new Proton.Color('random', 'random', Infinity, Proton.easeInSine));
-
-            this.protonEmitterArray[0].p.x = this.canvas.width / 2;
-            this.protonEmitterArray[0].p.y = this.canvas.height / 2;
-            this.protonEmitterArray[0].emit();
-            this.proton.addEmitter(this.protonEmitterArray[0]);
-
-            this.tryWebGLRendererInit();
-
-            // let renderer = new Proton.CanvasRenderer(this.canvas);
-            // this.proton.addRenderer(renderer);
-        } else if (this.particlesEffectType === 5) {
-            // ### Hands track from border
-            this.proton = new Proton(4000);
-
-            this.createEmitter(this.canvas.width + 50, this.canvas.height / 2, 0, '#fdf753', this.rightHandPosition, 0);
-            this.createEmitter(this.canvas.width - 50, this.canvas.height / 2, 180, '#f80610', this.leftHandPosition, 1);
-            let renderer = new Proton.CanvasRenderer(this.canvas);
-            this.proton.addRenderer(renderer);
-        } else if (this.particlesEffectType === 6) {
-            // ### upper body glow
-            this.proton = new Proton;
-            let particleImage = new Image();
-            particleImage.src = chrome.runtime.getURL("/images/particle.png");
-            particleImage.onload = () => {
-                this.createEmitterPointGlow(0, "#4F1500", "#e7af22", 90, particleImage);
-                this.createEmitterPointGlow(1, "#4F1500", "#0029FF", 65, particleImage);
-                this.createEmitterPointGlow(2, "#4F1500", "#6974f8", 0, particleImage);
-                this.createEmitterPointGlow(3, "#4F1500", "#59b9e3", 0, particleImage);
-                this.createEmitterPointGlow(4, "#4F1500", "#aa40e0", -65, particleImage);
-                this.createEmitterPointGlow(5, "#4F1500", "#32fd16", -90, particleImage);
-            }
-
-            this.tryWebGLRendererInit();
-        } else if (this.particlesEffectType === 7) {
-            // ### glow painting
-            this.proton = new Proton;
-            let particleImage = new Image();
-            particleImage.src = chrome.runtime.getURL("/images/particle.png");
-            particleImage.onload = () => {
-                this.createEmitterDrawGlow(0, "#4F1500", "#e7af22", 90, particleImage);
-                this.createEmitterDrawGlow(1, "#4F1500", "#0029FF", -90, particleImage);
-
-            }
-
-            this.tryWebGLRendererInit();
-        } else if (this.particlesEffectType === 8) {
-            // ### particle painting
-            this.proton = new Proton;
-            let particleImage = new Image();
-            particleImage.src = chrome.runtime.getURL("/images/particle.png");
-            particleImage.onload = () => {
-                this.createEmitterPointDraw(0, "#4F1500", "#e7af22", 90, particleImage);
-                this.createEmitterPointDraw(1, "#4F1500", "#0029FF", -90, particleImage);
-
-            }
-
-            this.tryWebGLRendererInit();
-        } else if (this.particlesEffectType === 9) {
-            // ### particle painting with random drift
-            this.proton = new Proton();
-            let particleImage = new Image();
-            particleImage.src = chrome.runtime.getURL("/images/particle.png");
-            particleImage.onload = () => {
-                this.createEmitterPointDrawRandomDrift(0, "#4F1500", "#e7af22", 90, particleImage);
-                this.createEmitterPointDrawRandomDrift(1, "#4F1500", "#0029FF", -90, particleImage);
-
-            }
-
-            this.tryWebGLRendererInit();
-        } else if (this.particlesEffectType === 10) {
-            // ### particleCometThrower
-            this.proton = new Proton();
-
-            let imageComet1 = new Image();
-            imageComet1.src = chrome.runtime.getURL("/images/Comet_1.png");
-            imageComet1.onload = () => {
-                this.createEmitterCometThrower(0, imageComet1);
-            }
-
-            let imageComet2 = new Image();
-            imageComet2.src = chrome.runtime.getURL("/images/Comet_2.png");
-            imageComet2.onload = () => {
-                this.createEmitterCometThrower(1, imageComet2);
-            }
-
-            let renderer = new Proton.CanvasRenderer(this.canvas);
-            // renderer.onProtonUpdate = function () {
-            //     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            // };
-            this.proton.addRenderer(renderer);
-        } else if (this.particlesEffectType === 11) {
-            // ### body glow
-            this.proton = new Proton;
-            let particleImage = new Image();
-            particleImage.src = chrome.runtime.getURL("/images/particle.png");
-            particleImage.onload = () => {
-                this.createEmitterPointGlow(0, "#4F1500", "#e7af22", 90, particleImage);
-                this.createEmitterPointGlow(1, "#4F1500", "#0029FF", 65, particleImage);
-                this.createEmitterPointGlow(2, "#4F1500", "#6974f8", 0, particleImage);
-                this.createEmitterPointGlow(3, "#4F1500", "#59b9e3", 0, particleImage);
-                this.createEmitterPointGlow(4, "#4F1500", "#aa40e0", -65, particleImage);
-                this.createEmitterPointGlow(5, "#4F1500", "#32fd16", -90, particleImage);
-
-                this.createEmitterPointGlow(6, "#031a17", "#e7af22", 90, particleImage);
-                this.createEmitterPointGlow(7, "#44011b", "#0029FF", 65, particleImage);
-                this.createEmitterPointGlow(8, "#493b01", "#6974f8", 0, particleImage);
-
-                this.createEmitterPointGlow(9, "#0e0601", "#5cff24", -90, particleImage);
-                this.createEmitterPointGlow(10, "#054b01", "#aa40e0", -65, particleImage);
-                this.createEmitterPointGlow(11, "#1e012c", "#32fd16", 0, particleImage);
-            }
-
-            this.tryWebGLRendererInit();
-        } else if (this.particlesEffectType === 12) {
-            // ### burning man
-            this.proton = new Proton;
-            let particleImage = new Image();
-            particleImage.src = chrome.runtime.getURL("/images/particle.png");
-            particleImage.onload = () => {
-                this.createEmitterPointGlow(0, "#C97024", "#290000", 90, particleImage);
-                this.createEmitterPointGlow(1, "#C97024", "#290000", 65, particleImage);
-                this.createEmitterPointGlow(2, "#C97024", "#290000", 0, particleImage);
-                this.createEmitterPointGlow(3, "#C97024", "#290000", 0, particleImage);
-                this.createEmitterPointGlow(4, "#C97024", "#290000", -65, particleImage);
-                this.createEmitterPointGlow(5, "#C97024", "#290000", -90, particleImage);
-
-                this.createEmitterPointGlow(6, "#C97024", "#290000", 90, particleImage);
-                this.createEmitterPointGlow(7, "#C97024", "#290000", 65, particleImage);
-                this.createEmitterPointGlow(8, "#C97024", "#290000", 0, particleImage);
-
-                this.createEmitterPointGlow(9, "#C97024", "#290000", -90, particleImage);
-                this.createEmitterPointGlow(10, "#C97024", "#290000", -65, particleImage);
-                this.createEmitterPointGlow(11, "#C97024", "#290000", 0, particleImage);
-
-                this.createEmitterPointGlow(12, "#C97024", "#290000", 225, particleImage);
-                this.createEmitterPointGlow(13, "#C97024", "#290000", -225, particleImage);
-
-                this.createEmitterPointGlow(14, "#C97024", "#290000", -65, particleImage);
-                this.createEmitterPointGlow(15, "#C97024", "#290000", 65, particleImage);
-
-                this.createEmitterPointGlow(16, "#C97024", "#290000", 0, particleImage);
-                this.createEmitterPointGlow(17, "#C97024", "#290000", 65, particleImage);
-                this.createEmitterPointGlow(18, "#C97024", "#290000", -65, particleImage);
-
-            }
-
-            this.tryWebGLRendererInit();
-        }else if (this.particlesEffectType == 13){
-            this.proton = new Proton();
-            this.protonEmitterArray[0] = new Proton.Emitter();
-            this.protonEmitterArray[0].rate = new Proton.Rate(
-                new Proton.Span(6, 15),
-                new Proton.Span(0.1, 0.25)
-            );
-            this.protonEmitterArray[0].addInitialize(new Proton.Mass(1));
-            this.protonEmitterArray[0].addInitialize(new Proton.Radius(2, 8));
-            this.protonEmitterArray[0].addInitialize(new Proton.Life(2, 4));
-            this.protonEmitterArray[0].addInitialize(
-                new Proton.Velocity(
-                    new Proton.Span(2, 3.3),
-                    new Proton.Span(-10, 10),
-                    "polar"
-                )
-            );
-
-            //emitter.addBehaviour(new Proton.RandomDrift(10, 10, 0.05));
-            this.protonEmitterArray[0].addBehaviour(new Proton.Cyclone(Proton.getSpan(-2, 2), 5));
-            this.protonEmitterArray[0].addBehaviour(
-                new Proton.Color("ff0000", "random", Infinity, Proton.easeOutQuart)
-            );
-            this.protonEmitterArray[0].addBehaviour(new Proton.Scale(1, 0.7));
-
-            this.protonEmitterArray[0].p.x = this.canvas.width / 2;
-            this.protonEmitterArray[0].p.y = this.canvas.height / 2 + 200;
-            this.protonEmitterArray[0].emit();
-            this.proton.addEmitter(this.protonEmitterArray[0]);
-
-            this.tryWebGLRendererInit();
-        }else if (this.particlesEffectType == 14){
-            this.proton = new Proton();
-            this.protonEmitterArray[0] = new Proton.Emitter();
-            this.protonEmitterArray[0].rate = new Proton.Rate(new Proton.Span(30, 50), .1);
-
-            this.protonEmitterArray[0].addInitialize(new Proton.Mass(1));
-            let particleImage = new Image();
-            particleImage.src = chrome.runtime.getURL("/images/particle.png");
-            particleImage.onload = () => {
-                this.protonEmitterArray[0].addInitialize(new Proton.Body(particleImage));
-            }
-            //this.protonEmitterArray[0].addInitialize(new Proton.Body(image));
-            //emitter.addInitialize(new Proton.P(new Proton.PointZone(canvas.width / 2, canvas.height / 2)));
-            this.protonEmitterArray[0].addInitialize(new Proton.Life(.5, 1));
-            this.protonEmitterArray[0].addInitialize(new Proton.V(new Proton.Span(3, 5), new Proton.Span(0, 360), 'polar'));
-
-            this.protonEmitterArray[0].addBehaviour(new Proton.Color('#ff0000', '#ffff00'));
-            // let attractionForce = new Proton.Attraction(mouseObj, 10, 200);
-            // this.protonEmitterArray[0].addBehaviour(attractionForce);
-            this.protonEmitterArray[0].addBehaviour(new Proton.Scale(Proton.getSpan(1, 1.6), Proton.getSpan(0, .1)));
-            this.protonEmitterArray[0].addBehaviour(new Proton.Alpha(1, .2));
-
-            this.protonEmitterArray[0].p.x = this.canvas.width / 2;
-            this.protonEmitterArray[0].p.y = this.canvas.height / 2;
-            this.protonEmitterArray[0].emit();
-            this.proton.addEmitter(this.protonEmitterArray[0]);
-
-            this.tryWebGLRendererInit();
-        }else if (this.particlesEffectType == 15){
-            // particleFireFly
-            this.proton = new Proton();
-            this.protonEmitterArray[0] = new Proton.Emitter();
-
-            this.protonEmitterArray[0].damping = 0.0075;
-            this.protonEmitterArray[0].rate = new Proton.Rate(1480);
-
-            let particleImage = new Image();
-            particleImage.src = chrome.runtime.getURL("/images/particle.png");
-            particleImage.onload = () => {
-                this.protonEmitterArray[0].addInitialize(new Proton.Body(particleImage, 64));
-            }
-
-            this.protonEmitterArray[0].addInitialize(new Proton.Position(new Proton.RectZone(0, 0, this.canvas.width, this.canvas.height)));
-            this.protonEmitterArray[0].addInitialize(new Proton.Mass(1), new Proton.Radius(Proton.getSpan(5, 10)));
-
-            this.nosePosition = {
-                x: this.canvas.width / 2,
-                y: this.canvas.height / 2
-            };
-            this.repulsionBehaviour = new Proton.Repulsion(this.nosePosition, 0, 0);
-            let crossZoneBehaviour = new Proton.CrossZone(new Proton.RectZone(-2, 0, this.canvas.width, this.canvas.height), 'cross');
-            this.protonEmitterArray[0].addBehaviour(this.repulsionBehaviour, crossZoneBehaviour);
-            this.protonEmitterArray[0].addBehaviour(new Proton.Scale(Proton.getSpan(.1, .4)));
-            this.protonEmitterArray[0].addBehaviour(new Proton.Alpha(.5));
-            this.protonEmitterArray[0].addBehaviour(new Proton.RandomDrift(10, 10, .2));
-
-            this.protonEmitterArray[0].addBehaviour({
-                initialize: function(particle) {
-                    particle.tha = Math.random() * Math.PI;
-                    particle.thaSpeed = 0.015 * Math.random() + 0.005;
-                },
-
-                applyBehaviour: function(particle) {
-                    particle.tha += particle.thaSpeed;
-                    particle.alpha = Math.abs(Math.cos(particle.tha));
-                }
-            });
-
-            this.protonEmitterArray[0].emit('once');
-            this.proton.addEmitter(this.protonEmitterArray[0]);
-
-            // let renderer = new Proton.CanvasRenderer(this.canvas);
-            // this.proton.addRenderer(renderer);
-            this.tryWebGLRendererInit();
-
-        }else if (this.particlesEffectType == 16){
-            // particleFireFlyColor
-            this.proton = new Proton();
-            this.protonEmitterArray[0] = new Proton.Emitter();
-
-            this.protonEmitterArray[0].damping = 0.0075;
-            this.protonEmitterArray[0].rate = new Proton.Rate(1480);
-
-            let particleImage = new Image();
-            particleImage.src = chrome.runtime.getURL("/images/particle.png");
-            particleImage.onload = () => {
-                this.protonEmitterArray[0].addInitialize(new Proton.Body(particleImage, 64));
-            }
-
-            this.protonEmitterArray[0].addInitialize(new Proton.Position(new Proton.RectZone(0, 0, this.canvas.width, this.canvas.height)));
-            this.protonEmitterArray[0].addInitialize(new Proton.Mass(1), new Proton.Radius(Proton.getSpan(5, 10)));
-            this.protonEmitterArray[0].addBehaviour(new Proton.Color('rgba(255,200,0,0.16)', '#ffff00'));
-
-            this.nosePosition = {
-                x: this.canvas.width / 2,
-                y: this.canvas.height / 2
-            };
-            this.repulsionBehaviour = new Proton.Repulsion(this.nosePosition, 0, 0);
-            let crossZoneBehaviour = new Proton.CrossZone(new Proton.RectZone(-2, 0, this.canvas.width, this.canvas.height), 'cross');
-            this.protonEmitterArray[0].addBehaviour(this.repulsionBehaviour, crossZoneBehaviour);
-            this.protonEmitterArray[0].addBehaviour(new Proton.Scale(Proton.getSpan(.1, 3.4)));
-            this.protonEmitterArray[0].addBehaviour(new Proton.Alpha(.5));
-            this.protonEmitterArray[0].addBehaviour(new Proton.RandomDrift(10, 10, .2));
-
-            this.protonEmitterArray[0].addBehaviour({
-                initialize: function(particle) {
-                    particle.tha = Math.random() * Math.PI;
-                    particle.thaSpeed = 0.015 * Math.random() + 0.005;
-                },
-
-                applyBehaviour: function(particle) {
-                    particle.tha += particle.thaSpeed;
-                    particle.alpha = Math.abs(Math.cos(particle.tha));
-                }
-            });
-
-            this.protonEmitterArray[0].emit('once');
-            this.proton.addEmitter(this.protonEmitterArray[0]);
-
-            // let renderer = new Proton.CanvasRenderer(this.canvas);
-            // this.proton.addRenderer(renderer);
-            this.tryWebGLRendererInit();
-        }else if (this.particlesEffectType == 17){
-            // particleSpit
-            this.proton = new Proton();
-            this.protonEmitterArray[0] = new Proton.Emitter();
-
-            //this.protonEmitterArray[0].damping = 0.0075;
-            this.protonEmitterArray[0].rate = new Proton.Rate(new Proton.Span(10, 15), new Proton.Span(.05, .1));
-
-            let particleImage = new Image();
-            particleImage.src = chrome.runtime.getURL("/images/particle.png");
-            particleImage.onload = () => {
-                this.protonEmitterArray[0].addInitialize(new Proton.Body(particleImage));
-            }
-
-            this.protonEmitterArray[0].addInitialize(new Proton.Mass(1));
-            this.protonEmitterArray[0].addInitialize(new Proton.Life(1, 3));
-            this.protonEmitterArray[0].addInitialize(new Proton.Position(new Proton.CircleZone(0, 0, 20)));
-            this.protonEmitterArray[0].addInitialize(new Proton.Velocity(new Proton.Span(5, 8), new Proton.Span(-15, 15), 'polar'));
-            this.protonEmitterArray[0].addBehaviour(new Proton.RandomDrift(10, 10, .05));
-
-            this.protonEmitterArray[0].addBehaviour(new Proton.Alpha(0.1, 1));
-            this.protonEmitterArray[0].addBehaviour(new Proton.Scale(new Proton.Span(2, 3.5), 0));
-            this.protonEmitterArray[0].addBehaviour(new Proton.G(6));
-            this.protonEmitterArray[0].addBehaviour(new Proton.Color('#FF0026', ['#ffff00', '#ffff11'], Infinity, Proton.easeOutSine));
-
-            this.protonEmitterArray[0].p.x = this.canvas.width / 2;
-            this.protonEmitterArray[0].p.y = this.canvas.height / 2 + 150;
-            this.protonEmitterArray[0].emit();
-            this.proton.addEmitter(this.protonEmitterArray[0]);
-
-            this.tryWebGLRendererInit();
-        }else if (this.particlesEffectType === 18) {
-            // particle2BallHeadExp
-            this.proton = new Proton();
-            this.protonEmitterArray[0] = this.createImageEmitter(this.canvas.width / 2 + this.conf.radius, this.canvas.height / 2, '#9b2c03', '#ffd500', 1);
-            this.protonEmitterArray[1] = this.createImageEmitter(this.canvas.width / 2 - this.conf.radius, this.canvas.height / 2, '#8c00fe', '#ff2600', 1);
-
-            this.tryWebGLRendererInit();
-
+        this.protonEmitterArray[0].addInitialize(new Proton.Body(image));
+        this.protonEmitterArray[0].addInitialize(new Proton.Mass(1));
+        this.protonEmitterArray[0].addInitialize(new Proton.Life(2, 4));
+        this.protonEmitterArray[0].addInitialize(new Proton.V(new Proton.Span(0.5, 1.5), new Proton.Span(0, 360), 'polar'));
+
+        this.protonEmitterArray[0].addBehaviour(new Proton.Alpha(1, [.7, 1]));
+        var scale = new Proton.Scale(1, 0);
+        this.protonEmitterArray[0].addBehaviour(scale);
+        this.protonEmitterArray[0].addBehaviour(new Proton.Color('random', 'random', Infinity, Proton.easeInSine));
+
+        this.protonEmitterArray[0].p.x = this.canvas.width / 2;
+        this.protonEmitterArray[0].p.y = this.canvas.height / 2;
+        this.protonEmitterArray[0].emit();
+        this.proton.addEmitter(this.protonEmitterArray[0]);
+
+        this.tryWebGLRendererInit();
+    }
+
+    this.cParticleHandsTrackFromBorder = function (){
+        this.proton = new Proton(4000);
+
+        this.createEmitter(this.canvas.width + 50, this.canvas.height / 2, 0, '#fdf753', this.rightHandPosition, 0);
+        this.createEmitter(this.canvas.width - 50, this.canvas.height / 2, 180, '#f80610', this.leftHandPosition, 1);
+        let renderer = new Proton.CanvasRenderer(this.canvas);
+        this.proton.addRenderer(renderer);
+    }
+
+    this.cParticleUpperBodyGlow = function (){
+        this.proton = new Proton;
+        let particleImage = new Image();
+        particleImage.src = chrome.runtime.getURL("/images/particle.png");
+        particleImage.onload = () => {
+            this.createEmitterPointGlow(0, "#4F1500", "#e7af22", 90, particleImage);
+            this.createEmitterPointGlow(1, "#4F1500", "#0029FF", 65, particleImage);
+            this.createEmitterPointGlow(2, "#4F1500", "#6974f8", 0, particleImage);
+            this.createEmitterPointGlow(3, "#4F1500", "#59b9e3", 0, particleImage);
+            this.createEmitterPointGlow(4, "#4F1500", "#aa40e0", -65, particleImage);
+            this.createEmitterPointGlow(5, "#4F1500", "#32fd16", -90, particleImage);
+        }
+
+        this.tryWebGLRendererInit();
+    }
+
+    this.cParticleGlowPainting = function (){
+        this.proton = new Proton;
+        let particleImage = new Image();
+        particleImage.src = chrome.runtime.getURL("/images/particle.png");
+        particleImage.onload = () => {
+            this.createEmitterDrawGlow(0, "#4F1500", "#e7af22", 90, particleImage);
+            this.createEmitterDrawGlow(1, "#4F1500", "#0029FF", -90, particleImage);
 
         }
 
-        this.startParticleInit = false;
+        this.tryWebGLRendererInit();
+    }
+
+    this.cParticlePainting = function (){
+        this.proton = new Proton;
+        let particleImage = new Image();
+        particleImage.src = chrome.runtime.getURL("/images/particle.png");
+        particleImage.onload = () => {
+            this.createEmitterPointDraw(0, "#4F1500", "#e7af22", 90, particleImage);
+            this.createEmitterPointDraw(1, "#4F1500", "#0029FF", -90, particleImage);
+
+        }
+
+        this.tryWebGLRendererInit();
+    }
+
+    this.cParticlePaintRandomDrift = function (){
+        this.proton = new Proton();
+        let particleImage = new Image();
+        particleImage.src = chrome.runtime.getURL("/images/particle.png");
+        particleImage.onload = () => {
+            this.createEmitterPointDrawRandomDrift(0, "#4F1500", "#e7af22", 90, particleImage);
+            this.createEmitterPointDrawRandomDrift(1, "#4F1500", "#0029FF", -90, particleImage);
+
+        }
+
+        this.tryWebGLRendererInit();
+    }
+
+    this.cParticleCometThrower = function (){
+        this.proton = new Proton();
+
+        let imageComet1 = new Image();
+        imageComet1.src = chrome.runtime.getURL("/images/Comet_1.png");
+        imageComet1.onload = () => {
+            this.createEmitterCometThrower(0, imageComet1);
+        }
+
+        let imageComet2 = new Image();
+        imageComet2.src = chrome.runtime.getURL("/images/Comet_2.png");
+        imageComet2.onload = () => {
+            this.createEmitterCometThrower(1, imageComet2);
+        }
+
+        let renderer = new Proton.CanvasRenderer(this.canvas);
+        this.proton.addRenderer(renderer);
+    }
+
+    this.cParticleBodyGlow = function (){
+        this.proton = new Proton;
+        let particleImage = new Image();
+        particleImage.src = chrome.runtime.getURL("/images/particle.png");
+        particleImage.onload = () => {
+            this.createEmitterPointGlow(0, "#4F1500", "#e7af22", 90, particleImage);
+            this.createEmitterPointGlow(1, "#4F1500", "#0029FF", 65, particleImage);
+            this.createEmitterPointGlow(2, "#4F1500", "#6974f8", 0, particleImage);
+            this.createEmitterPointGlow(3, "#4F1500", "#59b9e3", 0, particleImage);
+            this.createEmitterPointGlow(4, "#4F1500", "#aa40e0", -65, particleImage);
+            this.createEmitterPointGlow(5, "#4F1500", "#32fd16", -90, particleImage);
+
+            this.createEmitterPointGlow(6, "#031a17", "#e7af22", 90, particleImage);
+            this.createEmitterPointGlow(7, "#44011b", "#0029FF", 65, particleImage);
+            this.createEmitterPointGlow(8, "#493b01", "#6974f8", 0, particleImage);
+
+            this.createEmitterPointGlow(9, "#0e0601", "#5cff24", -90, particleImage);
+            this.createEmitterPointGlow(10, "#054b01", "#aa40e0", -65, particleImage);
+            this.createEmitterPointGlow(11, "#1e012c", "#32fd16", 0, particleImage);
+        }
+
+        this.tryWebGLRendererInit();
+    }
+
+    this.cParticleBurningMan = function (){
+        this.proton = new Proton;
+        let particleImage = new Image();
+        particleImage.src = chrome.runtime.getURL("/images/particle.png");
+        particleImage.onload = () => {
+            this.createEmitterPointGlow(0, "#C97024", "#290000", 90, particleImage);
+            this.createEmitterPointGlow(1, "#C97024", "#290000", 65, particleImage);
+            this.createEmitterPointGlow(2, "#C97024", "#290000", 0, particleImage);
+            this.createEmitterPointGlow(3, "#C97024", "#290000", 0, particleImage);
+            this.createEmitterPointGlow(4, "#C97024", "#290000", -65, particleImage);
+            this.createEmitterPointGlow(5, "#C97024", "#290000", -90, particleImage);
+
+            this.createEmitterPointGlow(6, "#C97024", "#290000", 90, particleImage);
+            this.createEmitterPointGlow(7, "#C97024", "#290000", 65, particleImage);
+            this.createEmitterPointGlow(8, "#C97024", "#290000", 0, particleImage);
+
+            this.createEmitterPointGlow(9, "#C97024", "#290000", -90, particleImage);
+            this.createEmitterPointGlow(10, "#C97024", "#290000", -65, particleImage);
+            this.createEmitterPointGlow(11, "#C97024", "#290000", 0, particleImage);
+
+            this.createEmitterPointGlow(12, "#C97024", "#290000", 225, particleImage);
+            this.createEmitterPointGlow(13, "#C97024", "#290000", -225, particleImage);
+
+            this.createEmitterPointGlow(14, "#C97024", "#290000", -65, particleImage);
+            this.createEmitterPointGlow(15, "#C97024", "#290000", 65, particleImage);
+
+            this.createEmitterPointGlow(16, "#C97024", "#290000", 0, particleImage);
+            this.createEmitterPointGlow(17, "#C97024", "#290000", 65, particleImage);
+            this.createEmitterPointGlow(18, "#C97024", "#290000", -65, particleImage);
+
+        }
+
+        this.tryWebGLRendererInit();
+    }
+
+    this.cParticleCyclone = function (){
+        this.proton = new Proton();
+        this.protonEmitterArray[0] = new Proton.Emitter();
+        this.protonEmitterArray[0].rate = new Proton.Rate(
+            new Proton.Span(6, 15),
+            new Proton.Span(0.1, 0.25)
+        );
+        this.protonEmitterArray[0].addInitialize(new Proton.Mass(1));
+        this.protonEmitterArray[0].addInitialize(new Proton.Radius(2, 8));
+        this.protonEmitterArray[0].addInitialize(new Proton.Life(2, 4));
+        this.protonEmitterArray[0].addInitialize(
+            new Proton.Velocity(
+                new Proton.Span(2, 3.3),
+                new Proton.Span(-10, 10),
+                "polar"
+            )
+        );
+
+        //emitter.addBehaviour(new Proton.RandomDrift(10, 10, 0.05));
+        this.protonEmitterArray[0].addBehaviour(new Proton.Cyclone(Proton.getSpan(-2, 2), 5));
+        this.protonEmitterArray[0].addBehaviour(
+            new Proton.Color("ff0000", "random", Infinity, Proton.easeOutQuart)
+        );
+        this.protonEmitterArray[0].addBehaviour(new Proton.Scale(1, 0.7));
+
+        this.protonEmitterArray[0].p.x = this.canvas.width / 2;
+        this.protonEmitterArray[0].p.y = this.canvas.height / 2 + 200;
+        this.protonEmitterArray[0].emit();
+        this.proton.addEmitter(this.protonEmitterArray[0]);
+
+        this.tryWebGLRendererInit();
+    }
+
+    this.cParticleSun = function (){
+        this.proton = new Proton();
+        this.protonEmitterArray[0] = new Proton.Emitter();
+        this.protonEmitterArray[0].rate = new Proton.Rate(new Proton.Span(30, 50), .1);
+
+        this.protonEmitterArray[0].addInitialize(new Proton.Mass(1));
+        let particleImage = new Image();
+        particleImage.src = chrome.runtime.getURL("/images/particle.png");
+        particleImage.onload = () => {
+            this.protonEmitterArray[0].addInitialize(new Proton.Body(particleImage));
+        }
+        //this.protonEmitterArray[0].addInitialize(new Proton.Body(image));
+        //emitter.addInitialize(new Proton.P(new Proton.PointZone(canvas.width / 2, canvas.height / 2)));
+        this.protonEmitterArray[0].addInitialize(new Proton.Life(.5, 1));
+        this.protonEmitterArray[0].addInitialize(new Proton.V(new Proton.Span(3, 5), new Proton.Span(0, 360), 'polar'));
+
+        this.protonEmitterArray[0].addBehaviour(new Proton.Color('#ff0000', '#ffff00'));
+        // let attractionForce = new Proton.Attraction(mouseObj, 10, 200);
+        // this.protonEmitterArray[0].addBehaviour(attractionForce);
+        this.protonEmitterArray[0].addBehaviour(new Proton.Scale(Proton.getSpan(1, 1.6), Proton.getSpan(0, .1)));
+        this.protonEmitterArray[0].addBehaviour(new Proton.Alpha(1, .2));
+
+        this.protonEmitterArray[0].p.x = this.canvas.width / 2;
+        this.protonEmitterArray[0].p.y = this.canvas.height / 2;
+        this.protonEmitterArray[0].emit();
+        this.proton.addEmitter(this.protonEmitterArray[0]);
+
+        this.tryWebGLRendererInit();
+    }
+
+    this.cParticleFireFly = function (){
+        this.proton = new Proton();
+        this.protonEmitterArray[0] = new Proton.Emitter();
+
+        this.protonEmitterArray[0].damping = 0.0075;
+        this.protonEmitterArray[0].rate = new Proton.Rate(1480);
+
+        let particleImage = new Image();
+        particleImage.src = chrome.runtime.getURL("/images/particle.png");
+        particleImage.onload = () => {
+            this.protonEmitterArray[0].addInitialize(new Proton.Body(particleImage, 64));
+        }
+
+        this.protonEmitterArray[0].addInitialize(new Proton.Position(new Proton.RectZone(0, 0, this.canvas.width, this.canvas.height)));
+        this.protonEmitterArray[0].addInitialize(new Proton.Mass(1), new Proton.Radius(Proton.getSpan(5, 10)));
+
+        this.nosePosition = {
+            x: this.canvas.width / 2,
+            y: this.canvas.height / 2
+        };
+        this.repulsionBehaviour = new Proton.Repulsion(this.nosePosition, 0, 0);
+        let crossZoneBehaviour = new Proton.CrossZone(new Proton.RectZone(-2, 0, this.canvas.width, this.canvas.height), 'cross');
+        this.protonEmitterArray[0].addBehaviour(this.repulsionBehaviour, crossZoneBehaviour);
+        this.protonEmitterArray[0].addBehaviour(new Proton.Scale(Proton.getSpan(.1, .4)));
+        this.protonEmitterArray[0].addBehaviour(new Proton.Alpha(.5));
+        this.protonEmitterArray[0].addBehaviour(new Proton.RandomDrift(10, 10, .2));
+
+        this.protonEmitterArray[0].addBehaviour({
+            initialize: function(particle) {
+                particle.tha = Math.random() * Math.PI;
+                particle.thaSpeed = 0.015 * Math.random() + 0.005;
+            },
+
+            applyBehaviour: function(particle) {
+                particle.tha += particle.thaSpeed;
+                particle.alpha = Math.abs(Math.cos(particle.tha));
+            }
+        });
+
+        this.protonEmitterArray[0].emit('once');
+        this.proton.addEmitter(this.protonEmitterArray[0]);
+
+        this.tryWebGLRendererInit();
+    }
+
+    this.cParticleFireFlyColor = function (){
+        this.proton = new Proton();
+        this.protonEmitterArray[0] = new Proton.Emitter();
+
+        this.protonEmitterArray[0].damping = 0.0075;
+        this.protonEmitterArray[0].rate = new Proton.Rate(1480);
+
+        let particleImage = new Image();
+        particleImage.src = chrome.runtime.getURL("/images/particle.png");
+        particleImage.onload = () => {
+            this.protonEmitterArray[0].addInitialize(new Proton.Body(particleImage, 64));
+        }
+
+        this.protonEmitterArray[0].addInitialize(new Proton.Position(new Proton.RectZone(0, 0, this.canvas.width, this.canvas.height)));
+        this.protonEmitterArray[0].addInitialize(new Proton.Mass(1), new Proton.Radius(Proton.getSpan(5, 10)));
+        this.protonEmitterArray[0].addBehaviour(new Proton.Color('rgba(255,200,0,0.16)', '#ffff00'));
+
+        this.nosePosition = {
+            x: this.canvas.width / 2,
+            y: this.canvas.height / 2
+        };
+        this.repulsionBehaviour = new Proton.Repulsion(this.nosePosition, 0, 0);
+        let crossZoneBehaviour = new Proton.CrossZone(new Proton.RectZone(-2, 0, this.canvas.width, this.canvas.height), 'cross');
+        this.protonEmitterArray[0].addBehaviour(this.repulsionBehaviour, crossZoneBehaviour);
+        this.protonEmitterArray[0].addBehaviour(new Proton.Scale(Proton.getSpan(.1, 3.4)));
+        this.protonEmitterArray[0].addBehaviour(new Proton.Alpha(.5));
+        this.protonEmitterArray[0].addBehaviour(new Proton.RandomDrift(10, 10, .2));
+
+        this.protonEmitterArray[0].addBehaviour({
+            initialize: function(particle) {
+                particle.tha = Math.random() * Math.PI;
+                particle.thaSpeed = 0.015 * Math.random() + 0.005;
+            },
+
+            applyBehaviour: function(particle) {
+                particle.tha += particle.thaSpeed;
+                particle.alpha = Math.abs(Math.cos(particle.tha));
+            }
+        });
+
+        this.protonEmitterArray[0].emit('once');
+        this.proton.addEmitter(this.protonEmitterArray[0]);
+
+        this.tryWebGLRendererInit();
+    }
+
+    this.cParticleSpit = function (){
+        this.proton = new Proton();
+        this.protonEmitterArray[0] = new Proton.Emitter();
+
+        //this.protonEmitterArray[0].damping = 0.0075;
+        this.protonEmitterArray[0].rate = new Proton.Rate(new Proton.Span(10, 15), new Proton.Span(.05, .1));
+
+        let particleImage = new Image();
+        particleImage.src = chrome.runtime.getURL("/images/particle.png");
+        particleImage.onload = () => {
+            this.protonEmitterArray[0].addInitialize(new Proton.Body(particleImage));
+        }
+
+        this.protonEmitterArray[0].addInitialize(new Proton.Mass(1));
+        this.protonEmitterArray[0].addInitialize(new Proton.Life(1, 3));
+        this.protonEmitterArray[0].addInitialize(new Proton.Position(new Proton.CircleZone(0, 0, 20)));
+        this.protonEmitterArray[0].addInitialize(new Proton.Velocity(new Proton.Span(5, 8), new Proton.Span(-15, 15), 'polar'));
+        this.protonEmitterArray[0].addBehaviour(new Proton.RandomDrift(10, 10, .05));
+
+        this.protonEmitterArray[0].addBehaviour(new Proton.Alpha(0.1, 1));
+        this.protonEmitterArray[0].addBehaviour(new Proton.Scale(new Proton.Span(2, 3.5), 0));
+        this.protonEmitterArray[0].addBehaviour(new Proton.G(6));
+        this.protonEmitterArray[0].addBehaviour(new Proton.Color('#FF0026', ['#ffff00', '#ffff11'], Infinity, Proton.easeOutSine));
+
+        this.protonEmitterArray[0].p.x = this.canvas.width / 2;
+        this.protonEmitterArray[0].p.y = this.canvas.height / 2 + 150;
+        this.protonEmitterArray[0].emit();
+        this.proton.addEmitter(this.protonEmitterArray[0]);
+
+        this.tryWebGLRendererInit();
+    }
+
+    this.cParticle2BallHeadExp = function (){
+        this.proton = new Proton();
+        this.protonEmitterArray[0] = this.createImageEmitter(this.canvas.width / 2 + this.conf.radius, this.canvas.height / 2, '#9b2c03', '#ffd500', 1);
+        this.protonEmitterArray[1] = this.createImageEmitter(this.canvas.width / 2 - this.conf.radius, this.canvas.height / 2, '#8c00fe', '#ff2600', 1);
+
+        this.tryWebGLRendererInit();
 
     }
+
+
+
 
     this.createImageEmitter = function (x, y, color1, color2, scaleStart) {
         var emitter = new Proton.Emitter();
@@ -1081,214 +1347,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         this.proton.addEmitter(this.protonEmitterArray[emitterIndex]);
     }
 
-    /**
-     * Update particles emitter position on specific keypoints.
-     *
-     * Mapping emitter to pos in keypoints-array
-     *                  0: nose
-     *                  1: left_eye
-     *                  2: right_eye
-     *                  3: left_ear
-     *                  4: right_ear
-     *                  5: left_shoulder
-     *                  6: right_shoulder
-     *                  7: left_elbow
-     *                  8: right_elbow
-     *                  9: left_wrist
-     *                  10: right_wrist
-     *                  11: left_hip
-     *                  12: right_hip
-     *                  13: left_knee
-     *                  14: right_knee
-     *                  15: left_ankle
-     *                  16: right_ankle
-     *
-     * @param keypoints from detector
-     */
-    this.updateParticles = function (keypoints) {
-        if (keypoints === undefined) {
-            return;
-        }
 
-        if (this.startParticleInit === true) {
-            return;
-        }
-
-        if (this.protonEmitterArray.length === 0) {
-            return;
-        }
-
-        // in case of new video reinit current particle effect
-        if(this.protonEmitterArray[0].p === null){
-            this.initParticles();
-        }
-
-        switch (this.particlesEffectType) {
-            case 0: // blue and yellow hand
-                this.protonEmitterArray[0].p.x = keypoints[10].x;
-                this.protonEmitterArray[0].p.y = keypoints[10].y;
-
-                this.protonEmitterArray[1].p.x = keypoints[9].x;
-                this.protonEmitterArray[1].p.y = keypoints[9].y;
-                break;
-            case 1: // circle head effect. center is nose
-                this.protonEmitterArray[0].p.x = keypoints[0].x + this.conf.radius * Math.sin(Math.PI / 2 + this.conf.tha);
-                this.protonEmitterArray[0].p.y = keypoints[0].y + this.conf.radius * Math.cos(Math.PI / 2 + this.conf.tha);
-                this.protonEmitterArray[1].p.x = keypoints[0].x + this.conf.radius * Math.sin(-Math.PI / 2 + this.conf.tha);
-                this.protonEmitterArray[1].p.y = keypoints[0].y + this.conf.radius * Math.cos(-Math.PI / 2 + this.conf.tha);
-                this.conf.tha += .1;
-                break;
-            case 2:
-                this.protonEmitterArray[0].p.x = keypoints[10].x;
-                this.protonEmitterArray[0].p.y = keypoints[10].y;
-                break;
-            case 3:
-                this.nosePosition.x = keypoints[0].x;
-                this.nosePosition.y = keypoints[0].y;
-                this.protonEmitterArray[0].p.x = keypoints[0].x;
-                this.protonEmitterArray[0].p.y = keypoints[0].y;
-                break;
-            case 4:
-                this.protonEmitterArray[0].p.x = keypoints[0].x;
-                this.protonEmitterArray[0].p.y = keypoints[0].y;
-                break;
-            case 5:
-                this.leftHandPosition.x = keypoints[9].x;
-                this.leftHandPosition.y = keypoints[9].y;
-                this.rightHandPosition.x = keypoints[10].x;
-                this.rightHandPosition.y = keypoints[10].y
-                break;
-            case 6:
-                this.protonEmitterArray[0].p.x = keypoints[9].x;
-                this.protonEmitterArray[0].p.y = keypoints[9].y;
-                this.protonEmitterArray[1].p.x = keypoints[7].x;
-                this.protonEmitterArray[1].p.y = keypoints[7].y;
-                this.protonEmitterArray[2].p.x = keypoints[5].x;
-                this.protonEmitterArray[2].p.y = keypoints[5].y;
-                this.protonEmitterArray[3].p.x = keypoints[6].x;
-                this.protonEmitterArray[3].p.y = keypoints[6].y;
-                this.protonEmitterArray[4].p.x = keypoints[8].x;
-                this.protonEmitterArray[4].p.y = keypoints[8].y;
-                this.protonEmitterArray[5].p.x = keypoints[10].x;
-                this.protonEmitterArray[5].p.y = keypoints[10].y;
-                break;
-            case 7:
-                this.leftRightWristUpdate(keypoints);
-                break;
-            case 8:
-                this.leftRightWristUpdate(keypoints);
-                break;
-            case 9:
-                this.leftRightWristUpdate(keypoints);
-                break;
-            case 10:
-                this.leftRightWristUpdate(keypoints);
-                break;
-            case 11:
-                this.protonEmitterArray[0].p.x = keypoints[9].x;
-                this.protonEmitterArray[0].p.y = keypoints[9].y;
-                this.protonEmitterArray[1].p.x = keypoints[7].x;
-                this.protonEmitterArray[1].p.y = keypoints[7].y;
-                this.protonEmitterArray[2].p.x = keypoints[5].x;
-                this.protonEmitterArray[2].p.y = keypoints[5].y;
-                this.protonEmitterArray[3].p.x = keypoints[6].x;
-                this.protonEmitterArray[3].p.y = keypoints[6].y;
-                this.protonEmitterArray[4].p.x = keypoints[8].x;
-                this.protonEmitterArray[4].p.y = keypoints[8].y;
-                this.protonEmitterArray[5].p.x = keypoints[10].x;
-                this.protonEmitterArray[5].p.y = keypoints[10].y;
-
-                this.protonEmitterArray[6].p.x = keypoints[11].x;
-                this.protonEmitterArray[6].p.y = keypoints[11].y;
-                this.protonEmitterArray[7].p.x = keypoints[13].x;
-                this.protonEmitterArray[7].p.y = keypoints[13].y;
-                this.protonEmitterArray[8].p.x = keypoints[15].x;
-                this.protonEmitterArray[8].p.y = keypoints[15].y;
-                this.protonEmitterArray[9].p.x = keypoints[12].x;
-                this.protonEmitterArray[9].p.y = keypoints[12].y;
-                this.protonEmitterArray[10].p.x = keypoints[14].x;
-                this.protonEmitterArray[10].p.y = keypoints[14].y;
-                this.protonEmitterArray[11].p.x = keypoints[16].x;
-                this.protonEmitterArray[11].p.y = keypoints[16].y;
-                break;
-            case 12:
-                this.protonEmitterArray[0].p.x = keypoints[9].x;
-                this.protonEmitterArray[0].p.y = keypoints[9].y;
-                this.protonEmitterArray[1].p.x = keypoints[7].x;
-                this.protonEmitterArray[1].p.y = keypoints[7].y;
-                this.protonEmitterArray[2].p.x = keypoints[5].x;
-                this.protonEmitterArray[2].p.y = keypoints[5].y;
-                this.protonEmitterArray[3].p.x = keypoints[6].x;
-                this.protonEmitterArray[3].p.y = keypoints[6].y;
-                this.protonEmitterArray[4].p.x = keypoints[8].x;
-                this.protonEmitterArray[4].p.y = keypoints[8].y;
-                this.protonEmitterArray[5].p.x = keypoints[10].x;
-                this.protonEmitterArray[5].p.y = keypoints[10].y;
-
-                this.protonEmitterArray[6].p.x = keypoints[11].x;
-                this.protonEmitterArray[6].p.y = keypoints[11].y;
-                this.protonEmitterArray[7].p.x = keypoints[13].x;
-                this.protonEmitterArray[7].p.y = keypoints[13].y;
-                this.protonEmitterArray[8].p.x = keypoints[15].x;
-                this.protonEmitterArray[8].p.y = keypoints[15].y;
-                this.protonEmitterArray[9].p.x = keypoints[12].x;
-                this.protonEmitterArray[9].p.y = keypoints[12].y;
-                this.protonEmitterArray[10].p.x = keypoints[14].x;
-                this.protonEmitterArray[10].p.y = keypoints[14].y;
-                this.protonEmitterArray[11].p.x = keypoints[16].x;
-                this.protonEmitterArray[11].p.y = keypoints[16].y;
-
-                this.protonEmitterArray[12].p.x = keypoints[5].x;
-                this.protonEmitterArray[12].p.y = keypoints[5].y;
-                this.protonEmitterArray[13].p.x = keypoints[6].x;
-                this.protonEmitterArray[13].p.y = keypoints[6].y;
-
-                this.protonEmitterArray[14].p.x = keypoints[15].x;
-                this.protonEmitterArray[14].p.y = keypoints[15].y;
-                this.protonEmitterArray[15].p.x = keypoints[16].x;
-                this.protonEmitterArray[15].p.y = keypoints[16].y;
-
-                this.protonEmitterArray[16].p.x = keypoints[0].x;
-                this.protonEmitterArray[16].p.y = keypoints[0].y;
-                this.protonEmitterArray[17].p.x = keypoints[3].x;
-                this.protonEmitterArray[17].p.y = keypoints[3].y;
-                this.protonEmitterArray[18].p.x = keypoints[4].x;
-                this.protonEmitterArray[18].p.y = keypoints[4].y;
-                break;
-            case 13:
-                this.protonEmitterArray[0].p.x = keypoints[0].x;
-                this.protonEmitterArray[0].p.y = keypoints[0].y;
-                break;
-            case 14:
-                this.protonEmitterArray[0].p.x = keypoints[0].x;
-                this.protonEmitterArray[0].p.y = keypoints[0].y-150;
-                break;
-            case 15:
-                this.nosePosition.x = keypoints[0].x;
-                this.nosePosition.y = keypoints[0].y;
-                this.repulsionBehaviour.reset(this.nosePosition, 10, 150);
-                break;
-            case 16:
-                this.nosePosition.x = keypoints[0].x;
-                this.nosePosition.y = keypoints[0].y;
-                this.repulsionBehaviour.reset(this.nosePosition, 20, 250);
-                break;
-            case 17:
-                this.protonEmitterArray[0].p.x = keypoints[0].x;
-                this.protonEmitterArray[0].p.y = keypoints[0].y-100;
-                break;
-            case 18:
-                this.protonEmitterArray[0].p.x = keypoints[0].x + this.conf.radius * Math.sin(Math.PI / 2 + this.conf.tha);
-                this.protonEmitterArray[0].p.y = keypoints[0].y + this.conf.radius * Math.cos(Math.PI / 2 + this.conf.tha);
-                this.protonEmitterArray[1].p.x = keypoints[0].x + this.conf.radius * Math.sin(-Math.PI / 2 + this.conf.tha);
-                this.protonEmitterArray[1].p.y = keypoints[0].y + this.conf.radius * Math.cos(-Math.PI / 2 + this.conf.tha);
-                this.conf.tha += .1;
-                break;
-            default:
-                break;
-
-        }
-    }
 
     /**
      * Update proton emitter position for left/right wrist from keypoint detection

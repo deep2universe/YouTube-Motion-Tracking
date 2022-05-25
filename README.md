@@ -5,7 +5,7 @@ Some examples from this [Video source](https://www.youtube.com/watch?v=eRjUmsB9l
 ![Logo](assets/logo128.png)  
 _The logo was designed by a 3 year old girl._
 
-YouTube™ motion tracking is a Chrome AI extension for animating videos.
+YouTube™ motion tracking is a Chrome AI extension for animating motion in videos.
 
 Pose estimation is done with [TensorFlow.js](https://www.tensorflow.org/js)  
 Particle animation is done with [Proton](https://github.com/drawcall/Proton)

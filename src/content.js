@@ -5,6 +5,7 @@ import '@tensorflow/tfjs-backend-webgl';
 // import '@tensorflow/tfjs-backend-wasm';
 import * as detectUtils from './detectUtils';
 import {Anim} from "./anim";
+import {AnimEnum} from "./animEnum";
 
 // pose detector from tensorflow
 var detector = poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, {modelType: poseDetection.movenet.modelType.SINGLEPOSE_THUNDER}).then(console.log("detector created"));
@@ -21,35 +22,14 @@ var isRequestAnimationFrame = false;   // only request animation frame once
 var playAnimation = false;  // if true, do detection and play animations
 
 /**
- * IDs of all animations
+ * Name-IDs of all animations
  * - used as id in player popup
  * - used to identify and change current animation
  * all IDs starting with 'particle' use Proton as animation library
+ * @see AnimEnum
  * @type {string[]}
  */
-var allAnimationIDs=["skeleton",
-    "skeleton3Times",
-    "skeleton5Times",
-    "puppetsPlayer",
-    "spiderWeb",
-    "particleHandsBall",
-    "particle2BallHead",
-    "particleNoseGravity",
-    "particleNoseSupernova",
-    "particleHandsTrackFromBorder",
-    "particleUpperBodyGlow",
-    "particleGlowPainting",
-    "particlePainting",
-    "particlePaintRandomDrift",
-    "particleCometThrower",
-    "particleBodyGlow",
-    "particleBurningMan",
-    "particleCyclone",
-    "particleSun",
-    "particleFireFly",
-    "particleFireFlyColor",
-    "particleHandsTrackFromBorder",
-    "particleSpit"];
+var allAnimationIDs = AnimEnum.getNameArray();
 var currentAnimation = "skeleton";  // used for resize event to init particles if needed
 var randomSwitchSec=10;             // sec between animation switch
 var randomSwitchIntervalID=null;    // interval for random animation switch
@@ -138,40 +118,40 @@ function initVideoPlayerPopup(){
 
 <div class="containerButton">
     <div class="rowButton">
-        <div id="skeleton" class="col-3-Button selectButton"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'skeleton'} }));">🦄</span></div>
-        <div id="skeleton3Times" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'skeleton3Times'} }));">🐻</span></div>
-        <div id="skeleton5Times" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'skeleton5Times'} }));">🦊</span></div>
-        <div id="puppetsPlayer" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'puppetsPlayer'} }));">🐧</span></div>
+        <div id="` + AnimEnum.skeleton.name +`" class="col-3-Button selectButton"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.skeleton.name +`'} }));">` + AnimEnum.skeleton.icon +`</span></div>
+        <div id="` + AnimEnum.skeleton3Times.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.skeleton3Times.name +`'} }));">` + AnimEnum.skeleton3Times.icon +`</span></div>
+        <div id="` + AnimEnum.skeleton5Times.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.skeleton5Times.name +`'} }));">` + AnimEnum.skeleton5Times.icon +`</span></div>
+        <div id="` + AnimEnum.puppetsPlayer.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.puppetsPlayer.name +`'} }));">` + AnimEnum.puppetsPlayer.icon +`</span></div>
     </div>
     <div class="rowButton">
-        <div id="spiderWeb" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'spiderWeb'} }));">🐙</span></div>
-        <div id="particleHandsBall" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particleHandsBall'} }));">🐥</span></div>
-        <div id="particleRightHandLine" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particleRightHandLine'} }));">🐌</span></div>
-        <div id="particleNoseGravity" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particleNoseGravity'} }));">🦋</span></div>
+        <div id="` + AnimEnum.spiderWeb.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.spiderWeb.name +`'} }));">` + AnimEnum.spiderWeb.icon +`</span></div>
+        <div id="` + AnimEnum.particleHandsBall.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particleHandsBall.name +`'} }));">` + AnimEnum.particleHandsBall.icon +`</span></div>
+        <div id="` + AnimEnum.particleRightHandLine.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particleRightHandLine.name +`'} }));">` + AnimEnum.particleRightHandLine.icon +`</span></div>
+        <div id="` + AnimEnum.particleNoseGravity.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particleNoseGravity.name +`'} }));">` + AnimEnum.particleNoseGravity.icon +`</span></div>
     </div>
     <div class="rowButton">
-        <div id="particleNoseSupernova" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particleNoseSupernova'} }));">🦖</span></div>
-        <div id="particleHandsTrackFromBorder" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particleHandsTrackFromBorder'} }));">🪱</span></div>
-        <div id="particleUpperBodyGlow" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particleUpperBodyGlow'} }));">🦀</span></div>
-        <div id="particleGlowPainting" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particleGlowPainting'} }));">🐴</span></div>
+        <div id="` + AnimEnum.particleNoseSupernova.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particleNoseSupernova.name +`'} }));">` + AnimEnum.particleNoseSupernova.icon +`</span></div>
+        <div id="` + AnimEnum.particleHandsTrackFromBorder.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particleHandsTrackFromBorder.name +`'} }));">` + AnimEnum.particleHandsTrackFromBorder.icon +`</span></div>
+        <div id="` + AnimEnum.particleUpperBodyGlow.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particleUpperBodyGlow.name +`'} }));">` + AnimEnum.particleUpperBodyGlow.icon +`</span></div>
+        <div id="` + AnimEnum.particleGlowPainting.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particleGlowPainting.name +`'} }));">` + AnimEnum.particleGlowPainting.icon +`</span></div>
     </div>
     <div class="rowButton">
-        <div id="particlePainting" class="col-3-Button"><bspan onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particlePainting'} }));">🦉</span></div>
-        <div id="particlePaintRandomDrift" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particlePaintRandomDrift'} }));">🐔</span></div>
-        <div id="particleCometThrower" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particleCometThrower'} }));">🐷</span></div>
-        <div id="particleBodyGlow" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particleBodyGlow'} }));">🐨</span></div>
+        <div id="` + AnimEnum.particlePainting.name +`" class="col-3-Button"><bspan onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particlePainting.name +`'} }));">` + AnimEnum.particlePainting.icon +`</span></div>
+        <div id="` + AnimEnum.particlePaintRandomDrift.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particlePaintRandomDrift.name +`'} }));">` + AnimEnum.particlePaintRandomDrift.icon +`</span></div>
+        <div id="` + AnimEnum.particleCometThrower.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particleCometThrower.name +`'} }));">` + AnimEnum.particleCometThrower.icon +`</span></div>
+        <div id="` + AnimEnum.particleBodyGlow.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particleBodyGlow.name +`'} }));">` + AnimEnum.particleBodyGlow.icon +`</span></div>
     </div>
     <div class="rowButton">
-        <div id="particleBurningMan" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particleBurningMan'} }));">🦕</span></div>
-        <div id="particle2BallHead" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particle2BallHead'} }));">🐼</span></div>
-        <div id="particleCyclone" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particleCyclone'} }));">🐝</span></div>
-        <div id="particleSun" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particleSun'} }));">🐬</span></div>
+        <div id="` + AnimEnum.particleBurningMan.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particleBurningMan.name +`'} }));">` + AnimEnum.particleBurningMan.icon +`</span></div>
+        <div id="` + AnimEnum.particle2BallHead.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particle2BallHead.name +`'} }));">` + AnimEnum.particle2BallHead.icon +`</span></div>
+        <div id="` + AnimEnum.particleCyclone.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particleCyclone.name +`'} }));">` + AnimEnum.particleCyclone.icon +`</span></div>
+        <div id="` + AnimEnum.particleSun.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particleSun.name +`'} }));">` + AnimEnum.particleSun.icon +`</span></div>
     </div>
     <div class="rowButton">
-        <div id="particleFireFly" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particleFireFly'} }));">🪰</span></div>
-        <div id="particleFireFlyColor" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particleFireFlyColor'} }));">🪲</span></div>
-        <div id="particleSpit" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particleSpit'} }));">🦐</span></div>
-        <div id="particle2BallHeadExp" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'particle2BallHeadExp'} }));">🦚</span></div>
+        <div id="` + AnimEnum.particleFireFly.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particleFireFly.name +`'} }));">` + AnimEnum.particleFireFly.icon +`</span></div>
+        <div id="` + AnimEnum.particleFireFlyColor.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particleFireFlyColor.name +`'} }));">` + AnimEnum.particleFireFlyColor.icon +`</span></div>
+        <div id="` + AnimEnum.particleSpit.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particleSpit.name +`'} }));">` + AnimEnum.particleSpit.icon +`</span></div>
+        <div id="` + AnimEnum.particle2BallHeadExp.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particle2BallHeadExp.name +`'} }));">` + AnimEnum.particle2BallHeadExp.icon +`</span></div>
     </div>
 </div>
     `;
