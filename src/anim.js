@@ -32,7 +32,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
 
     this.proton = null;
     this.protonEmitterArray = [];
-    this.particleID = 0;
+    this.particleID = AnimEnum.particle2BallHeadExp.id; // set default anim id for particles
     this.attractionBehaviour = null;
     this.attractionBehaviours = [];
     this.repulsionBehaviour = null;
@@ -53,7 +53,8 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
     this.rendererGL;
     this.startParticleInit = true; //
     this.currentAnimation = AnimEnum.skeleton.name;
-    this.skeletonLineSize=1;
+    this.keypointArcSize=1;
+    this.keypointScore=0.5; // keypoint score, must be >=
 
     this.PARTICLE = "particle";
 
@@ -253,7 +254,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
 
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.drawKeyPoints(canvasPoseCoordinates);
-            this.drawSkeleton(canvasPoseCoordinates);
+            this.drawSkeleton(canvasPoseCoordinates,1);
 
         }else if (this.currentAnimation === this.PARTICLE) {
 
@@ -263,37 +264,37 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
 
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.drawKeyPoints(canvasPoseCoordinates);
-            this.drawSkeleton(canvasPoseCoordinates);
+            this.drawSkeleton(canvasPoseCoordinates,1);
 
             canvasPoseCoordinates = detectUtils.transformKeypointsForRender(pose[0].keypoints, this.mainVideo, this.canvas, 0.5, 0.5);
             this.drawKeyPoints(canvasPoseCoordinates);
-            this.drawSkeleton(canvasPoseCoordinates);
+            this.drawSkeleton(canvasPoseCoordinates,2);
 
             canvasPoseCoordinates = detectUtils.transformKeypointsForRender(pose[0].keypoints, this.mainVideo, this.canvas, 1.5, 1.5);
             this.drawKeyPoints(canvasPoseCoordinates);
-            this.drawSkeleton(canvasPoseCoordinates);
+            this.drawSkeleton(canvasPoseCoordinates,5);
 
         }else if (this.currentAnimation === AnimEnum.skeleton5Times.name) {
 
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.drawKeyPoints(canvasPoseCoordinates);
-            this.drawSkeleton(canvasPoseCoordinates);
+            this.drawSkeleton(canvasPoseCoordinates,1);
 
             canvasPoseCoordinates = detectUtils.transformKeypointsForRender(pose[0].keypoints, this.mainVideo, this.canvas, 0.5, 0.5);
             this.drawKeyPoints(canvasPoseCoordinates);
-            this.drawSkeleton(canvasPoseCoordinates);
+            this.drawSkeleton(canvasPoseCoordinates,3);
 
             canvasPoseCoordinates = detectUtils.transformKeypointsForRender(pose[0].keypoints, this.mainVideo, this.canvas, 0.5, 0.5, this.canvas.width / 2, this.canvas.height / 2);
             this.drawKeyPoints(canvasPoseCoordinates);
-            this.drawSkeleton(canvasPoseCoordinates);
+            this.drawSkeleton(canvasPoseCoordinates,3);
 
             canvasPoseCoordinates = detectUtils.transformKeypointsForRender(pose[0].keypoints, this.mainVideo, this.canvas, 0.5, 0.5, this.canvas.width / 2);
             this.drawKeyPoints(canvasPoseCoordinates);
-            this.drawSkeleton(canvasPoseCoordinates);
+            this.drawSkeleton(canvasPoseCoordinates,3);
 
             canvasPoseCoordinates = detectUtils.transformKeypointsForRender(pose[0].keypoints, this.mainVideo, this.canvas, 0.5, 0.5, 0, this.canvas.height / 2);
             this.drawKeyPoints(canvasPoseCoordinates);
-            this.drawSkeleton(canvasPoseCoordinates);
+            this.drawSkeleton(canvasPoseCoordinates,3);
 
         }else if (this.currentAnimation === AnimEnum.puppetsPlayer.name) {
 
@@ -552,11 +553,11 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
      */
     this.drawKeyPoints = function(keypoints) {
         for (let keypoint of keypoints) {
-            if(keypoint.score < 0.5){
+            if(keypoint.score < this.keypointScore){
                 continue;
             }
             this.ctx.beginPath();
-            this.ctx.arc(keypoint.x, keypoint.y, 2 * this.skeletonLineSize, 0, 2 * Math.PI);
+            this.ctx.arc(keypoint.x, keypoint.y, 2 * this.keypointArcSize, 0, 2 * Math.PI);
             this.ctx.fillStyle = 'blue';
             this.ctx.fill();
         }
@@ -566,10 +567,10 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
      * Draw lines between all keypoints in the order
      * @param keypoints
      */
-    this.drawSkeleton = function(keypoints) {
+    this.drawSkeleton = function(keypoints, lineWidth) {
         this.ctx.fillStyle = 'white';
         this.ctx.strokeStyle = 'red';
-        this.ctx.lineWidth = this.skeletonLineSize;
+        this.ctx.lineWidth = lineWidth;
 
         poseDetection.util.getAdjacentPairs(poseDetection.SupportedModels.MoveNet).forEach(([i, j]) => {
             const kp1 = keypoints[i];
@@ -577,9 +578,8 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
             // If score is null, just show the keypoint.
             const score1 = kp1.score != null ? kp1.score : 1;
             const score2 = kp2.score != null ? kp2.score : 1;
-            const scoreThreshold = 0.5;
 
-            if (score1 >= scoreThreshold && score2 >= scoreThreshold) {
+            if (score1 >= this.keypointScore && score2 >= this.keypointScore) {
                 this.ctx.beginPath();
                 this.ctx.moveTo(kp1.x, kp1.y);
                 this.ctx.lineTo(kp2.x, kp2.y);
