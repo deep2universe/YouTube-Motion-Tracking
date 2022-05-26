@@ -12,6 +12,11 @@ Particle animation is done with [Proton](https://github.com/drawcall/Proton)
 
 This project is a [Google Chrome](https://www.google.com/intl/en/chrome/) browser extension. That's why you need this browser to try it out.
 
+You can install the extension from the Chrome Web Store:  
+[Link YouTube™ motion tracking](https://chrome.google.com/webstore/detail/youtube-motion-tracking/cpjloofnnmchhbdbdchjnhfoclnjliga)  
+
+To see some animations [watch this](https://www.youtube.com/watch?v=P4DzAWm5mqg)
+
 # Features
 A new button is available in the player.  
 ![newIcon](assets/newIcon.png)  
