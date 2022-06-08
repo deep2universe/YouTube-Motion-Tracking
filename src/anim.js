@@ -1367,10 +1367,10 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         // clear WebGLCanvas and particles
 
         if(this.protonEmitterArray !== undefined){
-            this.protonEmitterArray.forEach(emitter => {
-                emitter.removeAllParticles();
-                emitter.destroy();
-            });
+            for(var i =0; i < this.protonEmitterArray.length; i++){
+                this.protonEmitterArray[i].removeAllParticles();
+                this.protonEmitterArray[i].destroy();
+            }
         }
 
         this.webGLtx.clear(this.webGLtx.DEPTH_BUFFER_BIT | this.webGLtx.COLOR_BUFFER_BIT | this.webGLtx.STENCIL_BUFFER_BIT);
