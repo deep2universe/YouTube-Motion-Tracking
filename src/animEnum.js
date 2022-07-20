@@ -33,6 +33,10 @@ class AnimEnum{
     static particleFireFlyColor = new AnimEnum('particleFireFlyColor', "&#x1F41E", 16);
     static particleSpit = new AnimEnum('particleSpit', "&#x1F41C", 17);
     static particle2BallHeadExp = new AnimEnum('particle2BallHeadExp', "&#x1F42B", 18);
+    static particleMatrix = new AnimEnum('particleMatrix', "&#x1F429", 19);
+    static particleSnow = new AnimEnum('particleSnow', "&#x1F43E", 20);
+    static particleSnowHoriz = new AnimEnum('particleSnowHoriz', "&#x1F438", 21);
+    static particleLightSab = new AnimEnum('particleLightSab', "&#x1F41A", 22);
 
     constructor(name, icon, id) {
         this.name = name;

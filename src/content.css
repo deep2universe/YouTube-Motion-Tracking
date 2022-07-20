@@ -11,7 +11,7 @@
     -moz-user-select: none;
     -ms-user-select: none;
     -webkit-user-select: none;
-    width: 350px; height: 350px; right: 160px; bottom: 70px; z-index: 71
+    width: 350px; height: 415px; right: 160px; bottom: 70px; z-index: 71
 }
 
 .pdVideoButton {
@@ -31,6 +31,32 @@
 .pdVideoButton:active {
     position:relative;
     top:1px;
+}
+
+.pdAnimButtonRed {
+    background-color:transparent;
+    border-radius:4px;
+    border:1px solid #dcdcdc;
+    display:inline-block;
+    cursor:pointer;
+    color: #dc1010;
+    font-family:Arial;
+    font-size:15px;
+    text-decoration:none;
+    margin-top: 10px;
+}
+
+.pdAnimButtonGreen {
+    background-color:transparent;
+    border-radius:4px;
+    border:1px solid #dcdcdc;
+    display:inline-block;
+    cursor:pointer;
+    color: #24dc10;
+    font-family:Arial;
+    font-size:15px;
+    text-decoration:none;
+    margin-top: 10px;
 }
 
 .containerButton {

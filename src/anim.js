@@ -49,6 +49,8 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         y: 200
     };
 
+    this.crossZoneBehaviour = null;
+
     this.conf = {radius: 170, tha: 0};
     this.rendererGL;
     this.startParticleInit = true; //
@@ -155,6 +157,19 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         }else if (animationId === AnimEnum.particle2BallHeadExp.name){
             this.currentAnimation = this.PARTICLE;
             this.particleID = AnimEnum.particle2BallHeadExp.id;
+
+        }else if (animationId === AnimEnum.particleMatrix.name){
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleMatrix.id;
+        }else if (animationId === AnimEnum.particleSnow.name){
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleSnow.id;
+        }else if (animationId === AnimEnum.particleSnowHoriz.name){
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleSnowHoriz.id;
+        }else if (animationId === AnimEnum.particleLightSab.name){
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleLightSab.id;
         }
 
         if(this.currentAnimation === this.PARTICLE){
@@ -235,6 +250,18 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
 
         }else if (this.particleID === AnimEnum.particle2BallHeadExp.id) {
             this.cParticle2BallHeadExp();
+
+        }else if (this.particleID === AnimEnum.particleMatrix.id) {
+            this.cParticleMatrix();
+
+        }else if (this.particleID === AnimEnum.particleSnow.id) {
+            this.cParticleSnow();
+
+        }else if (this.particleID === AnimEnum.particleSnowHoriz.id) {
+            this.cParticleSnowHoriz();
+
+        }else if (this.particleID === AnimEnum.particleLightSab.id) {
+            this.cParticleLightSab();
 
         }
 
@@ -511,6 +538,25 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
                 this.protonEmitterArray[1].p.y = keypoints[0].y + this.conf.radius * Math.cos(-Math.PI / 2 + this.conf.tha);
                 this.conf.tha += .1;
                 break;
+            case AnimEnum.particleMatrix.id:
+                this.nosePosition.x = keypoints[0].x;
+                this.nosePosition.y = keypoints[0].y;
+                this.repulsionBehaviour.reset(this.nosePosition, 45, 160);
+                break;
+            case AnimEnum.particleSnow.id:
+                this.nosePosition.x = keypoints[0].x;
+                this.nosePosition.y = keypoints[0].y;
+                this.repulsionBehaviour.reset(this.nosePosition, 45, 160);
+                break;
+            case AnimEnum.particleSnowHoriz.id:
+                this.nosePosition.x = keypoints[0].x;
+                this.nosePosition.y = keypoints[0].y;
+                this.repulsionBehaviour.reset(this.nosePosition, 45, 160);
+                break;
+            case AnimEnum.particleLightSab.id:
+                this.protonEmitterArray[0].p.x = keypoints[10].x;
+                this.protonEmitterArray[0].p.y = keypoints[10].y;
+                break;
             default:
                 break;
 
@@ -713,9 +759,9 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
     this.cParticleRightHandLine = function (){
         this.proton = new Proton();
         this.protonEmitterArray[0] = new Proton.Emitter();
-        this.protonEmitterArray[0].rate = new Proton.Rate(new Proton.Span(1, 50));
+        this.protonEmitterArray[0].rate = new Proton.Rate(new Proton.Span(100));
         this.protonEmitterArray[0].addInitialize(new Proton.Radius(2, 10));
-        this.protonEmitterArray[0].addInitialize(new Proton.Life(1, 3));
+        this.protonEmitterArray[0].addInitialize(new Proton.Life(4, 10));
         this.protonEmitterArray[0].addBehaviour(new Proton.Color('random'));
         this.protonEmitterArray[0].addBehaviour(new Proton.RandomDrift(10, 0, .035));
         this.protonEmitterArray[0].p.x = this.canvas.width / 2;
@@ -726,6 +772,22 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         this.tryWebGLRendererInit();
     }
 
+    this.cParticleLightSab = function (){
+        this.proton = new Proton();
+        this.protonEmitterArray[0] = new Proton.Emitter();
+        this.protonEmitterArray[0].rate = new Proton.Rate(new Proton.Span(100));
+        this.protonEmitterArray[0].addInitialize(new Proton.Radius(2, 7));
+        this.protonEmitterArray[0].addInitialize(new Proton.Mass(-1));
+        this.protonEmitterArray[0].addInitialize(new Proton.Life(4, 10));
+        this.protonEmitterArray[0].addBehaviour(new Proton.Color('random'));
+        this.protonEmitterArray[0].addBehaviour(new Proton.RandomDrift(10, -100, .035));
+        this.protonEmitterArray[0].p.x = this.canvas.width / 2;
+        this.protonEmitterArray[0].p.y = this.canvas.height / 2;
+        this.protonEmitterArray[0].emit();
+        this.proton.addEmitter(this.protonEmitterArray[0]);
+
+        this.tryWebGLRendererInit();
+    }
     this.cParticleNoseGravity = function (){
         this.proton = new Proton();
 
@@ -1124,7 +1186,147 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
 
     }
 
+    this.cParticleMatrix = function (){
+        this.proton = new Proton();
+        this.protonEmitterArray[0] = new Proton.Emitter();
 
+        let img0 = new Image();
+        img0.src = chrome.runtime.getURL("/images/0.png");
+        // img0.onload = () => {
+        //     this.protonEmitterArray[0].addInitialize(new Proton.Body(img0));
+        // }
+
+        let img1 = new Image();
+        img1.src = chrome.runtime.getURL("/images/1.png");
+        // img1.onload = () => {
+        //     this.protonEmitterArray[0].addInitialize(new Proton.Body(img1));
+        // }
+        this.protonEmitterArray[0].addInitialize(new Proton.Body([img0, img1]));
+
+        this.protonEmitterArray[0].rate = new Proton.Rate(35, new Proton.Span(0.2, 0.5));
+        this.protonEmitterArray[0].damping = 0;
+        this.protonEmitterArray[0].addInitialize(new Proton.Life(4));
+        this.protonEmitterArray[0].addInitialize(new Proton.Mass(1));
+        this.protonEmitterArray[0].addInitialize(new Proton.Radius(4, 70));
+        this.protonEmitterArray[0].addInitialize(
+            new Proton.V(new Proton.Span(3, 6), new Proton.Span(180), "polar")
+        );
+        this.protonEmitterArray[0].addInitialize(new Proton.Body([img0, img1]));
+
+        this.protonEmitterArray[0].addInitialize(
+            new Proton.Position(new Proton.LineZone(0, -50, this.canvas.width, -50))
+        );
+
+        const dis = 150;
+        this.crossZoneBehaviour = new Proton.CrossZone(
+            new Proton.RectZone(
+                0 - dis,
+                0 - dis,
+                this.canvas.width + 2 * dis,
+                this.canvas.height + 2 * dis
+            ),
+            "dead"
+        );
+        this.protonEmitterArray[0].addBehaviour(this.crossZoneBehaviour);
+        this.protonEmitterArray[0].addBehaviour(new Proton.Alpha(Proton.getSpan(0.1, 0.7)));
+        this.protonEmitterArray[0].addBehaviour(new Proton.Scale(Proton.getSpan(0.2, 0.7)));
+        this.repulsionBehaviour = new Proton.Repulsion({ x: 0, y: 0 }, 0, 0);
+        this.protonEmitterArray[0].addBehaviour(this.repulsionBehaviour);
+        this.protonEmitterArray[0].emit();
+        this.proton.addEmitter(this.protonEmitterArray[0]);
+
+        this.tryWebGLRendererInit();
+    }
+
+    this.cParticleSnow = function (){
+        this.proton = new Proton();
+        this.protonEmitterArray[0] = new Proton.Emitter();
+
+        let img0 = new Image();
+        img0.src = chrome.runtime.getURL("/images/particle.png");
+        img0.onload = () => {
+            this.protonEmitterArray[0].addInitialize(new Proton.Body(img0));
+        }
+
+        this.protonEmitterArray[0].rate = new Proton.Rate(60, new Proton.Span(0.2, 0.3));
+        this.protonEmitterArray[0].damping = 0;
+        this.protonEmitterArray[0].addInitialize(new Proton.Life(4));
+        this.protonEmitterArray[0].addInitialize(new Proton.Mass(1));
+        this.protonEmitterArray[0].addInitialize(new Proton.Radius(4, 70));
+        this.protonEmitterArray[0].addInitialize(
+            new Proton.V(new Proton.Span(3, 6), new Proton.Span(180), "polar")
+        );
+
+        this.protonEmitterArray[0].addInitialize(
+            new Proton.Position(new Proton.LineZone(0, -50, this.canvas.width, -50))
+        );
+
+        const dis = 150;
+        this.crossZoneBehaviour = new Proton.CrossZone(
+            new Proton.RectZone(
+                0 - dis,
+                0 - dis,
+                this.canvas.width + 2 * dis,
+                this.canvas.height + 2 * dis
+            ),
+            "dead"
+        );
+        this.protonEmitterArray[0].addBehaviour(this.crossZoneBehaviour);
+        this.protonEmitterArray[0].addBehaviour(new Proton.Alpha(Proton.getSpan(0.1, 0.7)));
+        this.protonEmitterArray[0].addBehaviour(new Proton.Scale(Proton.getSpan(0.2, 0.7)));
+        this.repulsionBehaviour = new Proton.Repulsion({ x: 0, y: 0 }, 0, 0);
+        this.protonEmitterArray[0].addBehaviour(this.repulsionBehaviour);
+        this.protonEmitterArray[0].emit();
+        this.proton.addEmitter(this.protonEmitterArray[0]);
+
+        this.tryWebGLRendererInit();
+    }
+
+    this.cParticleSnowHoriz = function (){
+        this.proton = new Proton();
+        this.protonEmitterArray[0] = new Proton.Emitter();
+
+        let img0 = new Image();
+        img0.src = chrome.runtime.getURL("/images/particle.png");
+        img0.onload = () => {
+            this.protonEmitterArray[0].addInitialize(new Proton.Body(img0));
+        }
+
+        this.protonEmitterArray[0].rate = new Proton.Rate(110, new Proton.Span(0.2, 0.3));
+        this.protonEmitterArray[0].damping = 0;
+        this.protonEmitterArray[0].addInitialize(new Proton.Life(4));
+        this.protonEmitterArray[0].addInitialize(new Proton.Mass(1));
+        this.protonEmitterArray[0].addInitialize(new Proton.Radius(4, 70));
+        this.protonEmitterArray[0].addInitialize(
+            new Proton.V(new Proton.Span(3, 6), new Proton.Span(205), "polar")
+        );
+
+        this.protonEmitterArray[0].addInitialize(
+            new Proton.Position(new Proton.LineZone(0, -50, this.canvas.width *2, -50))
+        );
+
+        //this.protonEmitterArray[0].rotation = -33;
+
+        const dis = 300;
+        this.crossZoneBehaviour = new Proton.CrossZone(
+            new Proton.RectZone(
+                0 - dis,
+                0 - dis,
+                this.canvas.width + 2 * dis,
+                this.canvas.height + 2 * dis
+            ),
+            "dead"
+        );
+        this.protonEmitterArray[0].addBehaviour(this.crossZoneBehaviour);
+        this.protonEmitterArray[0].addBehaviour(new Proton.Alpha(Proton.getSpan(0.1, 0.7)));
+        this.protonEmitterArray[0].addBehaviour(new Proton.Scale(Proton.getSpan(0.2, 0.7)));
+        this.repulsionBehaviour = new Proton.Repulsion({ x: 0, y: 0 }, 0, 0);
+        this.protonEmitterArray[0].addBehaviour(this.repulsionBehaviour);
+        this.protonEmitterArray[0].emit();
+        this.proton.addEmitter(this.protonEmitterArray[0]);
+
+        this.tryWebGLRendererInit();
+    }
 
 
     this.createImageEmitter = function (x, y, color1, color2, scaleStart) {
@@ -1312,6 +1514,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         try {
             this.rendererGL = new Proton.WebGLRenderer(this.canvasGL);
             this.rendererGL.blendFunc("SRC_ALPHA", "ONE");
+            //this.rendererGL.gl.blendFuncSeparate(this.rendererGL.gl.SRC_ALPHA, this.rendererGL.gl.ONE, this.rendererGL.gl.ONE, this.rendererGL.gl.ONE_MINUS_SRC_ALPHA);
             this.proton.addRenderer(this.rendererGL);
         } catch (e) {
             const renderer = new Proton.CanvasRenderer(this.canvas);

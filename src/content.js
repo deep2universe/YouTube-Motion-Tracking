@@ -19,7 +19,8 @@ var videoCollection;    // collection of main videos from YouTube
 var anim = null;   // anim.js object
 var isRequestAnimationFrame = false;   // only request animation frame once
 
-var playAnimation = false;  // if true, do detection and play animations
+var isVideoPlay = false;  // if true, video is playint, do detection and play animations if not anim disabled
+var isAnimDisabled = false; // if true, do not show animations
 
 /**
  * Name-IDs of all animations
@@ -52,12 +53,17 @@ function init() {
        mainVideo = document.getElementsByClassName("html5-main-video")[videoCollection.length - 1];
    }while (mainVideo === null || mainVideo === undefined);
 
+    readIsAnimDisabled();
+    readCurrentAnimationName();
+
     initButtonInPlayer()
 
     addOnPlayingEvent();
 
     addLoadedDataEvent();
 
+    updateAnimDisabledDiv();
+    updateSelectedButton(currentAnimation);
 }
 
 /**
@@ -97,6 +103,7 @@ function setNewAnimation(animationId){
     if(anim !== null){
         anim.setNewAnimation(animationId);
         currentAnimation=animationId;
+        saveCurrentAnimationName(animationId);
     }
 
 }
@@ -112,6 +119,10 @@ function initVideoPlayerPopup(){
 <div>
 <button id="randomButton" class="pdVideoButton" onclick="document.dispatchEvent(new CustomEvent('runRandomAnimation'));">Randomly change every 10s</button>
 <input type="range" min="2" max="60" value="10" id="randomRange" onclick="document.dispatchEvent(new CustomEvent('changeRandomInterval', { detail: {interval:this.value} }));">
+</div>
+
+<div>
+<button id="animDisabledDiv" class="pdAnimButtonGreen" onclick="document.dispatchEvent(new CustomEvent('changeIsAnimDisabled'));">   &#x2318 Stop/Play animation   </button>
 </div>
 
 <hr class="sep">
@@ -153,6 +164,12 @@ function initVideoPlayerPopup(){
         <div id="` + AnimEnum.particleSpit.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particleSpit.name +`'} }));">` + AnimEnum.particleSpit.icon +`</span></div>
         <div id="` + AnimEnum.particle2BallHeadExp.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particle2BallHeadExp.name +`'} }));">` + AnimEnum.particle2BallHeadExp.icon +`</span></div>
     </div>
+    <div class="rowButton">
+        <div id="` + AnimEnum.particleMatrix.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particleMatrix.name +`'} }));">` + AnimEnum.particleMatrix.icon +`</span></div>
+        <div id="` + AnimEnum.particleSnow.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particleSnow.name +`'} }));">` + AnimEnum.particleSnow.icon +`</span></div>
+        <div id="` + AnimEnum.particleSnowHoriz.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particleSnowHoriz.name +`'} }));">` + AnimEnum.particleSnowHoriz.icon +`</span></div>
+        <div id="` + AnimEnum.particleLightSab.name +`" class="col-3-Button"><span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + AnimEnum.particleLightSab.name +`'} }));">` + AnimEnum.particleLightSab.icon +`</span></div>
+    </div>
 </div>
     `;
 
@@ -165,7 +182,7 @@ function initVideoPlayerPopup(){
  *
  */
 function startDetection() {
-    if (!playAnimation) {
+    if (!isVideoPlay) {
         return;
     }
 
@@ -176,7 +193,7 @@ function startDetection() {
         anim.updateCanvas(mainVideo,canvas, canvasGL, ctx, webGLtx);
     }
 
-    if (detector !== undefined) {
+    if (detector !== undefined && isAnimDisabled == false) {
         detector.then(function (poseDetector) {
 
             if (mainVideo === undefined || !location.href.includes("watch")) {
@@ -212,6 +229,23 @@ document.addEventListener('changeVisualizationFromPlayer', function (e) {
     clearRandomSwitchInterval();
     setNewAnimation(e.detail.animationID)
 });
+
+document.addEventListener('changeIsAnimDisabled', function (e) {
+    clearRandomSwitchInterval();
+    isAnimDisabled = !isAnimDisabled;
+    saveIsAnimDisabled(isAnimDisabled);
+
+    updateAnimDisabledDiv();
+
+});
+
+function updateAnimDisabledDiv(){
+    if(isAnimDisabled){
+        document.getElementById('animDisabledDiv').className = 'pdAnimButtonRed';
+    }else{
+        document.getElementById('animDisabledDiv').className = 'pdAnimButtonGreen';
+    }
+}
 
 /**
  * Add border to selected animal icon in player
@@ -278,7 +312,7 @@ document.addEventListener('runRandomAnimation', function (e) {
  */
 function addLoadedDataEvent() {
     mainVideo.addEventListener('loadeddata', (event) => {
-        playAnimation = true;
+        isVideoPlay = true;
         initVideoPlayerPopup();
         if(isRequestAnimationFrame==false){
             isRequestAnimationFrame=true;
@@ -432,4 +466,36 @@ function initButtonInPlayer() {
             clearInterval(buttonAvailableInterval);
         }
     }, 100);
+}
+
+function saveIsAnimDisabled(value){
+    chrome.storage.sync.set({isAnimDisabled: value}, function() {
+    });
+}
+
+function readIsAnimDisabled(){
+    chrome.storage.sync.get(['isAnimDisabled'], function (result) {
+        let status = result.isAnimDisabled;
+        if(status === undefined){
+            isAnimDisabled = false;
+        }else {
+            isAnimDisabled = status;
+        }
+    });
+}
+
+function saveCurrentAnimationName(value){
+    chrome.storage.sync.set({currentAnimationName: value}, function() {
+    });
+}
+
+function readCurrentAnimationName(){
+    chrome.storage.sync.get(['currentAnimationName'], function (result) {
+        let currentAnim = result.currentAnimationName;
+        if(currentAnim === undefined){
+            currentAnimation = "skeleton"
+        }else {
+            currentAnimation = currentAnim;
+        }
+    });
 }

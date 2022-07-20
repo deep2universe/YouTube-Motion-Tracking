@@ -1,7 +1,7 @@
 {
   "name": "YouTube™ motion tracking",
   "description": "AI extension for motion animation in YouTube™ videos",
-  "version": "1.1",
+  "version": "1.2",
   "manifest_version": 3,
   "background": {
     "service_worker": "background.js"
@@ -14,7 +14,7 @@
       "css": ["content.css"]
     }
   ],
-  "permissions": ["activeTab", "tabs", "webNavigation"],
+  "permissions": ["activeTab", "tabs", "webNavigation", "storage"],
   "action": {
     "default_icon": {
       "16": "/images/logo16.png",
