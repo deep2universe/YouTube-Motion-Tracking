@@ -15,7 +15,7 @@ var ctx;        // canvas context 2d
 var webGLtx;    // canvas context webGL
 var canvas;     // canvas 2d
 var canvasGL;   // canvas webGL
-var videoCollection;    // collection of main videos from YouTube
+// var videoCollection; // No longer needed, mainVideo is selected directly
 var anim = null;   // anim.js object
 var isRequestAnimationFrame = false;   // only request animation frame once
 
@@ -46,12 +46,13 @@ var showPlayerPopup=false;          // Player popup initial don't show
  */
 function init() {
     // get video element, check if not null and set it to mainVideo
-    // because YouTube loads videos dynamically I get a collection
-    // the current played video is the last one
-   do {
-       videoCollection = document.getElementsByClassName("html5-main-video");
-       mainVideo = document.getElementsByClassName("html5-main-video")[videoCollection.length - 1];
-   }while (mainVideo === null || mainVideo === undefined);
+    mainVideo = document.querySelector("div#movie_player video.html5-main-video");
+
+    if (!mainVideo) {
+        console.error("PoseDream: Main video element not found.");
+        // Consider a retry mechanism here for dynamic loading
+        return;
+    }
 
     readIsAnimDisabled();
     readCurrentAnimationName();
@@ -173,8 +174,12 @@ function initVideoPlayerPopup(){
 </div>
     `;
 
-    var html5VideoPlayer = document.getElementsByClassName("html5-video-player");
-    html5VideoPlayer[videoCollection.length-1].appendChild(div);
+    var html5VideoPlayer = document.getElementById("movie_player");
+    if (html5VideoPlayer) {
+        html5VideoPlayer.appendChild(div);
+    } else {
+        console.error("PoseDream: html5VideoPlayer (movie_player) not found for popup.");
+    }
 }
 
 /**
@@ -330,7 +335,17 @@ function addLoadedDataEvent() {
  * @type {ResizeObserver}
  */
 const resizeObserver = new ResizeObserver(entries => {
-    mainVideo = document.getElementsByClassName("html5-main-video")[videoCollection.length - 1];
+    // mainVideo should already be correctly selected by init() or subsequent updates if the DOM changes.
+    // If mainVideo can change dynamically after init, it needs to be re-queried here.
+    // For now, assume mainVideo reference from init() is valid or updated elsewhere if necessary.
+    // If not, it should be: mainVideo = document.querySelector("div#movie_player video.html5-main-video");
+    if (!mainVideo) {
+        mainVideo = document.querySelector("div#movie_player video.html5-main-video");
+        if (!mainVideo) {
+            console.error("PoseDream: mainVideo not found in resizeObserver");
+            return;
+        }
+    }
     setCanvasStyle(canvas);
     canvas.width = entries[0].target.clientWidth;
     canvas.height = entries[0].target.clientHeight;
@@ -363,12 +378,18 @@ function createCanvas() {
         canvas.height = mainVideo.clientHeight; //get original canvas height
         canvas.width = mainVideo.clientWidth; // get original canvas width
     } else {
+        // Fallback if mainVideo is not available, though this case should be handled by initial checks
         canvas.height = 600;
         canvas.width = 600;
     }
 
-    let videoContainerDIV = document.getElementsByClassName("html5-video-container")[videoCollection.length - 1];
-    videoContainerDIV.appendChild(canvas); // adds the canvas to the body element
+    let videoContainerDIV = document.querySelector("div#movie_player .html5-video-container");
+    if (videoContainerDIV) {
+        videoContainerDIV.appendChild(canvas); // adds the canvas to the body element
+    } else {
+        console.error("PoseDream: videoContainerDIV not found for canvas.");
+        return;
+    }
     setCanvasStyle(canvas);
     ctx = canvas.getContext('2d');
 }
@@ -383,12 +404,18 @@ function createCanvasWebGL() {
         canvasGL.height = mainVideo.clientHeight; //get original canvas height
         canvasGL.width = mainVideo.clientWidth; // get original canvas width
     } else {
+        // Fallback if mainVideo is not available
         canvasGL.height = 600;
         canvasGL.width = 600;
     }
 
-    let videoContainerDIV = document.getElementsByClassName("html5-video-container")[videoCollection.length - 1];
-    videoContainerDIV.appendChild(canvasGL); // adds the canvas to the body element
+    let videoContainerDIV = document.querySelector("div#movie_player .html5-video-container");
+    if (videoContainerDIV) {
+        videoContainerDIV.appendChild(canvasGL); // adds the canvas to the body element
+    } else {
+        console.error("PoseDream: videoContainerDIV not found for canvasGL.");
+        return;
+    }
     setCanvasStyle(canvasGL);
     webGLtx = canvasGL.getContext("experimental-webgl");
 }
@@ -428,9 +455,10 @@ function addOnPlayingEvent(){
 function setCanvasStyle(tmpCanvas) {
     tmpCanvas.style.position = "absolute";
     tmpCanvas.style.top = "0px";
-    tmpCanvas.style.right = "0px";
-    tmpCanvas.style.left = mainVideo.style.cssText.split("; ")[2].split(": ")[1]
-    tmpCanvas.style.bottom = "0px";
+    tmpCanvas.style.left = "0px";
+    tmpCanvas.style.width = "100%";
+    tmpCanvas.style.height = "100%";
+    // Removed bottom and right assignments
 }
 
 /**
@@ -439,8 +467,10 @@ function setCanvasStyle(tmpCanvas) {
  */
 function initButtonInPlayer() {
     const buttonAvailableInterval = setInterval(function () {
-        var animControlsButton = document.getElementsByClassName("ytp-right-controls");
-        if (animControlsButton !== undefined) {
+        var animControlsButton = document.querySelector(".ytp-right-controls");
+        // querySelector returns null if not found, not undefined.
+        // It also returns a single element, not a collection.
+        if (animControlsButton) {
             if (document.getElementById("pose_art") === null || document.getElementById("pose_art") === undefined) {
                 var button = document.createElement('button');
                 button.id = "pose_art";
@@ -455,12 +485,10 @@ function initButtonInPlayer() {
                     imgTag.src = playerImage.src;
                     button.appendChild(imgTag);
 
-                    for (let i = 0; i < animControlsButton.length; i++) {
-                        if(animControlsButton[i] !== undefined){
-                            animControlsButton[i].insertBefore(button, animControlsButton[i].childNodes[0]);
-                        }
-                    }
-
+                    // animControlsButton is now a single element or null.
+                    // The old loop 'for (let i = 0; i < animControlsButton.length; i++)' is no longer needed.
+                    // We directly use animControlsButton if it exists.
+                    animControlsButton.insertBefore(button, animControlsButton.childNodes[0]);
                 }
             }
             clearInterval(buttonAvailableInterval);

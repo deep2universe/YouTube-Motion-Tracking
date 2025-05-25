@@ -20,11 +20,12 @@ function transformKeypointsForRender(keypoints, mainVideo, canvas, scaleX = 1, s
 
     let canvasCoordinates = [];
     for (let kp of keypoints) {
-        let {x, y, score} = kp;
+        let {x, y, score, name} = kp; // Destructure 'name' as well
         canvasCoordinates.push({
             x: scaleX * canvas.width * x / mainVideo.clientWidth + shiftX,
             y: scaleY * canvas.height * y / mainVideo.clientHeight + shiftY,
-            score: score
+            score: score,
+            name: name // Add the name property
         });
     }
     return canvasCoordinates;
