@@ -8,7 +8,7 @@ import {Anim} from "./anim";
 import {AnimEnum} from "./animEnum";
 
 // pose detector from tensorflow
-var detector = poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, {modelType: poseDetection.movenet.modelType.SINGLEPOSE_THUNDER}).then(console.log("detector created"));
+var detector = null;
 
 var mainVideo;  // current watched video
 var ctx;        // canvas context 2d
@@ -44,7 +44,13 @@ var showPlayerPopup=false;          // Player popup initial don't show
  * - add onplay and loadeddata events of video
  * - start motion detection from loadeddata event
  */
-function init() {
+async function init() {
+    const tfReady = await initializeTf();
+    if (!tfReady) return; // Stop if TF failed
+
+    detector = poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, {modelType: poseDetection.movenet.modelType.SINGLEPOSE_THUNDER});
+    detector.then(() => console.log("MoveNet detector created successfully")).catch(err => console.error("Error creating MoveNet detector:", err));
+
     // get video element, check if not null and set it to mainVideo
     mainVideo = document.querySelector("div#movie_player video.html5-main-video");
 
@@ -65,6 +71,18 @@ function init() {
 
     updateAnimDisabledDiv();
     updateSelectedButton(currentAnimation);
+}
+
+async function initializeTf() {
+  try {
+    await tf.setBackend('webgl');
+    await tf.ready();
+    console.log("TensorFlow.js backend set to WebGL and ready.");
+    return true;
+  } catch (error) {
+    console.error("Error initializing TensorFlow.js:", error);
+    return false;
+  }
 }
 
 /**
@@ -245,10 +263,15 @@ document.addEventListener('changeIsAnimDisabled', function (e) {
 });
 
 function updateAnimDisabledDiv(){
-    if(isAnimDisabled){
-        document.getElementById('animDisabledDiv').className = 'pdAnimButtonRed';
-    }else{
-        document.getElementById('animDisabledDiv').className = 'pdAnimButtonGreen';
+    const animDiv = document.getElementById('animDisabledDiv');
+    if (animDiv) {
+        if(isAnimDisabled){
+            animDiv.className = 'pdAnimButtonRed';
+        }else{
+            animDiv.className = 'pdAnimButtonGreen';
+        }
+    } else {
+        console.error("PoseDream: animDisabledDiv not found in updateAnimDisabledDiv");
     }
 }
 
@@ -259,11 +282,22 @@ function updateAnimDisabledDiv(){
  * @param selected name of current animation
  */
 function updateSelectedButton(selected){
-    let el = document.getElementsByClassName('selectButton')
-    if(el.length >=0){
-        el[0].className = 'col-3-Button';
+    let currentSelectedElements = document.getElementsByClassName('selectButton');
+    if (currentSelectedElements.length > 0 && currentSelectedElements[0]) {
+        currentSelectedElements[0].classList.remove('selectButton');
+        // Ensure it still has its base class if 'selectButton' was the only one, or if classes are mutually exclusive.
+        // If 'col-3-Button' should always be present:
+        if (!currentSelectedElements[0].classList.contains('col-3-Button')) {
+            currentSelectedElements[0].classList.add('col-3-Button');
+        }
     }
-    document.getElementById(selected).className +=' selectButton';
+
+    const newButtonToSelect = document.getElementById(selected);
+    if (newButtonToSelect) {
+        newButtonToSelect.classList.add('selectButton');
+    } else {
+        console.error("PoseDream: Button with id '" + selected + "' not found in updateSelectedButton to add 'selectButton' class.");
+    }
 }
 
 /**
@@ -318,13 +352,17 @@ document.addEventListener('runRandomAnimation', function (e) {
 function addLoadedDataEvent() {
     mainVideo.addEventListener('loadeddata', (event) => {
         isVideoPlay = true;
-        initVideoPlayerPopup();
-        if(isRequestAnimationFrame==false){
-            isRequestAnimationFrame=true;
-            startDetection();
+        initVideoPlayerPopup(); // This should be checked if it depends on async parts of init()
+        if (isRequestAnimationFrame == false && detector) { // Check if detector is initialized
+            detector.then(() => { // Ensure detector promise has resolved
+                isRequestAnimationFrame = true;
+                startDetection();
+            }).catch(err => {
+                console.error("PoseDream: Detector not ready when trying to startDetection in loadeddata:", err);
+            });
+        } else if (!detector) {
+            console.error("PoseDream: Detector not initialized when loadeddata event fired.");
         }
-
-
     });
 }
 
