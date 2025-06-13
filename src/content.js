@@ -61,7 +61,9 @@ async function init() {
     }
 
     readIsAnimDisabled();
+    console.log("PoseDream: init() - After readIsAnimDisabled, isAnimDisabled is:", isAnimDisabled);
     readCurrentAnimationName();
+    console.log("PoseDream: init() - After readCurrentAnimationName, currentAnimation is:", currentAnimation);
 
     initButtonInPlayer()
 
@@ -128,6 +130,7 @@ function setNewAnimation(animationId){
  * Add popup to video player
  */
 function initVideoPlayerPopup(){
+    console.log("PoseDream: initVideoPlayerPopup() called.");
     const div = document.createElement('div');
 
     div.className = 'posedream-video-popup';
@@ -189,11 +192,20 @@ function initVideoPlayerPopup(){
 </div>
     `;
 
+    console.log("PoseDream: Attempting to find #movie_player for popup injection.");
     var html5VideoPlayer = document.getElementById("movie_player");
     if (html5VideoPlayer) {
-        html5VideoPlayer.appendChild(div);
+        console.log("PoseDream: Found #movie_player:", html5VideoPlayer);
+        console.log("PoseDream: About to append popup div to #movie_player.");
+        html5VideoPlayer.appendChild(div); // Existing line
+        console.log("PoseDream: Popup div appended to #movie_player.");
+        // Immediately try to find 'animDisabledDiv' from the appended div and document
+        const localQuery = div.querySelector("#animDisabledDiv");
+        const globalQuery = document.getElementById("animDisabledDiv");
+        console.log("PoseDream: Query for #animDisabledDiv from appended div:", localQuery);
+        console.log("PoseDream: Query for #animDisabledDiv from document:", globalQuery);
     } else {
-        console.error("PoseDream: html5VideoPlayer (movie_player) not found for popup.");
+        console.error("PoseDream: CRITICAL - html5VideoPlayer (movie_player) NOT FOUND for popup injection."); // Enhanced log
     }
 }
 
@@ -351,7 +363,16 @@ function addLoadedDataEvent() {
         isVideoPlay = true;
         initVideoPlayerPopup(); // This should be checked if it depends on async parts of init()
 
+        console.log("PoseDream: loadeddata - Before calling updateAnimDisabledDiv. Current isAnimDisabled:", isAnimDisabled);
+        const checkAnimDisabledDiv = document.getElementById("animDisabledDiv");
+        console.log("PoseDream: loadeddata - Query for #animDisabledDiv before updateAnimDisabledDiv:", checkAnimDisabledDiv);
         updateAnimDisabledDiv();
+
+        console.log("PoseDream: loadeddata - Before calling updateSelectedButton. Current currentAnimation:", currentAnimation);
+        const checkSkeletonButton = document.getElementById("skeleton"); // Assuming 'skeleton' is a common default or initial value
+        console.log("PoseDream: loadeddata - Query for #skeleton before updateSelectedButton:", checkSkeletonButton);
+        const checkCurrentAnimButton = document.getElementById(currentAnimation);
+        console.log("PoseDream: loadeddata - Query for #"+currentAnimation+" before updateSelectedButton:", checkCurrentAnimButton);
         updateSelectedButton(currentAnimation);
 
         if (isRequestAnimationFrame == false && detector) { // Check if detector is initialized
