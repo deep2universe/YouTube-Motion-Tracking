@@ -68,9 +68,6 @@ async function init() {
     addOnPlayingEvent();
 
     addLoadedDataEvent();
-
-    updateAnimDisabledDiv();
-    updateSelectedButton(currentAnimation);
 }
 
 async function initializeTf() {
@@ -353,6 +350,10 @@ function addLoadedDataEvent() {
     mainVideo.addEventListener('loadeddata', (event) => {
         isVideoPlay = true;
         initVideoPlayerPopup(); // This should be checked if it depends on async parts of init()
+
+        updateAnimDisabledDiv();
+        updateSelectedButton(currentAnimation);
+
         if (isRequestAnimationFrame == false && detector) { // Check if detector is initialized
             detector.then(() => { // Ensure detector promise has resolved
                 isRequestAnimationFrame = true;
