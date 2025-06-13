@@ -290,22 +290,37 @@ function updateAnimDisabledDiv(){
  *
  * @param selected name of current animation
  */
-function updateSelectedButton(selected){
+function updateSelectedButton(selected) {
+    // console.log(`PoseDream: updateSelectedButton called with: ${selected}`);
+
     let currentSelectedElements = document.getElementsByClassName('selectButton');
-    if (currentSelectedElements.length > 0 && currentSelectedElements[0]) {
-        currentSelectedElements[0].classList.remove('selectButton');
-        // Ensure it still has its base class if 'selectButton' was the only one, or if classes are mutually exclusive.
-        // If 'col-3-Button' should always be present:
-        if (!currentSelectedElements[0].classList.contains('col-3-Button')) {
-            currentSelectedElements[0].classList.add('col-3-Button');
+    // console.log(`PoseDream: Found ${currentSelectedElements.length} elements with class 'selectButton'.`);
+
+    // Iterate backwards in case removing a class affects the live collection's indexing/length
+    for (let i = currentSelectedElements.length - 1; i >= 0; i--) {
+        const el = currentSelectedElements[i];
+        if (el && typeof el.classList !== 'undefined') { // Check if el and el.classList are valid
+            // console.log("PoseDream: Removing 'selectButton' from:", el);
+            el.classList.remove('selectButton');
+            // Ensure it still has its base class if 'selectButton' was the only one,
+            // or if classes are mutually exclusive.
+            // For example, if 'col-3-Button' should always be present:
+            if (!el.classList.contains('col-3-Button')) {
+                // console.log("PoseDream: Adding 'col-3-Button' to:", el);
+                el.classList.add('col-3-Button');
+            }
+        } else {
+            // console.warn("PoseDream: Found an undefined/null item in currentSelectedElements at index:", i);
         }
     }
 
     const newButtonToSelect = document.getElementById(selected);
-    if (newButtonToSelect) {
+    if (newButtonToSelect && typeof newButtonToSelect.classList !== 'undefined') { // Check if newButtonToSelect and its classList are valid
+        // console.log("PoseDream: Adding 'selectButton' to:", newButtonToSelect);
         newButtonToSelect.classList.add('selectButton');
     } else {
-        console.error("PoseDream: Button with id '" + selected + "' not found in updateSelectedButton to add 'selectButton' class.");
+        // This log is important, as it indicates the target button for selection wasn't found
+        console.error("PoseDream: Button with id '" + selected + "' not found or invalid for adding 'selectButton' class in updateSelectedButton.");
     }
 }
 
