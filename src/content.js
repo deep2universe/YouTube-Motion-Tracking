@@ -18,6 +18,7 @@ var canvasGL;   // canvas webGL
 // var videoCollection; // No longer needed, mainVideo is selected directly
 var anim = null;   // anim.js object
 var isRequestAnimationFrame = false;   // only request animation frame once
+let areCanvasesInitialized = false;
 
 var isVideoPlay = false;  // if true, video is playint, do detection and play animations if not anim disabled
 var isAnimDisabled = false; // if true, do not show animations
@@ -214,7 +215,14 @@ function initVideoPlayerPopup(){
  *
  */
 function startDetection() {
-    if (!isVideoPlay) {
+    if (!isVideoPlay) { // Existing check
+        // if (isRequestAnimationFrame) requestAnimationFrame(startDetection); // Keep animation frame if it was already running
+        return;
+    }
+
+    if (!areCanvasesInitialized) {
+        // console.log("PoseDream: startDetection - Canvases not initialized yet. Retrying.");
+        if (isRequestAnimationFrame) requestAnimationFrame(startDetection); // Keep retrying
         return;
     }
 
@@ -509,6 +517,14 @@ function addOnPlayingEvent(){
 
         if (document.getElementById("canvasdummyGL") === null) {
             createCanvasWebGL();
+        }
+
+        if (document.getElementById("canvasdummy") && document.getElementById("canvasdummyGL") && ctx && webGLtx) {
+            console.log("PoseDream: Canvases and contexts successfully created/obtained.");
+            areCanvasesInitialized = true;
+        } else {
+            console.error("PoseDream: Canvas creation or context retrieval failed in onplaying. Animations may not work.");
+            areCanvasesInitialized = false; // Explicitly false
         }
 
         resizeObserver.observe(mainVideo);

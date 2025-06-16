@@ -1,4 +1,4 @@
-import Proton, { Emitter, Rate, Span, Mass, Life, Body, Radius, Velocity, Alpha, Color, Scale, Attraction, RandomDrift, Repulsion, CrossZone, Gravity as ProtonGravity, Cyclone, Rotate, Position, RectZone, CircleZone, LineZone, WebGLRenderer, CanvasRenderer, PointZone, getSpan } from "proton-engine"; // Added named imports
+import Proton, { Emitter, Rate, Span, Mass, Life, Body, Radius, Velocity, Alpha, Color, Scale, Attraction, RandomDrift, Repulsion, CrossZone, Gravity as ProtonGravity, Cyclone, Rotate, Position, RectZone, CircleZone, LineZone, WebGLRenderer, CanvasRenderer, PointZone } from "proton-engine"; // Added named imports
 import * as detectUtils from "./detectUtils";
 import * as poseDetection from '@tensorflow-models/pose-detection';
 import {AnimEnum} from "./animEnum";
@@ -799,7 +799,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         emitter.addInitialize(new Velocity(new Span(3, 5), new Span(0, 360), 'polar')); // Changed
         emitter.addBehaviour(new Alpha(1, 0)); // Changed
         emitter.addBehaviour(new Color("#3366b2", "#1155b2")); // Changed
-        emitter.addBehaviour(new Scale(getSpan(1, 1.6), getSpan(0, .1))); // Changed
+        emitter.addBehaviour(new Scale(new Span(1, 1.6), new Span(0, .1))); // Changed
         emitter.p.x = this.canvasGL.width / 2;
         emitter.p.y = this.canvasGL.height / 2;
         emitter.emit();
@@ -818,7 +818,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         emitter.addInitialize(new Velocity(new Span(3, 5), new Span(0, 360), 'polar')); // Changed
         emitter.addBehaviour(new Alpha(1, 0)); // Changed
         emitter.addBehaviour(new Color("#fdf753", "#f63a3f")); // Changed
-        emitter.addBehaviour(new Scale(getSpan(1, 1.6), getSpan(0, .1))); // Changed
+        emitter.addBehaviour(new Scale(new Span(1, 1.6), new Span(0, .1))); // Changed
         emitter.p.x = this.canvasGL.width / 2;
         emitter.p.y = this.canvasGL.height / 2;
         emitter.emit();
@@ -882,7 +882,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
             emitter.addInitialize(new Body(particleImage, 128, 128)); // Changed
         }
 
-        this.protonEmitterArray[0].addInitialize(new Mass(1), new Radius(getSpan(5, 10))); // Changed
+        this.protonEmitterArray[0].addInitialize(new Mass(1), new Radius(new Span(5, 10))); // Changed
         this.protonEmitterArray[0].addInitialize(new Velocity(new Span(1, 3), new Span(0, 360), 'polar')); // Changed
 
         this.nosePosition = {
@@ -891,7 +891,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         };
         this.attractionBehaviour = new Attraction(this.nosePosition, 10, 1000); // Changed
         this.protonEmitterArray[0].addBehaviour(this.attractionBehaviour, new Color('random')); // Changed
-        this.protonEmitterArray[0].addBehaviour(new Scale(getSpan(.1, .7))); // Changed
+        this.protonEmitterArray[0].addBehaviour(new Scale(new Span(.1, .7))); // Changed
 
         this.protonEmitterArray[0].p.x = this.canvas.width / 2;
         this.protonEmitterArray[0].p.y = this.canvas.height / 2;
@@ -1091,7 +1091,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         );
 
         //emitter.addBehaviour(new RandomDrift(10, 10, 0.05)); // Changed
-        this.protonEmitterArray[0].addBehaviour(new Cyclone(getSpan(-2, 2), 5)); // Changed
+        this.protonEmitterArray[0].addBehaviour(new Cyclone(new Span(-2, 2), 5)); // Changed
         this.protonEmitterArray[0].addBehaviour(
             new Color("ff0000", "random", Infinity, Proton.easeOutQuart) // Changed, Proton.easeOutQuart is static
         );
@@ -1124,7 +1124,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         this.protonEmitterArray[0].addBehaviour(new Color('#ff0000', '#ffff00')); // Changed
         // let attractionForce = new Attraction(mouseObj, 10, 200); // Changed
         // this.protonEmitterArray[0].addBehaviour(attractionForce);
-        this.protonEmitterArray[0].addBehaviour(new Scale(getSpan(1, 1.6), getSpan(0, .1))); // Changed
+        this.protonEmitterArray[0].addBehaviour(new Scale(new Span(1, 1.6), new Span(0, .1))); // Changed
         this.protonEmitterArray[0].addBehaviour(new Alpha(1, .2)); // Changed
 
         this.protonEmitterArray[0].p.x = this.canvas.width / 2;
@@ -1149,7 +1149,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         }
 
         this.protonEmitterArray[0].addInitialize(new Position(new RectZone(0, 0, this.canvas.width, this.canvas.height))); // Changed
-        this.protonEmitterArray[0].addInitialize(new Mass(1), new Radius(getSpan(5, 10))); // Changed
+        this.protonEmitterArray[0].addInitialize(new Mass(1), new Radius(new Span(5, 10))); // Changed
 
         this.nosePosition = {
             x: this.canvas.width / 2,
@@ -1158,7 +1158,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         this.repulsionBehaviour = new Repulsion(this.nosePosition, 0, 0); // Changed
         let crossZoneBehaviour = new CrossZone(new RectZone(-2, 0, this.canvas.width, this.canvas.height), 'cross'); // Changed
         this.protonEmitterArray[0].addBehaviour(this.repulsionBehaviour, crossZoneBehaviour);
-        this.protonEmitterArray[0].addBehaviour(new Scale(getSpan(.1, .4))); // Changed
+        this.protonEmitterArray[0].addBehaviour(new Scale(new Span(.1, .4))); // Changed
         this.protonEmitterArray[0].addBehaviour(new Alpha(.5)); // Changed
         this.protonEmitterArray[0].addBehaviour(new RandomDrift(10, 10, .2)); // Changed
 
@@ -1194,7 +1194,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         }
 
         this.protonEmitterArray[0].addInitialize(new Position(new RectZone(0, 0, this.canvas.width, this.canvas.height))); // Changed
-        this.protonEmitterArray[0].addInitialize(new Mass(1), new Radius(getSpan(5, 10))); // Changed
+        this.protonEmitterArray[0].addInitialize(new Mass(1), new Radius(new Span(5, 10))); // Changed
         this.protonEmitterArray[0].addBehaviour(new Color('rgba(255,200,0,0.16)', '#ffff00')); // Changed
 
         this.nosePosition = {
@@ -1204,7 +1204,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         this.repulsionBehaviour = new Repulsion(this.nosePosition, 0, 0); // Changed
         let crossZoneBehaviour = new CrossZone(new RectZone(-2, 0, this.canvas.width, this.canvas.height), 'cross'); // Changed
         this.protonEmitterArray[0].addBehaviour(this.repulsionBehaviour, crossZoneBehaviour);
-        this.protonEmitterArray[0].addBehaviour(new Scale(getSpan(.1, 3.4))); // Changed
+        this.protonEmitterArray[0].addBehaviour(new Scale(new Span(.1, 3.4))); // Changed
         this.protonEmitterArray[0].addBehaviour(new Alpha(.5)); // Changed
         this.protonEmitterArray[0].addBehaviour(new RandomDrift(10, 10, .2)); // Changed
 
@@ -1309,8 +1309,12 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
             "dead"
         );
         this.protonEmitterArray[0].addBehaviour(this.crossZoneBehaviour);
-        this.protonEmitterArray[0].addBehaviour(new Alpha(getSpan(0.1, 0.7))); // Changed
-        this.protonEmitterArray[0].addBehaviour(new Scale(getSpan(0.2, 0.7))); // Changed
+        this.protonEmitterArray[0].addBehaviour(new Alpha(new Span(0.1, 0.7))); // Changed
+        this.protonEmitterArray[0].addBehaviour(new Scale(new Span(0.2, 0.7))); // Changed
+        this.protonEmitterArray[0].addBehaviour(new Alpha(new Span(0.1, 0.7))); // Changed
+        this.protonEmitterArray[0].addBehaviour(new Scale(new Span(0.2, 0.7))); // Changed
+        this.protonEmitterArray[0].addBehaviour(new Alpha(new Span(0.1, 0.7))); // Changed
+        this.protonEmitterArray[0].addBehaviour(new Scale(new Span(0.2, 0.7))); // Changed
         this.repulsionBehaviour = new Repulsion({ x: 0, y: 0 }, 0, 0); // Changed
         this.protonEmitterArray[0].addBehaviour(this.repulsionBehaviour);
         this.protonEmitterArray[0].emit();
@@ -1451,7 +1455,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         this.protonEmitterArray[emitterIndex].addInitialize(new Body(image, 20, 40)); // Changed
         this.protonEmitterArray[emitterIndex].addInitialize(new Mass(1)); // Changed
         this.protonEmitterArray[emitterIndex].addInitialize(new Life(1.5, 2.2)); // Changed
-        this.protonEmitterArray[emitterIndex].addInitialize(new Velocity(2, getSpan(0, 360), 'polar')); // Changed
+        this.protonEmitterArray[emitterIndex].addInitialize(new Velocity(2, new Span(0, 360), 'polar')); // Changed
 
         this.protonEmitterArray[emitterIndex].addBehaviour(new Rotate()); // Changed
         this.protonEmitterArray[emitterIndex].addBehaviour(new ProtonGravity(3)); // Changed from Proton.Gravity
