@@ -1,5 +1,46 @@
 # Changelog
 
+## [1.3.0] - 2025-10-21
+
+### Major Updates
+- Complete rebuild and modernization of the extension
+- TensorFlow.js updated from v3.16.0 to v4.22.0 (major version upgrade)
+- Pose Detection updated from v2.0.0 to v2.1.3
+- Fixed all critical bugs preventing extension functionality
+
+### Added
+- WebGPU backend support for improved performance
+- MediaPipe Pose integration for enhanced detection capabilities
+- Comprehensive error handling and null-safety checks
+- Build script for Chrome Web Store deployment (build-for-store.sh)
+- Extensive documentation:
+  - CHROME_STORE_UPLOAD.md - Upload guide
+  - TESTING.md - Testing instructions
+  - CONSOLE_MESSAGES.md - Console output explanation
+
+### Fixed
+- CRITICAL: WebGPU backend initialization error
+- CRITICAL: Null reference errors causing extension crashes
+- CRITICAL: Popup element not being created properly
+- CRITICAL: Button click handlers not working
+- YouTube element selectors updated for current YouTube structure
+- Video element detection with multiple fallback options
+- Player controls integration improved
+- Popup timing issues resolved with 500ms initialization delay
+
+### Improved
+- Robust DOM element detection with multiple fallback selectors
+- Video container detection (html5-video-container, movie_player, etc.)
+- Player controls button insertion with timeout handling
+- Pose detection now properly waits for backend initialization
+- Better error messages and debugging information
+
+### Technical
+- Set TensorFlow.js backend explicitly to 'webgl'
+- Added proper async/await initialization with tf.ready()
+- Removed source maps from production builds
+- Package size optimized to ~689 KB
+
 ## [1.1.0] - 2025-10-21
 
 ### Updated
