@@ -8,7 +8,29 @@ import {Anim} from "./anim";
 import {AnimEnum} from "./animEnum";
 
 // pose detector from tensorflow
-var detector = poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, {modelType: poseDetection.movenet.modelType.SINGLEPOSE_THUNDER}).then(console.log("detector created"));
+var detector = null;
+
+// Initialize TensorFlow.js with WebGL backend
+async function initDetector() {
+    try {
+        // Set backend to webgl explicitly and wait for it to be ready
+        await tf.setBackend('webgl');
+        await tf.ready();
+        console.log('TensorFlow.js backend initialized:', tf.getBackend());
+
+        // Create detector after backend is ready
+        detector = await poseDetection.createDetector(
+            poseDetection.SupportedModels.MoveNet,
+            {modelType: poseDetection.movenet.modelType.SINGLEPOSE_THUNDER}
+        );
+        console.log("Pose detector created successfully");
+    } catch (error) {
+        console.error("Failed to initialize pose detector:", error);
+    }
+}
+
+// Start initialization
+initDetector();
 
 var mainVideo;  // current watched video
 var ctx;        // canvas context 2d
@@ -77,8 +99,9 @@ function init() {
 
     addLoadedDataEvent();
 
-    updateAnimDisabledDiv();
-    updateSelectedButton(currentAnimation);
+    // Don't call these here, they will be called in loadeddata event
+    // updateAnimDisabledDiv();
+    // updateSelectedButton(currentAnimation);
 }
 
 /**
@@ -127,6 +150,12 @@ function setNewAnimation(animationId){
  * Add popup to video player
  */
 function initVideoPlayerPopup(){
+    // Check if popup already exists
+    if (document.querySelector('.posedream-video-popup')) {
+        console.log('Popup already exists, skipping creation');
+        return;
+    }
+
     const div = document.createElement('div');
 
     div.className = 'posedream-video-popup';
@@ -222,28 +251,27 @@ function startDetection() {
         anim.updateCanvas(mainVideo,canvas, canvasGL, ctx, webGLtx);
     }
 
-    if (detector !== undefined && isAnimDisabled == false) {
-        detector.then(function (poseDetector) {
+    if (detector !== null && detector !== undefined && isAnimDisabled == false) {
+        if (mainVideo === undefined || !location.href.includes("watch")) {
+            return;
+        }
 
-            if (mainVideo === undefined || !location.href.includes("watch")) {
+        detector.estimatePoses(mainVideo).then((pose) => {
+            if (mainVideo.paused) {
                 return;
             }
+            if (pose !== undefined && pose[0] !== undefined && pose[0].keypoints !== undefined) {
 
-            poseDetector.estimatePoses(mainVideo).then((pose) => {
-                if (mainVideo.paused) {
-                    return;
-                }
-                if (pose !== undefined && pose[0] !== undefined && pose[0].keypoints !== undefined) {
+                let canvasPoseCoordinates = detectUtils.transformKeypointsForRender(pose[0].keypoints, mainVideo, canvas);
+                // update new estimation keypoints for current animation
+                anim.updateKeypoint(pose, canvasPoseCoordinates);
 
-                    let canvasPoseCoordinates = detectUtils.transformKeypointsForRender(pose[0].keypoints, mainVideo, canvas);
-                    // update new estimation keypoints for current animation
-                    anim.updateKeypoint(pose, canvasPoseCoordinates);
-
-                }
-            });
-            // redraw particles
-            anim.updateProton();
+            }
+        }).catch(error => {
+            console.error("Pose estimation error:", error);
         });
+        // redraw particles
+        anim.updateProton();
     }
     // create animationframe
     requestAnimationFrame(startDetection);
@@ -265,14 +293,16 @@ document.addEventListener('changeIsAnimDisabled', function (e) {
     saveIsAnimDisabled(isAnimDisabled);
 
     updateAnimDisabledDiv();
-
 });
 
 function updateAnimDisabledDiv(){
-    if(isAnimDisabled){
-        document.getElementById('animDisabledDiv').className = 'pdAnimButtonRed';
-    }else{
-        document.getElementById('animDisabledDiv').className = 'pdAnimButtonGreen';
+    const animDisabledDiv = document.getElementById('animDisabledDiv');
+    if (animDisabledDiv) {
+        if(isAnimDisabled){
+            animDisabledDiv.className = 'pdAnimButtonRed';
+        }else{
+            animDisabledDiv.className = 'pdAnimButtonGreen';
+        }
     }
 }
 
@@ -284,10 +314,13 @@ function updateAnimDisabledDiv(){
  */
 function updateSelectedButton(selected){
     let el = document.getElementsByClassName('selectButton')
-    if(el.length >=0){
+    if(el && el.length > 0){
         el[0].className = 'col-3-Button';
     }
-    document.getElementById(selected).className +=' selectButton';
+    const selectedElement = document.getElementById(selected);
+    if (selectedElement) {
+        selectedElement.className +=' selectButton';
+    }
 }
 
 /**
@@ -296,19 +329,26 @@ function updateSelectedButton(selected){
  */
 document.addEventListener('displayPoseDreamPopup', function (e) {
     var playerPopup = document.getElementsByClassName('posedream-video-popup');
-    if(showPlayerPopup){
-        playerPopup[0].style.display = "none"
-    }else{
-        playerPopup[0].style.display = "block"
+    if(playerPopup && playerPopup.length > 0){
+        if(showPlayerPopup){
+            playerPopup[0].style.display = "none"
+        }else{
+            playerPopup[0].style.display = "block"
+        }
+        showPlayerPopup = !showPlayerPopup;
+    } else {
+        console.warn('Popup element not found. Please wait for video to load.');
     }
-    showPlayerPopup = !showPlayerPopup;
 });
 
 /**
  * Event to change the random interval from popup
  */
 document.addEventListener('changeRandomInterval', function (e) {
-    document.getElementById("randomButton").innerText="Randomly change every " + e.detail.interval +"s";
+    const randomButton = document.getElementById("randomButton");
+    if (randomButton) {
+        randomButton.innerText="Randomly change every " + e.detail.interval +"s";
+    }
     randomSwitchSec= e.detail.interval;
 });
 
@@ -342,13 +382,18 @@ document.addEventListener('runRandomAnimation', function (e) {
 function addLoadedDataEvent() {
     mainVideo.addEventListener('loadeddata', (event) => {
         isVideoPlay = true;
-        initVideoPlayerPopup();
+
+        // Wait a bit for YouTube's player to fully initialize
+        setTimeout(() => {
+            initVideoPlayerPopup();
+            updateAnimDisabledDiv();
+            updateSelectedButton(currentAnimation);
+        }, 500);
+
         if(isRequestAnimationFrame==false){
             isRequestAnimationFrame=true;
             startDetection();
         }
-
-
     });
 }
 
