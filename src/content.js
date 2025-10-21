@@ -48,9 +48,24 @@ function init() {
     // get video element, check if not null and set it to mainVideo
     // because YouTube loads videos dynamically I get a collection
     // the current played video is the last one
+    // Try multiple selectors for better compatibility with YouTube updates
    do {
        videoCollection = document.getElementsByClassName("html5-main-video");
-       mainVideo = document.getElementsByClassName("html5-main-video")[videoCollection.length - 1];
+       if (!videoCollection || videoCollection.length === 0) {
+           // Fallback: try to get video element directly
+           const videoElement = document.querySelector('video.video-stream');
+           if (videoElement) {
+               videoCollection = [videoElement];
+           }
+       }
+       if (!videoCollection || videoCollection.length === 0) {
+           // Second fallback: any video element in the page
+           const anyVideo = document.querySelector('video');
+           if (anyVideo) {
+               videoCollection = [anyVideo];
+           }
+       }
+       mainVideo = videoCollection ? videoCollection[videoCollection.length - 1] : null;
    }while (mainVideo === null || mainVideo === undefined);
 
     readIsAnimDisabled();
@@ -173,8 +188,22 @@ function initVideoPlayerPopup(){
 </div>
     `;
 
+    // Find video player container with fallback options
     var html5VideoPlayer = document.getElementsByClassName("html5-video-player");
-    html5VideoPlayer[videoCollection.length-1].appendChild(div);
+    let playerContainer = html5VideoPlayer && html5VideoPlayer.length > 0
+        ? html5VideoPlayer[videoCollection.length-1]
+        : null;
+
+    if (!playerContainer) {
+        // Fallback: try to find player by other selectors
+        playerContainer = document.querySelector('.html5-video-player') ||
+                         document.querySelector('#movie_player') ||
+                         document.querySelector('#player');
+    }
+
+    if (playerContainer) {
+        playerContainer.appendChild(div);
+    }
 }
 
 /**
@@ -367,8 +396,18 @@ function createCanvas() {
         canvas.width = 600;
     }
 
+    // Find video container with fallback options
     let videoContainerDIV = document.getElementsByClassName("html5-video-container")[videoCollection.length - 1];
-    videoContainerDIV.appendChild(canvas); // adds the canvas to the body element
+    if (!videoContainerDIV) {
+        // Fallback: try to find container by other selectors
+        videoContainerDIV = document.querySelector('.html5-video-container') ||
+                           document.querySelector('#player-container') ||
+                           document.querySelector('#movie_player') ||
+                           mainVideo.parentElement;
+    }
+    if (videoContainerDIV) {
+        videoContainerDIV.appendChild(canvas); // adds the canvas to the body element
+    }
     setCanvasStyle(canvas);
     ctx = canvas.getContext('2d');
 }
@@ -387,8 +426,18 @@ function createCanvasWebGL() {
         canvasGL.width = 600;
     }
 
+    // Find video container with fallback options
     let videoContainerDIV = document.getElementsByClassName("html5-video-container")[videoCollection.length - 1];
-    videoContainerDIV.appendChild(canvasGL); // adds the canvas to the body element
+    if (!videoContainerDIV) {
+        // Fallback: try to find container by other selectors
+        videoContainerDIV = document.querySelector('.html5-video-container') ||
+                           document.querySelector('#player-container') ||
+                           document.querySelector('#movie_player') ||
+                           mainVideo.parentElement;
+    }
+    if (videoContainerDIV) {
+        videoContainerDIV.appendChild(canvasGL); // adds the canvas to the body element
+    }
     setCanvasStyle(canvasGL);
     webGLtx = canvasGL.getContext("experimental-webgl");
 }
@@ -438,10 +487,21 @@ function setCanvasStyle(tmpCanvas) {
  * new player buttons are added in an interval if the 'ytp-right-controls' are available
  */
 function initButtonInPlayer() {
+    let attempts = 0;
+    const maxAttempts = 50; // Try for up to 5 seconds (50 * 100ms)
+
     const buttonAvailableInterval = setInterval(function () {
+        attempts++;
+
+        // Try multiple selectors to find the controls container
         var animControlsButton = document.getElementsByClassName("ytp-right-controls");
-        if (animControlsButton !== undefined) {
-            if (document.getElementById("pose_art") === null || document.getElementById("pose_art") === undefined) {
+        if (!animControlsButton || animControlsButton.length === 0) {
+            animControlsButton = document.querySelectorAll('.ytp-right-controls, .ytp-chrome-controls, [class*="player-controls"]');
+        }
+
+        if ((animControlsButton && animControlsButton.length > 0) || attempts >= maxAttempts) {
+            if (animControlsButton && animControlsButton.length > 0 &&
+                (document.getElementById("pose_art") === null || document.getElementById("pose_art") === undefined)) {
                 var button = document.createElement('button');
                 button.id = "pose_art";
                 button.className = 'ytp-button it-player-button';
@@ -453,6 +513,8 @@ function initButtonInPlayer() {
                 playerImage.onload = () => {
                     var imgTag = document.createElement('img');
                     imgTag.src = playerImage.src;
+                    imgTag.style.width = '24px';
+                    imgTag.style.height = '24px';
                     button.appendChild(imgTag);
 
                     for (let i = 0; i < animControlsButton.length; i++) {
@@ -460,7 +522,6 @@ function initButtonInPlayer() {
                             animControlsButton[i].insertBefore(button, animControlsButton[i].childNodes[0]);
                         }
                     }
-
                 }
             }
             clearInterval(buttonAvailableInterval);
