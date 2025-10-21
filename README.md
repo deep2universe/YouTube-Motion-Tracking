@@ -59,6 +59,28 @@ npm install
 npm run build:parcel
 ```
 
+## Building for Chrome Web Store
+
+To create a production-ready ZIP package for uploading to the Chrome Web Store:
+
+```shell
+# Run the build script
+./build-for-store.sh
+```
+
+This will:
+- Clean old builds
+- Install dependencies (if needed)
+- Build the extension
+- Remove source maps
+- Create a ZIP file in `release/` directory
+
+The output ZIP file will be ready for upload to the Chrome Web Store.
+
+For detailed instructions on uploading to Chrome Web Store, see [CHROME_STORE_UPLOAD.md](CHROME_STORE_UPLOAD.md).
+
+```
+
 <a name="chromeExtension"></a>
 ## Open Chrome extensions
 Open this URL
