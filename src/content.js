@@ -138,10 +138,13 @@ chrome.runtime.onMessage.addListener(
  * @param animationId new animation ID
  */
 function setNewAnimation(animationId){
+    console.log('content.js setNewAnimation called with:', animationId);
     if(anim !== null){
         anim.setNewAnimation(animationId);
         currentAnimation=animationId;
         saveCurrentAnimationName(animationId);
+    } else {
+        console.log('ERROR: anim is null!');
     }
 
 }
