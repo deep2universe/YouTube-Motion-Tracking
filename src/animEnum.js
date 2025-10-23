@@ -38,6 +38,38 @@ class AnimEnum{
     static particleSnowHoriz = new AnimEnum('particleSnowHoriz', "&#x1F438", 21);
     static particleLightSab = new AnimEnum('particleLightSab', "&#x1F41A", 22);
 
+    // NEW ANIMATIONS - Canvas Variations
+    static skeleton7Times = new AnimEnum('skeleton7Times', "&#x1F981", null);
+    static skeletonMirror = new AnimEnum('skeletonMirror', "&#x1F985", null);
+    static skeletonRainbow = new AnimEnum('skeletonRainbow', "&#x1F308", null);
+    static connectingDots = new AnimEnum('connectingDots', "&#x1F988", null);
+    static geometricShapes = new AnimEnum('geometricShapes', "&#x1F98B", null);
+
+    // NEW ANIMATIONS - Particle Tracking
+    static particleAllJoints = new AnimEnum('particleAllJoints', "&#x1F98E", 23);
+    static particleFeetTrail = new AnimEnum('particleFeetTrail', "&#x1F993", 24);
+    static particleKneeCircles = new AnimEnum('particleKneeCircles', "&#x1F992", 25);
+    static particleShoulderWaves = new AnimEnum('particleShoulderWaves', "&#x1F98F", 26);
+
+    // NEW ANIMATIONS - Particle Physics
+    static particleBodyMagnet = new AnimEnum('particleBodyMagnet', "&#x1F99B", 27);
+    static particleWaveField = new AnimEnum('particleWaveField', "&#x1F998", 28);
+    static particleVortex = new AnimEnum('particleVortex', "&#x1F999", 29);
+    static particleElectric = new AnimEnum('particleElectric', "&#x1F99A", 30);
+
+    // NEW ANIMATIONS - Particle Visual Effects
+    static particleRainbowTrail = new AnimEnum('particleRainbowTrail', "&#x1F99C", 31);
+    static particleStarField = new AnimEnum('particleStarField', "&#x1F99D", 32);
+    static particleBubbles = new AnimEnum('particleBubbles', "&#x1F9A1", 33);
+    static particleFireworks = new AnimEnum('particleFireworks', "&#x1F9A2", 34);
+    static particleNeonGlow = new AnimEnum('particleNeonGlow', "&#x1F9A5", 35);
+
+    // NEW ANIMATIONS - Particle Atmospheric
+    static particleAurora = new AnimEnum('particleAurora', "&#x1F9A6", 36);
+    static particleFog = new AnimEnum('particleFog', "&#x1F9A7", 37);
+    static particleRain = new AnimEnum('particleRain', "&#x1F9A8", 38);
+    static particleLeaves = new AnimEnum('particleLeaves', "&#x1F9A9", 39);
+
     constructor(name, icon, id) {
         this.name = name;
         this.icon = icon;

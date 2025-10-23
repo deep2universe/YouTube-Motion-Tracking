@@ -170,6 +170,77 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         }else if (animationId === AnimEnum.particleLightSab.name){
             this.currentAnimation = this.PARTICLE;
             this.particleID = AnimEnum.particleLightSab.id;
+
+        // NEW CANVAS ANIMATIONS
+        } else if (animationId === AnimEnum.skeleton7Times.name) {
+            this.currentAnimation = AnimEnum.skeleton7Times.name;
+        } else if (animationId === AnimEnum.skeletonMirror.name) {
+            this.currentAnimation = AnimEnum.skeletonMirror.name;
+        } else if (animationId === AnimEnum.skeletonRainbow.name) {
+            this.currentAnimation = AnimEnum.skeletonRainbow.name;
+        } else if (animationId === AnimEnum.connectingDots.name) {
+            this.currentAnimation = AnimEnum.connectingDots.name;
+        } else if (animationId === AnimEnum.geometricShapes.name) {
+            this.currentAnimation = AnimEnum.geometricShapes.name;
+
+        // NEW PARTICLE ANIMATIONS - Tracking
+        } else if (animationId === AnimEnum.particleAllJoints.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleAllJoints.id;
+        } else if (animationId === AnimEnum.particleFeetTrail.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleFeetTrail.id;
+        } else if (animationId === AnimEnum.particleKneeCircles.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleKneeCircles.id;
+        } else if (animationId === AnimEnum.particleShoulderWaves.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleShoulderWaves.id;
+
+        // NEW PARTICLE ANIMATIONS - Physics
+        } else if (animationId === AnimEnum.particleBodyMagnet.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleBodyMagnet.id;
+        } else if (animationId === AnimEnum.particleWaveField.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleWaveField.id;
+        } else if (animationId === AnimEnum.particleVortex.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleVortex.id;
+        } else if (animationId === AnimEnum.particleElectric.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleElectric.id;
+
+        // NEW PARTICLE ANIMATIONS - Visual Effects
+        } else if (animationId === AnimEnum.particleRainbowTrail.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleRainbowTrail.id;
+        } else if (animationId === AnimEnum.particleStarField.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleStarField.id;
+        } else if (animationId === AnimEnum.particleBubbles.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleBubbles.id;
+        } else if (animationId === AnimEnum.particleFireworks.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleFireworks.id;
+        } else if (animationId === AnimEnum.particleNeonGlow.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleNeonGlow.id;
+
+        // NEW PARTICLE ANIMATIONS - Atmospheric
+        } else if (animationId === AnimEnum.particleAurora.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleAurora.id;
+        } else if (animationId === AnimEnum.particleFog.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleFog.id;
+        } else if (animationId === AnimEnum.particleRain.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleRain.id;
+        } else if (animationId === AnimEnum.particleLeaves.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.particleLeaves.id;
         }
 
         if(this.currentAnimation === this.PARTICLE){
@@ -263,6 +334,41 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         }else if (this.particleID === AnimEnum.particleLightSab.id) {
             this.cParticleLightSab();
 
+        // NEW PARTICLE ANIMATIONS
+        } else if (this.particleID === AnimEnum.particleAllJoints.id) {
+            this.cParticleAllJoints();
+        } else if (this.particleID === AnimEnum.particleFeetTrail.id) {
+            this.cParticleFeetTrail();
+        } else if (this.particleID === AnimEnum.particleKneeCircles.id) {
+            this.cParticleKneeCircles();
+        } else if (this.particleID === AnimEnum.particleShoulderWaves.id) {
+            this.cParticleShoulderWaves();
+        } else if (this.particleID === AnimEnum.particleBodyMagnet.id) {
+            this.cParticleBodyMagnet();
+        } else if (this.particleID === AnimEnum.particleWaveField.id) {
+            this.cParticleWaveField();
+        } else if (this.particleID === AnimEnum.particleVortex.id) {
+            this.cParticleVortex();
+        } else if (this.particleID === AnimEnum.particleElectric.id) {
+            this.cParticleElectric();
+        } else if (this.particleID === AnimEnum.particleRainbowTrail.id) {
+            this.cParticleRainbowTrail();
+        } else if (this.particleID === AnimEnum.particleStarField.id) {
+            this.cParticleStarField();
+        } else if (this.particleID === AnimEnum.particleBubbles.id) {
+            this.cParticleBubbles();
+        } else if (this.particleID === AnimEnum.particleFireworks.id) {
+            this.cParticleFireworks();
+        } else if (this.particleID === AnimEnum.particleNeonGlow.id) {
+            this.cParticleNeonGlow();
+        } else if (this.particleID === AnimEnum.particleAurora.id) {
+            this.cParticleAurora();
+        } else if (this.particleID === AnimEnum.particleFog.id) {
+            this.cParticleFog();
+        } else if (this.particleID === AnimEnum.particleRain.id) {
+            this.cParticleRain();
+        } else if (this.particleID === AnimEnum.particleLeaves.id) {
+            this.cParticleLeaves();
         }
 
         this.startParticleInit = false;
@@ -332,6 +438,27 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
 
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.drawSpiderWeb(canvasPoseCoordinates);
+
+        // NEW CANVAS ANIMATIONS
+        }else if (this.currentAnimation === AnimEnum.skeleton7Times.name) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.drawSkeleton7Times(pose, canvasPoseCoordinates);
+
+        }else if (this.currentAnimation === AnimEnum.skeletonMirror.name) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.drawSkeletonMirror(pose, canvasPoseCoordinates);
+
+        }else if (this.currentAnimation === AnimEnum.skeletonRainbow.name) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.drawSkeletonRainbow(canvasPoseCoordinates);
+
+        }else if (this.currentAnimation === AnimEnum.connectingDots.name) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.drawConnectingDots(canvasPoseCoordinates);
+
+        }else if (this.currentAnimation === AnimEnum.geometricShapes.name) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.drawGeometricShapes(canvasPoseCoordinates);
         }
     }
 
@@ -557,6 +684,96 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
                 this.protonEmitterArray[0].p.x = keypoints[10].x;
                 this.protonEmitterArray[0].p.y = keypoints[10].y;
                 break;
+
+            // NEW PARTICLE ANIMATIONS
+            case AnimEnum.particleAllJoints.id:
+                for(let i = 0; i < 17; i++) {
+                    this.protonEmitterArray[i].p.x = keypoints[i].x;
+                    this.protonEmitterArray[i].p.y = keypoints[i].y;
+                }
+                break;
+            case AnimEnum.particleFeetTrail.id:
+                this.protonEmitterArray[0].p.x = keypoints[15].x;
+                this.protonEmitterArray[0].p.y = keypoints[15].y;
+                this.protonEmitterArray[1].p.x = keypoints[16].x;
+                this.protonEmitterArray[1].p.y = keypoints[16].y;
+                break;
+            case AnimEnum.particleKneeCircles.id:
+                this.protonEmitterArray[0].p.x = keypoints[13].x + 50 * Math.sin(this.conf.tha);
+                this.protonEmitterArray[0].p.y = keypoints[13].y + 50 * Math.cos(this.conf.tha);
+                this.protonEmitterArray[1].p.x = keypoints[14].x + 50 * Math.sin(-this.conf.tha);
+                this.protonEmitterArray[1].p.y = keypoints[14].y + 50 * Math.cos(-this.conf.tha);
+                this.conf.tha += .15;
+                break;
+            case AnimEnum.particleShoulderWaves.id:
+                this.protonEmitterArray[0].p.x = keypoints[5].x;
+                this.protonEmitterArray[0].p.y = keypoints[5].y;
+                this.protonEmitterArray[1].p.x = keypoints[6].x;
+                this.protonEmitterArray[1].p.y = keypoints[6].y;
+                break;
+            case AnimEnum.particleBodyMagnet.id:
+                this.nosePosition.x = keypoints[0].x;
+                this.nosePosition.y = keypoints[0].y;
+                this.attractionBehaviour.reset(this.nosePosition, 20, 400);
+                break;
+            case AnimEnum.particleWaveField.id:
+                for(let i = 0; i < 6; i++) {
+                    this.protonEmitterArray[i].p.x = keypoints[i < 3 ? 5 : 6].x;
+                    this.protonEmitterArray[i].p.y = keypoints[i < 3 ? 5 : 6].y;
+                }
+                break;
+            case AnimEnum.particleVortex.id:
+                this.nosePosition.x = keypoints[0].x;
+                this.nosePosition.y = keypoints[0].y;
+                break;
+            case AnimEnum.particleElectric.id:
+                for(let i = 0; i < 8; i++) {
+                    const kpIndex = [9, 10, 7, 8, 5, 6, 11, 12][i];
+                    this.protonEmitterArray[i].p.x = keypoints[kpIndex].x;
+                    this.protonEmitterArray[i].p.y = keypoints[kpIndex].y;
+                }
+                break;
+            case AnimEnum.particleRainbowTrail.id:
+                this.leftRightWristUpdate(keypoints);
+                break;
+            case AnimEnum.particleStarField.id:
+                this.nosePosition.x = keypoints[0].x;
+                this.nosePosition.y = keypoints[0].y;
+                this.attractionBehaviour.reset(this.nosePosition, 5, 300);
+                break;
+            case AnimEnum.particleBubbles.id:
+                this.leftRightWristUpdate(keypoints);
+                break;
+            case AnimEnum.particleFireworks.id:
+                this.leftRightWristUpdate(keypoints);
+                break;
+            case AnimEnum.particleNeonGlow.id:
+                for(let i = 0; i < 12; i++) {
+                    const kpIndex = [9,7,5,6,8,10,11,13,15,12,14,16][i];
+                    this.protonEmitterArray[i].p.x = keypoints[kpIndex].x;
+                    this.protonEmitterArray[i].p.y = keypoints[kpIndex].y;
+                }
+                break;
+            case AnimEnum.particleAurora.id:
+                this.protonEmitterArray[0].p.x = keypoints[0].x;
+                this.protonEmitterArray[0].p.y = keypoints[0].y - 200;
+                break;
+            case AnimEnum.particleFog.id:
+                this.nosePosition.x = keypoints[0].x;
+                this.nosePosition.y = keypoints[0].y;
+                this.repulsionBehaviour.reset(this.nosePosition, 30, 200);
+                break;
+            case AnimEnum.particleRain.id:
+                this.nosePosition.x = keypoints[0].x;
+                this.nosePosition.y = keypoints[0].y;
+                this.repulsionBehaviour.reset(this.nosePosition, 40, 180);
+                break;
+            case AnimEnum.particleLeaves.id:
+                this.nosePosition.x = keypoints[0].x;
+                this.nosePosition.y = keypoints[0].y;
+                this.repulsionBehaviour.reset(this.nosePosition, 35, 220);
+                break;
+
             default:
                 break;
 
@@ -1562,6 +1779,558 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         this.protonEmitterArray[1].p.y = keypoints[10].y;
     }
 
+    // ========== NEW PARTICLE ANIMATIONS ==========
+
+    /** Particles from all 17 joints */
+    this.cParticleAllJoints = function() {
+        this.proton = new Proton();
+        for(let i = 0; i < 17; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(3, 5), 0.1);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(2, 6));
+            emitter.addInitialize(new Proton.Life(0.5, 1.5));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(0.5, 2), new Proton.Span(0, 360), 'polar'));
+            const hue = (i * 21) % 360;
+            emitter.addBehaviour(new Proton.Color(`hsl(${hue}, 80%, 60%)`));
+            emitter.addBehaviour(new Proton.Alpha(0.8, 0));
+            emitter.addBehaviour(new Proton.Scale(1, 0.3));
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        this.rendererGL = new Proton.WebGLRenderer(this.canvasGL);
+        this.proton.addRenderer(this.rendererGL);
+    }
+
+    /** Trail from feet */
+    this.cParticleFeetTrail = function() {
+        this.proton = new Proton();
+        for(let i = 0; i < 2; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(8, 12), 0.1);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(3, 8));
+            emitter.addInitialize(new Proton.Life(2, 4));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(0.3, 0.8), new Proton.Span(0, 360), 'polar'));
+            emitter.addBehaviour(new Proton.Color(i === 0 ? '#00FFFF' : '#FF00FF'));
+            emitter.addBehaviour(new Proton.Alpha(0.7, 0));
+            emitter.addBehaviour(new Proton.Scale(1.5, 0.1));
+            emitter.addBehaviour(new Proton.RandomDrift(10, 10, 0.05));
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        this.rendererGL = new Proton.WebGLRenderer(this.canvasGL);
+        this.proton.addRenderer(this.rendererGL);
+    }
+
+    /** Circling particles around knees */
+    this.cParticleKneeCircles = function() {
+        this.proton = new Proton();
+        for(let i = 0; i < 2; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(5, 8), 0.1);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(4, 10));
+            emitter.addInitialize(new Proton.Life(1, 2));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(1, 3), new Proton.Span(0, 360), 'polar'));
+            emitter.addBehaviour(new Proton.Color('#FFD700', '#FF6B00'));
+            emitter.addBehaviour(new Proton.Alpha(0.9, 0));
+            emitter.addBehaviour(new Proton.Scale(1.2, 0.2));
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        this.rendererGL = new Proton.WebGLRenderer(this.canvasGL);
+        this.proton.addRenderer(this.rendererGL);
+    }
+
+    /** Wave particles from shoulders */
+    this.cParticleShoulderWaves = function() {
+        this.proton = new Proton();
+        for(let i = 0; i < 2; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(10, 15), 0.1);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(5, 12));
+            emitter.addInitialize(new Proton.Life(1.5, 3));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(2, 4), new Proton.Span(0, 360), 'polar'));
+            emitter.addBehaviour(new Proton.Color('#00BFFF', '#1E90FF'));
+            emitter.addBehaviour(new Proton.Alpha(0.6, 0));
+            emitter.addBehaviour(new Proton.Scale(2, 0.1));
+            emitter.addBehaviour(new Proton.RandomDrift(30, 20, 0.05));
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        this.rendererGL = new Proton.WebGLRenderer(this.canvasGL);
+        this.proton.addRenderer(this.rendererGL);
+    }
+
+    /** Body acts as magnet */
+    this.cParticleBodyMagnet = function() {
+        this.proton = new Proton();
+        const emitter = new Proton.Emitter();
+        emitter.rate = new Proton.Rate(new Proton.Span(50, 80), 0.2);
+        emitter.addInitialize(new Proton.Mass(1));
+        emitter.addInitialize(new Proton.Radius(3, 8));
+        emitter.addInitialize(new Proton.Life(3, 6));
+        emitter.addInitialize(new Proton.Position(new Proton.RectZone(0, 0, this.canvas.width, this.canvas.height)));
+        emitter.addInitialize(new Proton.Velocity(new Proton.Span(0.5, 1.5), new Proton.Span(0, 360), 'polar'));
+        emitter.addBehaviour(new Proton.Color('#FF1493', '#8B008B'));
+        emitter.addBehaviour(new Proton.Alpha(0.8, 0));
+        emitter.addBehaviour(new Proton.Scale(1, 0.3));
+        this.attractionBehaviour = new Proton.Attraction(this.nosePosition, 20, 400);
+        emitter.addBehaviour(this.attractionBehaviour);
+        emitter.emit();
+        this.proton.addEmitter(emitter);
+        this.protonEmitterArray.push(emitter);
+        this.rendererGL = new Proton.WebGLRenderer(this.canvasGL);
+        this.proton.addRenderer(this.rendererGL);
+    }
+
+    /** Wave field from shoulders */
+    this.cParticleWaveField = function() {
+        this.proton = new Proton();
+        for(let i = 0; i < 6; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(15, 20), 0.1);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(6, 14));
+            emitter.addInitialize(new Proton.Life(2, 4));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(3, 6), new Proton.Span(i * 60, (i+1) * 60), 'polar'));
+            emitter.addBehaviour(new Proton.Color('#00CED1', '#4682B4'));
+            emitter.addBehaviour(new Proton.Alpha(0.5, 0));
+            emitter.addBehaviour(new Proton.Scale(2.5, 0.1));
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        this.rendererGL = new Proton.WebGLRenderer(this.canvasGL);
+        this.proton.addRenderer(this.rendererGL);
+    }
+
+    /** Vortex effect */
+    this.cParticleVortex = function() {
+        this.proton = new Proton();
+        const emitter = new Proton.Emitter();
+        emitter.rate = new Proton.Rate(new Proton.Span(60, 100), 0.2);
+        emitter.addInitialize(new Proton.Mass(1));
+        emitter.addInitialize(new Proton.Radius(4, 10));
+        emitter.addInitialize(new Proton.Life(2, 4));
+        emitter.addInitialize(new Proton.Position(new Proton.RectZone(0, 0, this.canvas.width, this.canvas.height)));
+        emitter.addInitialize(new Proton.Velocity(new Proton.Span(1, 3), new Proton.Span(0, 360), 'polar'));
+        emitter.addBehaviour(new Proton.Color('#9400D3', '#4B0082'));
+        emitter.addBehaviour(new Proton.Alpha(0.7, 0));
+        emitter.addBehaviour(new Proton.Scale(1.5, 0.2));
+        emitter.addBehaviour(new Proton.Cyclone(3, 100));
+        emitter.emit();
+        this.proton.addEmitter(emitter);
+        this.protonEmitterArray.push(emitter);
+        this.rendererGL = new Proton.WebGLRenderer(this.canvasGL);
+        this.proton.addRenderer(this.rendererGL);
+    }
+
+    /** Electric arcs */
+    this.cParticleElectric = function() {
+        this.proton = new Proton();
+        for(let i = 0; i < 8; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(20, 30), 0.05);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(2, 5));
+            emitter.addInitialize(new Proton.Life(0.1, 0.3));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(5, 10), new Proton.Span(0, 360), 'polar'));
+            emitter.addBehaviour(new Proton.Color('#FFFFFF', '#00FFFF'));
+            emitter.addBehaviour(new Proton.Alpha(1, 0));
+            emitter.addBehaviour(new Proton.Scale(2, 0));
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        this.rendererGL = new Proton.WebGLRenderer(this.canvasGL);
+        this.proton.addRenderer(this.rendererGL);
+    }
+
+    /** Rainbow trail */
+    this.cParticleRainbowTrail = function() {
+        this.proton = new Proton();
+        const colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#9400D3'];
+        for(let i = 0; i < 2; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(30, 40), 0.1);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(8, 16));
+            emitter.addInitialize(new Proton.Life(2, 4));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(0.5, 1.5), new Proton.Span(0, 360), 'polar'));
+            emitter.addBehaviour(new Proton.Color(colors));
+            emitter.addBehaviour(new Proton.Alpha(0.9, 0));
+            emitter.addBehaviour(new Proton.Scale(2.5, 0.1));
+            emitter.addBehaviour(new Proton.RandomDrift(15, 15, 0.03));
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        this.rendererGL = new Proton.WebGLRenderer(this.canvasGL);
+        this.proton.addRenderer(this.rendererGL);
+    }
+
+    /** Star field */
+    this.cParticleStarField = function() {
+        this.proton = new Proton();
+        const emitter = new Proton.Emitter();
+        emitter.rate = new Proton.Rate(new Proton.Span(100, 150), 0.5);
+        emitter.addInitialize(new Proton.Mass(1));
+        emitter.addInitialize(new Proton.Radius(2, 6));
+        emitter.addInitialize(new Proton.Life(4, 8));
+        emitter.addInitialize(new Proton.Position(new Proton.RectZone(0, 0, this.canvas.width, this.canvas.height)));
+        emitter.addInitialize(new Proton.Velocity(new Proton.Span(0.2, 0.8), new Proton.Span(0, 360), 'polar'));
+        emitter.addBehaviour(new Proton.Color('#FFFFFF', '#FFFACD'));
+        emitter.addBehaviour(new Proton.Alpha(0.8, 0));
+        emitter.addBehaviour(new Proton.Scale(1, 0.3));
+        this.attractionBehaviour = new Proton.Attraction(this.nosePosition, 5, 300);
+        emitter.addBehaviour(this.attractionBehaviour);
+        emitter.emit();
+        this.proton.addEmitter(emitter);
+        this.protonEmitterArray.push(emitter);
+        this.rendererGL = new Proton.WebGLRenderer(this.canvasGL);
+        this.proton.addRenderer(this.rendererGL);
+    }
+
+    /** Bubbles */
+    this.cParticleBubbles = function() {
+        this.proton = new Proton();
+        for(let i = 0; i < 2; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(15, 25), 0.2);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(10, 25));
+            emitter.addInitialize(new Proton.Life(3, 6));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(1, 2), new Proton.Span(80, 100), 'polar'));
+            emitter.addBehaviour(new Proton.Color('#87CEEB', '#E0F6FF'));
+            emitter.addBehaviour(new Proton.Alpha(0.6, 0));
+            emitter.addBehaviour(new Proton.Scale(1, 2));
+            emitter.addBehaviour(new Proton.RandomDrift(20, 5, 0.04));
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        this.rendererGL = new Proton.WebGLRenderer(this.canvasGL);
+        this.proton.addRenderer(this.rendererGL);
+    }
+
+    /** Fireworks */
+    this.cParticleFireworks = function() {
+        this.proton = new Proton();
+        for(let i = 0; i < 2; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(40, 60), 0.15);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(4, 10));
+            emitter.addInitialize(new Proton.Life(1, 2.5));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(4, 8), new Proton.Span(0, 360), 'polar'));
+            emitter.addBehaviour(new Proton.Color(['#FF0000', '#FFA500', '#FFFF00', '#00FF00', '#0000FF', '#FF00FF']));
+            emitter.addBehaviour(new Proton.Alpha(1, 0));
+            emitter.addBehaviour(new Proton.Scale(2, 0));
+            emitter.addBehaviour(new Proton.Gravity(2));
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        this.rendererGL = new Proton.WebGLRenderer(this.canvasGL);
+        this.proton.addRenderer(this.rendererGL);
+    }
+
+    /** Neon glow */
+    this.cParticleNeonGlow = function() {
+        this.proton = new Proton();
+        const colors = ['#FF1493', '#00FFFF', '#00FF00', '#FF00FF', '#FFD700', '#FF6347'];
+        for(let i = 0; i < 12; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(20, 30), 0.1);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(8, 18));
+            emitter.addInitialize(new Proton.Life(0.8, 1.5));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(1, 3), new Proton.Span(0, 360), 'polar'));
+            emitter.addBehaviour(new Proton.Color(colors[i % colors.length]));
+            emitter.addBehaviour(new Proton.Alpha(0.8, 0));
+            emitter.addBehaviour(new Proton.Scale(2, 0.1));
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        this.rendererGL = new Proton.WebGLRenderer(this.canvasGL);
+        this.proton.addRenderer(this.rendererGL);
+    }
+
+    /** Aurora */
+    this.cParticleAurora = function() {
+        this.proton = new Proton();
+        const emitter = new Proton.Emitter();
+        emitter.rate = new Proton.Rate(new Proton.Span(80, 120), 0.3);
+        emitter.addInitialize(new Proton.Mass(1));
+        emitter.addInitialize(new Proton.Radius(10, 25));
+        emitter.addInitialize(new Proton.Life(3, 6));
+        emitter.addInitialize(new Proton.Velocity(new Proton.Span(1, 3), new Proton.Span(60, 120), 'polar'));
+        emitter.addBehaviour(new Proton.Color(['#00FF00', '#00FFFF', '#0080FF', '#FF00FF']));
+        emitter.addBehaviour(new Proton.Alpha(0.6, 0));
+        emitter.addBehaviour(new Proton.Scale(3, 0.1));
+        emitter.addBehaviour(new Proton.RandomDrift(50, 20, 0.03));
+        emitter.p.x = this.canvas.width / 2;
+        emitter.p.y = 100;
+        emitter.emit();
+        this.proton.addEmitter(emitter);
+        this.protonEmitterArray.push(emitter);
+        this.rendererGL = new Proton.WebGLRenderer(this.canvasGL);
+        this.proton.addRenderer(this.rendererGL);
+    }
+
+    /** Fog */
+    this.cParticleFog = function() {
+        this.proton = new Proton();
+        const emitter = new Proton.Emitter();
+        emitter.rate = new Proton.Rate(new Proton.Span(30, 50), 0.4);
+        emitter.addInitialize(new Proton.Mass(1));
+        emitter.addInitialize(new Proton.Radius(30, 60));
+        emitter.addInitialize(new Proton.Life(5, 10));
+        emitter.addInitialize(new Proton.Position(new Proton.RectZone(0, this.canvas.height * 0.7, this.canvas.width, this.canvas.height * 0.3)));
+        emitter.addInitialize(new Proton.Velocity(new Proton.Span(0.3, 0.8), new Proton.Span(0, 360), 'polar'));
+        emitter.addBehaviour(new Proton.Color('#CCCCCC', '#EEEEEE'));
+        emitter.addBehaviour(new Proton.Alpha(0.3, 0));
+        emitter.addBehaviour(new Proton.Scale(2, 3));
+        this.repulsionBehaviour = new Proton.Repulsion(this.nosePosition, 30, 200);
+        emitter.addBehaviour(this.repulsionBehaviour);
+        emitter.addBehaviour(new Proton.RandomDrift(15, 10, 0.02));
+        emitter.emit();
+        this.proton.addEmitter(emitter);
+        this.protonEmitterArray.push(emitter);
+        this.rendererGL = new Proton.WebGLRenderer(this.canvasGL);
+        this.proton.addRenderer(this.rendererGL);
+    }
+
+    /** Rain */
+    this.cParticleRain = function() {
+        this.proton = new Proton();
+        const emitter = new Proton.Emitter();
+        emitter.rate = new Proton.Rate(new Proton.Span(100, 150), 0.3);
+        emitter.addInitialize(new Proton.Mass(1));
+        emitter.addInitialize(new Proton.Radius(2, 4));
+        emitter.addInitialize(new Proton.Life(2, 4));
+        emitter.addInitialize(new Proton.Position(new Proton.LineZone(0, 0, this.canvas.width, 0)));
+        emitter.addInitialize(new Proton.Velocity(new Proton.Span(5, 8), new Proton.Span(85, 95), 'polar'));
+        emitter.addBehaviour(new Proton.Color('#4169E1', '#1E90FF'));
+        emitter.addBehaviour(new Proton.Alpha(0.7, 0));
+        emitter.addBehaviour(new Proton.Scale(1, 0.3));
+        this.repulsionBehaviour = new Proton.Repulsion(this.nosePosition, 40, 180);
+        emitter.addBehaviour(this.repulsionBehaviour);
+        emitter.addBehaviour(new Proton.Gravity(3));
+        emitter.emit();
+        this.proton.addEmitter(emitter);
+        this.protonEmitterArray.push(emitter);
+        this.rendererGL = new Proton.WebGLRenderer(this.canvasGL);
+        this.proton.addRenderer(this.rendererGL);
+    }
+
+    /** Falling leaves */
+    this.cParticleLeaves = function() {
+        this.proton = new Proton();
+        const emitter = new Proton.Emitter();
+        emitter.rate = new Proton.Rate(new Proton.Span(40, 60), 0.5);
+        emitter.addInitialize(new Proton.Mass(1));
+        emitter.addInitialize(new Proton.Radius(8, 16));
+        emitter.addInitialize(new Proton.Life(6, 12));
+        emitter.addInitialize(new Proton.Position(new Proton.LineZone(0, 0, this.canvas.width, 0)));
+        emitter.addInitialize(new Proton.Velocity(new Proton.Span(1, 2), new Proton.Span(85, 95), 'polar'));
+        emitter.addBehaviour(new Proton.Color(['#FF4500', '#FFD700', '#8B4513', '#FF6347', '#CD853F']));
+        emitter.addBehaviour(new Proton.Alpha(0.8, 0));
+        emitter.addBehaviour(new Proton.Scale(1, 0.5));
+        this.repulsionBehaviour = new Proton.Repulsion(this.nosePosition, 35, 220);
+        emitter.addBehaviour(this.repulsionBehaviour);
+        emitter.addBehaviour(new Proton.RandomDrift(40, 20, 0.04));
+        emitter.addBehaviour(new Proton.Gravity(1));
+        emitter.addBehaviour(new Proton.Rotate());
+        emitter.emit();
+        this.proton.addEmitter(emitter);
+        this.protonEmitterArray.push(emitter);
+        this.rendererGL = new Proton.WebGLRenderer(this.canvasGL);
+        this.proton.addRenderer(this.rendererGL);
+    }
+
+    // ========== NEW CANVAS ANIMATIONS ==========
+
+    /**
+     * Draw skeleton 7 times with different scales and positions
+     */
+    this.drawSkeleton7Times = function(pose, canvasPoseCoordinates) {
+        const scales = [1.0, 0.3, 0.6, 0.9, 1.2, 0.4, 0.7];
+        const offsets = [
+            {x: 0, y: 0},
+            {x: this.canvas.width/3, y: 0},
+            {x: -this.canvas.width/3, y: 0},
+            {x: 0, y: this.canvas.height/3},
+            {x: 0, y: -this.canvas.height/3},
+            {x: this.canvas.width/4, y: this.canvas.height/4},
+            {x: -this.canvas.width/4, y: -this.canvas.height/4}
+        ];
+
+        for(let i = 0; i < scales.length; i++) {
+            const transformed = detectUtils.transformKeypointsForRender(
+                pose[0].keypoints, this.mainVideo, this.canvas,
+                scales[i], scales[i], offsets[i].x, offsets[i].y
+            );
+            this.drawKeyPoints(transformed);
+            this.drawSkeleton(transformed, i+1);
+        }
+    }
+
+    /**
+     * Draw mirrored skeleton
+     */
+    this.drawSkeletonMirror = function(pose, canvasPoseCoordinates) {
+        this.drawKeyPoints(canvasPoseCoordinates);
+        this.drawSkeleton(canvasPoseCoordinates, 1);
+
+        this.ctx.save();
+        this.ctx.scale(-1, 1);
+        this.ctx.translate(-this.canvas.width, 0);
+        this.drawKeyPoints(canvasPoseCoordinates);
+        this.drawSkeleton(canvasPoseCoordinates, 2);
+        this.ctx.restore();
+    }
+
+    /**
+     * Draw skeleton with rainbow colors
+     */
+    this.drawSkeletonRainbow = function(keypoints) {
+        const colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#9400D3'];
+        let colorIndex = 0;
+
+        for (let i = 0; i < keypoints.length; i++) {
+            const keypoint = keypoints[i];
+            if (keypoint.score >= this.keypointScore) {
+                this.ctx.fillStyle = colors[colorIndex % colors.length];
+                this.ctx.beginPath();
+                this.ctx.arc(keypoint.x, keypoint.y, this.keypointArcSize * 8, 0, 2 * Math.PI);
+                this.ctx.fill();
+                colorIndex++;
+            }
+        }
+
+        const adjacentPairs = poseDetection.util.getAdjacentPairs(poseDetection.SupportedModels.MoveNet);
+        adjacentPairs.forEach((indices, pairIndex) => {
+            const [i, j] = indices;
+            const kp1 = keypoints[i];
+            const kp2 = keypoints[j];
+
+            if (kp1.score >= this.keypointScore && kp2.score >= this.keypointScore) {
+                this.ctx.strokeStyle = colors[pairIndex % colors.length];
+                this.ctx.lineWidth = 3;
+                this.ctx.beginPath();
+                this.ctx.moveTo(kp1.x, kp1.y);
+                this.ctx.lineTo(kp2.x, kp2.y);
+                this.ctx.stroke();
+            }
+        });
+    }
+
+    /**
+     * Draw lines connecting all keypoints to each other
+     */
+    this.drawConnectingDots = function(keypoints) {
+        this.ctx.strokeStyle = 'rgba(100, 200, 255, 0.3)';
+        this.ctx.lineWidth = 1;
+
+        for (let i = 0; i < keypoints.length; i++) {
+            if (keypoints[i].score >= this.keypointScore) {
+                for (let j = i + 1; j < keypoints.length; j++) {
+                    if (keypoints[j].score >= this.keypointScore) {
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(keypoints[i].x, keypoints[i].y);
+                        this.ctx.lineTo(keypoints[j].x, keypoints[j].y);
+                        this.ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        this.drawKeyPoints(keypoints);
+    }
+
+    /**
+     * Draw geometric shapes at keypoints
+     */
+    this.drawGeometricShapes = function(keypoints) {
+        const shapes = ['circle', 'square', 'triangle', 'diamond', 'hexagon'];
+
+        for (let i = 0; i < keypoints.length; i++) {
+            if (keypoints[i].score >= this.keypointScore) {
+                const shape = shapes[i % shapes.length];
+                const x = keypoints[i].x;
+                const y = keypoints[i].y;
+                const size = 15;
+
+                this.ctx.fillStyle = `hsl(${i * 20}, 80%, 60%)`;
+                this.ctx.strokeStyle = `hsl(${i * 20}, 80%, 40%)`;
+                this.ctx.lineWidth = 2;
+
+                this.ctx.beginPath();
+                switch(shape) {
+                    case 'circle':
+                        this.ctx.arc(x, y, size, 0, 2 * Math.PI);
+                        break;
+                    case 'square':
+                        this.ctx.rect(x - size, y - size, size * 2, size * 2);
+                        break;
+                    case 'triangle':
+                        this.ctx.moveTo(x, y - size);
+                        this.ctx.lineTo(x + size, y + size);
+                        this.ctx.lineTo(x - size, y + size);
+                        this.ctx.closePath();
+                        break;
+                    case 'diamond':
+                        this.ctx.moveTo(x, y - size);
+                        this.ctx.lineTo(x + size, y);
+                        this.ctx.lineTo(x, y + size);
+                        this.ctx.lineTo(x - size, y);
+                        this.ctx.closePath();
+                        break;
+                    case 'hexagon':
+                        for(let j = 0; j < 6; j++) {
+                            const angle = (Math.PI / 3) * j;
+                            const hx = x + size * Math.cos(angle);
+                            const hy = y + size * Math.sin(angle);
+                            if(j === 0) this.ctx.moveTo(hx, hy);
+                            else this.ctx.lineTo(hx, hy);
+                        }
+                        this.ctx.closePath();
+                        break;
+                }
+                this.ctx.fill();
+                this.ctx.stroke();
+            }
+        }
+    }
 
     /**
      * Clear WebGLCanvas and remove particles and destroy emitters
