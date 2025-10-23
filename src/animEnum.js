@@ -39,36 +39,36 @@ class AnimEnum{
     static particleLightSab = new AnimEnum('particleLightSab', "&#x1F41A", 22);
 
     // NEW ANIMATIONS - Canvas Variations
-    static skeleton7Times = new AnimEnum('skeleton7Times', "&#x1F981", null);
-    static skeletonMirror = new AnimEnum('skeletonMirror', "&#x1F985", null);
-    static skeletonRainbow = new AnimEnum('skeletonRainbow', "&#x1F308", null);
-    static connectingDots = new AnimEnum('connectingDots', "&#x1F988", null);
-    static geometricShapes = new AnimEnum('geometricShapes', "&#x1F98B", null);
+    static skeleton7Times = new AnimEnum('skeleton7Times', "&#x1F981", null);        // Lion
+    static skeletonMirror = new AnimEnum('skeletonMirror', "&#x1F985", null);        // Eagle
+    static skeletonRainbow = new AnimEnum('skeletonRainbow', "&#x1F308", null);      // Rainbow
+    static connectingDots = new AnimEnum('connectingDots', "&#x1F577", null);        // Spider
+    static geometricShapes = new AnimEnum('geometricShapes', "&#x1F48E", null);      // Gem
 
     // NEW ANIMATIONS - Particle Tracking
-    static particleAllJoints = new AnimEnum('particleAllJoints', "&#x1F98E", 23);
-    static particleFeetTrail = new AnimEnum('particleFeetTrail', "&#x1F993", 24);
-    static particleKneeCircles = new AnimEnum('particleKneeCircles', "&#x1F992", 25);
-    static particleShoulderWaves = new AnimEnum('particleShoulderWaves', "&#x1F98F", 26);
+    static particleAllJoints = new AnimEnum('particleAllJoints', "&#x2728", 23);     // Sparkles
+    static particleFeetTrail = new AnimEnum('particleFeetTrail', "&#x1F463", 24);    // Footprints
+    static particleKneeCircles = new AnimEnum('particleKneeCircles', "&#x1F4AB", 25); // Dizzy
+    static particleShoulderWaves = new AnimEnum('particleShoulderWaves', "&#x1F30A", 26); // Wave
 
     // NEW ANIMATIONS - Particle Physics
-    static particleBodyMagnet = new AnimEnum('particleBodyMagnet', "&#x1F99B", 27);
-    static particleWaveField = new AnimEnum('particleWaveField', "&#x1F998", 28);
-    static particleVortex = new AnimEnum('particleVortex', "&#x1F999", 29);
-    static particleElectric = new AnimEnum('particleElectric', "&#x1F99A", 30);
+    static particleBodyMagnet = new AnimEnum('particleBodyMagnet', "&#x1F9F2", 27);  // Magnet
+    static particleWaveField = new AnimEnum('particleWaveField', "&#x1F4E1", 28);    // Satellite
+    static particleVortex = new AnimEnum('particleVortex', "&#x1F300", 29);          // Cyclone
+    static particleElectric = new AnimEnum('particleElectric', "&#x26A1", 30);       // Lightning
 
     // NEW ANIMATIONS - Particle Visual Effects
-    static particleRainbowTrail = new AnimEnum('particleRainbowTrail', "&#x1F99C", 31);
-    static particleStarField = new AnimEnum('particleStarField', "&#x1F99D", 32);
-    static particleBubbles = new AnimEnum('particleBubbles', "&#x1F9A1", 33);
-    static particleFireworks = new AnimEnum('particleFireworks', "&#x1F9A2", 34);
-    static particleNeonGlow = new AnimEnum('particleNeonGlow', "&#x1F9A5", 35);
+    static particleRainbowTrail = new AnimEnum('particleRainbowTrail', "&#x1F308", 31); // Rainbow
+    static particleStarField = new AnimEnum('particleStarField', "&#x2B50", 32);        // Star
+    static particleBubbles = new AnimEnum('particleBubbles', "&#x1F4A7", 33);           // Droplet
+    static particleFireworks = new AnimEnum('particleFireworks', "&#x1F386", 34);       // Fireworks
+    static particleNeonGlow = new AnimEnum('particleNeonGlow', "&#x1F31F", 35);         // Glowing Star
 
     // NEW ANIMATIONS - Particle Atmospheric
-    static particleAurora = new AnimEnum('particleAurora', "&#x1F9A6", 36);
-    static particleFog = new AnimEnum('particleFog', "&#x1F9A7", 37);
-    static particleRain = new AnimEnum('particleRain', "&#x1F9A8", 38);
-    static particleLeaves = new AnimEnum('particleLeaves', "&#x1F9A9", 39);
+    static particleAurora = new AnimEnum('particleAurora', "&#x1F319", 36);         // Crescent Moon
+    static particleFog = new AnimEnum('particleFog', "&#x1F32B", 37);               // Fog
+    static particleRain = new AnimEnum('particleRain', "&#x1F327", 38);             // Rain Cloud
+    static particleLeaves = new AnimEnum('particleLeaves', "&#x1F342", 39);         // Fallen Leaf
 
     constructor(name, icon, id) {
         this.name = name;
@@ -82,10 +82,46 @@ class AnimEnum{
      * @returns {*[]}
      */
     static getNameArray(){
-        var nameArray = [];
-        Object.keys(AnimEnum).forEach(animName => nameArray.push(animName));
-        //console.log(nameArray);
-        return nameArray;
+        return [
+            'skeleton', 'skeleton3Times', 'skeleton5Times', 'puppetsPlayer', 'spiderWeb',
+            'particleHandsBall', 'particle2BallHead', 'particleRightHandLine', 'particleNoseGravity',
+            'particleNoseSupernova', 'particleHandsTrackFromBorder', 'particleUpperBodyGlow',
+            'particleGlowPainting', 'particlePainting', 'particlePaintRandomDrift', 'particleCometThrower',
+            'particleBodyGlow', 'particleBurningMan', 'particleCyclone', 'particleSun',
+            'particleFireFly', 'particleFireFlyColor', 'particleSpit', 'particle2BallHeadExp',
+            'particleMatrix', 'particleSnow', 'particleSnowHoriz', 'particleLightSab',
+            'skeleton7Times', 'skeletonMirror', 'skeletonRainbow', 'connectingDots', 'geometricShapes',
+            'particleAllJoints', 'particleFeetTrail', 'particleKneeCircles', 'particleShoulderWaves',
+            'particleBodyMagnet', 'particleWaveField', 'particleVortex', 'particleElectric',
+            'particleRainbowTrail', 'particleStarField', 'particleBubbles', 'particleFireworks',
+            'particleNeonGlow', 'particleAurora', 'particleFog', 'particleRain', 'particleLeaves'
+        ];
+    }
+
+    /**
+     * Get all animation objects as array
+     *
+     * @returns {AnimEnum[]}
+     */
+    static getAllAnimations(){
+        return [
+            AnimEnum.skeleton, AnimEnum.skeleton3Times, AnimEnum.skeleton5Times, AnimEnum.puppetsPlayer,
+            AnimEnum.spiderWeb, AnimEnum.particleHandsBall, AnimEnum.particle2BallHead,
+            AnimEnum.particleRightHandLine, AnimEnum.particleNoseGravity, AnimEnum.particleNoseSupernova,
+            AnimEnum.particleHandsTrackFromBorder, AnimEnum.particleUpperBodyGlow, AnimEnum.particleGlowPainting,
+            AnimEnum.particlePainting, AnimEnum.particlePaintRandomDrift, AnimEnum.particleCometThrower,
+            AnimEnum.particleBodyGlow, AnimEnum.particleBurningMan, AnimEnum.particleCyclone,
+            AnimEnum.particleSun, AnimEnum.particleFireFly, AnimEnum.particleFireFlyColor,
+            AnimEnum.particleSpit, AnimEnum.particle2BallHeadExp, AnimEnum.particleMatrix,
+            AnimEnum.particleSnow, AnimEnum.particleSnowHoriz, AnimEnum.particleLightSab,
+            AnimEnum.skeleton7Times, AnimEnum.skeletonMirror, AnimEnum.skeletonRainbow,
+            AnimEnum.connectingDots, AnimEnum.geometricShapes, AnimEnum.particleAllJoints,
+            AnimEnum.particleFeetTrail, AnimEnum.particleKneeCircles, AnimEnum.particleShoulderWaves,
+            AnimEnum.particleBodyMagnet, AnimEnum.particleWaveField, AnimEnum.particleVortex,
+            AnimEnum.particleElectric, AnimEnum.particleRainbowTrail, AnimEnum.particleStarField,
+            AnimEnum.particleBubbles, AnimEnum.particleFireworks, AnimEnum.particleNeonGlow,
+            AnimEnum.particleAurora, AnimEnum.particleFog, AnimEnum.particleRain, AnimEnum.particleLeaves
+        ];
     }
 }
 

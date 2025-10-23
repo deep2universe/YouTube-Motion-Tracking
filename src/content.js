@@ -162,21 +162,9 @@ function initVideoPlayerPopup(){
 
     // Generate animation grid dynamically for all 50 animations
     let animationButtonsHTML = '';
-    const allAnimations = [
-        AnimEnum.skeleton, AnimEnum.skeleton3Times, AnimEnum.skeleton5Times, AnimEnum.puppetsPlayer, AnimEnum.spiderWeb,
-        AnimEnum.particleHandsBall, AnimEnum.particle2BallHead, AnimEnum.particleRightHandLine, AnimEnum.particleNoseGravity,
-        AnimEnum.particleNoseSupernova, AnimEnum.particleHandsTrackFromBorder, AnimEnum.particleUpperBodyGlow, AnimEnum.particleGlowPainting,
-        AnimEnum.particlePainting, AnimEnum.particlePaintRandomDrift, AnimEnum.particleCometThrower, AnimEnum.particleBodyGlow,
-        AnimEnum.particleBurningMan, AnimEnum.particleCyclone, AnimEnum.particleSun, AnimEnum.particleFireFly,
-        AnimEnum.particleFireFlyColor, AnimEnum.particleSpit, AnimEnum.particle2BallHeadExp, AnimEnum.particleMatrix,
-        AnimEnum.particleSnow, AnimEnum.particleSnowHoriz, AnimEnum.particleLightSab,
-        // NEW ANIMATIONS
-        AnimEnum.skeleton7Times, AnimEnum.skeletonMirror, AnimEnum.skeletonRainbow, AnimEnum.connectingDots, AnimEnum.geometricShapes,
-        AnimEnum.particleAllJoints, AnimEnum.particleFeetTrail, AnimEnum.particleKneeCircles, AnimEnum.particleShoulderWaves,
-        AnimEnum.particleBodyMagnet, AnimEnum.particleWaveField, AnimEnum.particleVortex, AnimEnum.particleElectric,
-        AnimEnum.particleRainbowTrail, AnimEnum.particleStarField, AnimEnum.particleBubbles, AnimEnum.particleFireworks,
-        AnimEnum.particleNeonGlow, AnimEnum.particleAurora, AnimEnum.particleFog, AnimEnum.particleRain, AnimEnum.particleLeaves
-    ];
+    const allAnimations = AnimEnum.getAllAnimations();
+
+    console.log('Total animations loaded:', allAnimations.length);
 
     // Create rows with 5 animations each
     const animsPerRow = 5;
