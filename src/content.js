@@ -176,10 +176,9 @@ function initVideoPlayerPopup(){
 
         const anim = allAnimations[i];
         const isFirst = (i === 0) ? ' selectButton' : '';
-        animationButtonsHTML += `
-        <div id="` + anim.name + `" class="col-3-Button` + isFirst + `">
-            <span onclick="document.dispatchEvent(new CustomEvent('changeVisualizationFromPlayer', { detail: {animationID:'` + anim.name + `'} }));">` + anim.icon + `</span>
-        </div>`;
+        animationButtonsHTML += '<div id="' + anim.name + '" class="col-3-Button' + isFirst + '">';
+        animationButtonsHTML += '<span onclick="document.dispatchEvent(new CustomEvent(\'changeVisualizationFromPlayer\', { detail: {animationID:\'' + anim.name + '\'} }));">' + anim.icon + '</span>';
+        animationButtonsHTML += '</div>';
     }
     animationButtonsHTML += '</div>';
 
