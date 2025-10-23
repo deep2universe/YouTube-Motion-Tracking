@@ -66,6 +66,8 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
      * @param animationId new animation ID
      */
     this.setNewAnimation = function (animationId) {
+        console.log('setNewAnimation called with:', animationId);
+        console.log('AnimEnum check - skeleton7Times.name:', AnimEnum.skeleton7Times.name);
         this.clearWebGL();
         if (animationId === AnimEnum.skeleton.name) {
             this.currentAnimation = AnimEnum.skeleton.name;
@@ -336,6 +338,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
 
         // NEW PARTICLE ANIMATIONS
         } else if (this.particleID === AnimEnum.particleAllJoints.id) {
+            console.log('Initializing particleAllJoints with ID:', this.particleID);
             this.cParticleAllJoints();
         } else if (this.particleID === AnimEnum.particleFeetTrail.id) {
             this.cParticleFeetTrail();
@@ -441,6 +444,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
 
         // NEW CANVAS ANIMATIONS
         }else if (this.currentAnimation === AnimEnum.skeleton7Times.name) {
+            console.log('Drawing skeleton7Times animation');
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.drawSkeleton7Times(pose, canvasPoseCoordinates);
 
