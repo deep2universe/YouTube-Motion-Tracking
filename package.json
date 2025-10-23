@@ -8,7 +8,9 @@
     "copyImages": "cp -r src/images dist/",
     "copyCSS": "cp src/*.css dist/",
     "copy": "npm run copyManifest && npm run copyHTML && npm run copyImages && npm run copyCSS",
-    "build:parcel": "npx parcel build src/*.html src/*.js --public-url ./ && npm run copy"
+    "clean": "rm -rf dist .parcel-cache",
+    "build:parcel": "npx parcel build src/*.html src/*.js --public-url ./ && npm run copy",
+    "build:clean": "npm run clean && npm run build:parcel"
   },
   "keywords": [
     "Chrome",
