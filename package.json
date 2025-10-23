@@ -1,6 +1,6 @@
 {
   "name": "YouTube™ motion tracking",
-  "version": "1.0.0",
+  "version": "1.4.0",
   "description": "YouTube™ AI extension for for animating videos",
   "scripts": {
     "copyHTML": "cp src/*.html dist/",
