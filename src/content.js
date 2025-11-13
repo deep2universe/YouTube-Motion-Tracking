@@ -52,8 +52,8 @@ var isAnimDisabled = false; // if true, do not show animations
  * @see AnimEnum
  * @type {string[]}
  */
-var allAnimationIDs = AnimEnum.getNameArray();
-var currentAnimation = "skeleton";  // used for resize event to init particles if needed
+var allAnimationIDs = AnimEnum.getNameArray(); // Halloween Edition - 18 animations
+var currentAnimation = "skeletonGlow";  // Halloween Edition default animation
 var randomSwitchSec=10;             // sec between animation switch
 var randomSwitchIntervalID=null;    // interval for random animation switch
 
@@ -163,11 +163,11 @@ function initVideoPlayerPopup(){
 
     div.className = 'posedream-video-popup';
 
-    // Generate animation grid dynamically for all 50 animations
+    // Halloween Edition - Generate animation grid for 18 animations
     let animationButtonsHTML = '';
     const allAnimations = AnimEnum.getAllAnimations();
 
-    console.log('Total animations loaded:', allAnimations.length);
+    console.log('Halloween Edition - Total animations loaded:', allAnimations.length);
 
     // Create rows with 5 animations each
     const animsPerRow = 5;
@@ -584,7 +584,7 @@ function readCurrentAnimationName(){
     chrome.storage.sync.get(['currentAnimationName'], function (result) {
         let currentAnim = result.currentAnimationName;
         if(currentAnim === undefined){
-            currentAnimation = "skeleton"
+            currentAnimation = "skeletonGlow" // Halloween Edition default
         }else {
             currentAnimation = currentAnim;
         }

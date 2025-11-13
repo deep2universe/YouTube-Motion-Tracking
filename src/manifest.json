@@ -1,7 +1,7 @@
 {
-  "name": "YouTube™ motion tracking",
-  "description": "AI extension for motion animation in YouTube™ videos",
-  "version": "1.4",
+  "name": "YouTube Motion Tracking - Halloween Edition",
+  "description": "AI-powered Halloween animation effects for YouTube videos with real-time pose detection. Features 18 spooky animations including glowing skeletons, pumpkin heads, bats, ghosts, and magical effects!",
+  "version": "2.0.0",
   "manifest_version": 3,
   "background": {
     "service_worker": "background.js"
