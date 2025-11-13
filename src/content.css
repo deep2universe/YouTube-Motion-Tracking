@@ -6,9 +6,9 @@
     overflow-y: auto;
     overflow-x: hidden;
     border-radius: 12px;
-    /* Halloween dark theme with orange border */
-    background: linear-gradient(135deg, rgba(20, 20, 20, 0.97), rgba(30, 15, 0, 0.95));
-    border: 3px solid #FF6600;
+    /* Halloween dark theme with orange border - 94% transparent (6% opacity) */
+    background: linear-gradient(135deg, rgba(20, 20, 20, 0.06), rgba(30, 15, 0, 0.06));
+    border: 3px solid rgba(255, 102, 0, 0.8);
     box-shadow: 0 0 30px rgba(255, 102, 0, 0.6), 0 0 60px rgba(139, 0, 255, 0.3);
     text-shadow: 0 0 3px rgba(0,0,0,0.7);
     -webkit-transition: opacity .15s cubic-bezier(0,0,0.2,1);
@@ -16,8 +16,8 @@
     -moz-user-select: none;
     -ms-user-select: none;
     -webkit-user-select: none;
-    width: 480px;
-    max-height: 650px;
+    width: 420px;
+    max-height: 500px;
     height: auto;
     right: 140px;
     bottom: 70px;
@@ -169,7 +169,7 @@
     gap: 6px;
 }
 
-/* Individual animation buttons */
+/* Individual animation buttons - 20% transparent (80% opacity) */
 .col-3-Button {
     position: relative;
     width: 100%;
@@ -182,9 +182,10 @@
     cursor: pointer;
     transition: all 0.25s ease;
     border-radius: 10px;
-    background: linear-gradient(135deg, rgba(45, 45, 45, 0.7), rgba(30, 30, 30, 0.8));
-    border: 2px solid rgba(139, 0, 255, 0.3);
+    background: linear-gradient(135deg, rgba(45, 45, 45, 0.8), rgba(30, 30, 30, 0.8));
+    border: 2px solid rgba(139, 0, 255, 0.8);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    opacity: 0.8;
 }
 
 .col-3-Button:hover {
