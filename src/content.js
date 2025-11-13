@@ -56,6 +56,7 @@ var allAnimationIDs = AnimEnum.getNameArray(); // Halloween Edition - 18 animati
 var currentAnimation = "skeletonGlow";  // Halloween Edition default animation
 var randomSwitchSec=10;             // sec between animation switch
 var randomSwitchIntervalID=null;    // interval for random animation switch
+var isRandomModeActive=false;       // track if random mode is currently active
 
 var showPlayerPopup=false;          // Player popup initial don't show
 
@@ -161,6 +162,7 @@ function init() {
 
     readIsAnimDisabled();
     readCurrentAnimationName();
+    readRandomSettings(); // Load random mode settings
 
     initButtonInPlayer()
 
@@ -195,9 +197,7 @@ chrome.runtime.onMessage.addListener(
  */
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-        if(randomSwitchIntervalID){
-            clearInterval(randomSwitchIntervalID);
-        }
+        stopRandomMode(); // Stop random mode when animation is changed from popup
         setNewAnimation(request.animation);
     }
 );
@@ -278,8 +278,8 @@ function initVideoPlayerPopup(){
 <div class="panelTitle">🎃 Halloween Animations 👻</div>
 
 <div style="padding: 0 15px;">
-    <button id="randomButton" class="pdVideoButton" onclick="document.dispatchEvent(new CustomEvent('runRandomAnimation'));">🎲 Random Mode (10s)</button>
-    <input type="range" min="2" max="60" value="10" id="randomRange" onclick="document.dispatchEvent(new CustomEvent('changeRandomInterval', { detail: {interval:this.value} }));">
+    <button id="randomButton" class="pdVideoButton" onclick="document.dispatchEvent(new CustomEvent('runRandomAnimation'));">🎲 Random Mode (` + randomSwitchSec + `s)</button>
+    <input type="range" min="2" max="60" value="` + randomSwitchSec + `" id="randomRange" onchange="document.dispatchEvent(new CustomEvent('changeRandomInterval', { detail: {interval:this.value} }));">
 </div>
 
 <div style="padding: 0 15px; margin-top: 10px;">
@@ -392,12 +392,12 @@ function startDetection() {
  */
 document.addEventListener('changeVisualizationFromPlayer', function (e) {
     updateSelectedButton(e.detail.animationID)
-    clearRandomSwitchInterval();
+    stopRandomMode(); // Stop random mode when user manually selects animation
     setNewAnimation(e.detail.animationID)
 });
 
 document.addEventListener('changeIsAnimDisabled', function (e) {
-    clearRandomSwitchInterval();
+    stopRandomMode(); // Stop random mode when animations are disabled
     isAnimDisabled = !isAnimDisabled;
     saveIsAnimDisabled(isAnimDisabled);
 
@@ -463,7 +463,15 @@ document.addEventListener('changeRandomInterval', function (e) {
     if (randomButton) {
         randomButton.innerText="Randomly change every " + e.detail.interval +"s";
     }
-    randomSwitchSec= e.detail.interval;
+    randomSwitchSec = e.detail.interval;
+    
+    // Save the new interval
+    saveRandomSettings(randomSwitchSec, isRandomModeActive);
+    
+    // If random mode is active, restart with new interval
+    if(isRandomModeActive) {
+        startRandomMode();
+    }
 });
 
 /**
@@ -476,17 +484,38 @@ function clearRandomSwitchInterval(){
 }
 
 /**
- * Event to start the random animation
+ * Start random animation mode
  */
-document.addEventListener('runRandomAnimation', function (e) {
-
+function startRandomMode() {
     clearRandomSwitchInterval();
-
+    
+    isRandomModeActive = true;
+    saveRandomSettings(randomSwitchSec, true);
+    
     randomSwitchIntervalID = setInterval(function (){
         let rndNum = Math.floor(Math.random() * allAnimationIDs.length);
         updateSelectedButton(allAnimationIDs[rndNum]);
         setNewAnimation(allAnimationIDs[rndNum]);
     }, 1000*randomSwitchSec);
+    
+    console.log('Random mode started with interval:', randomSwitchSec);
+}
+
+/**
+ * Stop random animation mode
+ */
+function stopRandomMode() {
+    clearRandomSwitchInterval();
+    isRandomModeActive = false;
+    saveRandomSettings(randomSwitchSec, false);
+    console.log('Random mode stopped');
+}
+
+/**
+ * Event to start the random animation
+ */
+document.addEventListener('runRandomAnimation', function (e) {
+    startRandomMode();
 });
 
 /**
@@ -785,6 +814,37 @@ function readCurrentAnimationName(){
         if(anim !== null) {
             console.log('Applying loaded animation to anim object:', currentAnimation);
             anim.setNewAnimation(currentAnimation);
+        }
+    });
+}
+
+function saveRandomSettings(interval, isActive){
+    chrome.storage.sync.set({
+        randomSwitchSec: interval,
+        isRandomModeActive: isActive
+    }, function() {
+        console.log('Random settings saved:', interval, 'sec, active:', isActive);
+    });
+}
+
+function readRandomSettings(){
+    chrome.storage.sync.get(['randomSwitchSec', 'isRandomModeActive'], function (result) {
+        if(result.randomSwitchSec !== undefined){
+            randomSwitchSec = result.randomSwitchSec;
+            console.log('Loaded random interval:', randomSwitchSec);
+            
+            // Update UI if button exists
+            const randomButton = document.getElementById("randomButton");
+            if (randomButton) {
+                randomButton.innerText = "Randomly change every " + randomSwitchSec + "s";
+            }
+        }
+        
+        if(result.isRandomModeActive === true){
+            isRandomModeActive = true;
+            console.log('Random mode was active, restarting...');
+            // Restart random mode
+            startRandomMode();
         }
     });
 }
