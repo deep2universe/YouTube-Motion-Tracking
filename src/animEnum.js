@@ -35,6 +35,15 @@ class AnimEnum{
     static particleLightning = new AnimEnum('particleLightning', "&#x26A8;&#xFE0F;", 8);     // ⚨️ Lightning Bolt
     static particleAutumnLeaves = new AnimEnum('particleAutumnLeaves', "&#x1F342;&#x1F341;", 9); // 🍂🍁 Autumn Leaves
 
+    // ========== PARTICLE EFFECTS - MYSTICAL POWERS (New Category) ==========
+    static mysticSoulStream = new AnimEnum('mysticSoulStream', "&#x1F47B;&#x1F300;", 10);    // 👻🌀 Soul Stream
+    static mysticBloodMoon = new AnimEnum('mysticBloodMoon', "&#x1F534;&#x1F319;", 11);      // 🔴🌙 Blood Moon
+    static mysticCurse = new AnimEnum('mysticCurse', "&#x1F4A0;&#x2728;", 12);               // 💠✨ Curse Symbols
+    static mysticPortal = new AnimEnum('mysticPortal', "&#x1F573;&#xFE0F;", 13);             // 🕳️ Portal
+    static mysticNecromancy = new AnimEnum('mysticNecromancy', "&#x2620;&#xFE0F;&#x1F4AB;", 14); // ☠️💫 Necromancy
+    static mysticVortex = new AnimEnum('mysticVortex', "&#x1F300;&#x1F7E3;", 15);            // 🌀🟣 Vortex
+    static mysticRunes = new AnimEnum('mysticRunes', "&#x2734;&#xFE0F;&#x1F52E;", 16);       // ✴️🔮 Runes
+
     constructor(name, icon, id) {
         this.name = name;
         this.icon = icon;
@@ -44,7 +53,7 @@ class AnimEnum{
     /**
      * Get all Halloween animation names as array
      *
-     * @returns {string[]} Array of 18 Halloween animation names
+     * @returns {string[]} Array of 25 Halloween animation names
      */
     static getNameArray(){
         return [
@@ -57,14 +66,17 @@ class AnimEnum{
             // Particle - Magical (3)
             'particleWitchMagic', 'particleSpellCast', 'particleDarkEnergy',
             // Particle - Atmospheric (3)
-            'particleFog', 'particleLightning', 'particleAutumnLeaves'
+            'particleFog', 'particleLightning', 'particleAutumnLeaves',
+            // Particle - Mystical Powers (7)
+            'mysticSoulStream', 'mysticBloodMoon', 'mysticCurse', 'mysticPortal', 
+            'mysticNecromancy', 'mysticVortex', 'mysticRunes'
         ];
     }
 
     /**
      * Get all Halloween animation objects as array
      *
-     * @returns {AnimEnum[]} Array of 18 Halloween AnimEnum objects
+     * @returns {AnimEnum[]} Array of 25 Halloween AnimEnum objects
      */
     static getAllAnimations(){
         return [
@@ -79,7 +91,10 @@ class AnimEnum{
             // Particle - Magical (3)
             AnimEnum.particleWitchMagic, AnimEnum.particleSpellCast, AnimEnum.particleDarkEnergy,
             // Particle - Atmospheric (3)
-            AnimEnum.particleFog, AnimEnum.particleLightning, AnimEnum.particleAutumnLeaves
+            AnimEnum.particleFog, AnimEnum.particleLightning, AnimEnum.particleAutumnLeaves,
+            // Particle - Mystical Powers (7)
+            AnimEnum.mysticSoulStream, AnimEnum.mysticBloodMoon, AnimEnum.mysticCurse, 
+            AnimEnum.mysticPortal, AnimEnum.mysticNecromancy, AnimEnum.mysticVortex, AnimEnum.mysticRunes
         ];
     }
 }

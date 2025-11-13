@@ -242,7 +242,7 @@ function initVideoPlayerPopup(){
 
     div.className = 'posedream-video-popup';
 
-    // Halloween Edition - Generate categorized animation grid for 18 animations
+    // Halloween Edition - Generate categorized animation grid for 25 animations
     let animationButtonsHTML = '';
     const allAnimations = AnimEnum.getAllAnimations();
 
@@ -254,7 +254,8 @@ function initVideoPlayerPopup(){
         { name: '🎃 Pumpkins', start: 5, end: 8 },
         { name: '🦇 Creatures', start: 8, end: 12 },
         { name: '✨ Magic', start: 12, end: 15 },
-        { name: '🌫️ Atmosphere', start: 15, end: 18 }
+        { name: '🌫️ Atmosphere', start: 15, end: 18 },
+        { name: '🔮 Mystical Powers', start: 18, end: 25 }
     ];
 
     // Create categorized animation buttons

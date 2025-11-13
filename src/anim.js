@@ -132,6 +132,35 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         } else if (animationId === AnimEnum.particleAutumnLeaves.name) {
             this.currentAnimation = this.PARTICLE;
             this.particleID = AnimEnum.particleAutumnLeaves.id;
+
+        // ========== PARTICLE EFFECTS - MYSTICAL POWERS ==========
+        } else if (animationId === AnimEnum.mysticSoulStream.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.mysticSoulStream.id;
+
+        } else if (animationId === AnimEnum.mysticBloodMoon.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.mysticBloodMoon.id;
+
+        } else if (animationId === AnimEnum.mysticCurse.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.mysticCurse.id;
+
+        } else if (animationId === AnimEnum.mysticPortal.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.mysticPortal.id;
+
+        } else if (animationId === AnimEnum.mysticNecromancy.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.mysticNecromancy.id;
+
+        } else if (animationId === AnimEnum.mysticVortex.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.mysticVortex.id;
+
+        } else if (animationId === AnimEnum.mysticRunes.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.mysticRunes.id;
         }
 
         // Initialize particle system if particle animation selected
@@ -187,6 +216,28 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
 
         } else if (this.particleID === AnimEnum.particleAutumnLeaves.id) {
             this.cParticleAutumnLeaves();
+
+        // ========== MYSTICAL POWERS ==========
+        } else if (this.particleID === AnimEnum.mysticSoulStream.id) {
+            this.cMysticSoulStream();
+
+        } else if (this.particleID === AnimEnum.mysticBloodMoon.id) {
+            this.cMysticBloodMoon();
+
+        } else if (this.particleID === AnimEnum.mysticCurse.id) {
+            this.cMysticCurse();
+
+        } else if (this.particleID === AnimEnum.mysticPortal.id) {
+            this.cMysticPortal();
+
+        } else if (this.particleID === AnimEnum.mysticNecromancy.id) {
+            this.cMysticNecromancy();
+
+        } else if (this.particleID === AnimEnum.mysticVortex.id) {
+            this.cMysticVortex();
+
+        } else if (this.particleID === AnimEnum.mysticRunes.id) {
+            this.cMysticRunes();
         }
 
         this.startParticleInit = false;
@@ -345,6 +396,70 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
                 this.nosePosition.x = keypoints[0].x;
                 this.nosePosition.y = keypoints[0].y;
                 this.repulsionBehaviour.reset(this.nosePosition, 35, 220);
+                break;
+
+            // ========== MYSTICAL POWERS ==========
+            case AnimEnum.mysticSoulStream.id:
+                // Soul streams from all body points
+                for(let i = 0; i < 8; i++) {
+                    const kpIndex = [0, 5, 6, 9, 10, 11, 12, 15][i]; // nose, shoulders, wrists, hips, left ankle
+                    this.protonEmitterArray[i].p.x = keypoints[kpIndex].x;
+                    this.protonEmitterArray[i].p.y = keypoints[kpIndex].y;
+                }
+                break;
+
+            case AnimEnum.mysticBloodMoon.id:
+                // Blood moon orbits around head
+                this.nosePosition.x = keypoints[0].x;
+                this.nosePosition.y = keypoints[0].y;
+                this.attractionBehaviour.reset(this.nosePosition, 15, 300);
+                break;
+
+            case AnimEnum.mysticCurse.id:
+                // Curse symbols from hands
+                this.protonEmitterArray[0].p.x = keypoints[9].x;
+                this.protonEmitterArray[0].p.y = keypoints[9].y;
+                this.protonEmitterArray[1].p.x = keypoints[10].x;
+                this.protonEmitterArray[1].p.y = keypoints[10].y;
+                break;
+
+            case AnimEnum.mysticPortal.id:
+                // Portal at torso center
+                const torsoX = (keypoints[5].x + keypoints[6].x + keypoints[11].x + keypoints[12].x) / 4;
+                const torsoY = (keypoints[5].y + keypoints[6].y + keypoints[11].y + keypoints[12].y) / 4;
+                this.protonEmitterArray[0].p.x = torsoX;
+                this.protonEmitterArray[0].p.y = torsoY;
+                break;
+
+            case AnimEnum.mysticNecromancy.id:
+                // Necromancy from hands with attraction to head
+                this.protonEmitterArray[0].p.x = keypoints[9].x;
+                this.protonEmitterArray[0].p.y = keypoints[9].y;
+                this.protonEmitterArray[1].p.x = keypoints[10].x;
+                this.protonEmitterArray[1].p.y = keypoints[10].y;
+                this.nosePosition.x = keypoints[0].x;
+                this.nosePosition.y = keypoints[0].y;
+                this.attractionBehaviour.reset(this.nosePosition, 25, 350);
+                break;
+
+            case AnimEnum.mysticVortex.id:
+                // Vortex from torso
+                const vortexX = (keypoints[11].x + keypoints[12].x) / 2;
+                const vortexY = (keypoints[11].y + keypoints[12].y) / 2;
+                this.protonEmitterArray[0].p.x = vortexX;
+                this.protonEmitterArray[0].p.y = vortexY;
+                break;
+
+            case AnimEnum.mysticRunes.id:
+                // Runes from shoulders and hips
+                this.protonEmitterArray[0].p.x = keypoints[5].x;  // left shoulder
+                this.protonEmitterArray[0].p.y = keypoints[5].y;
+                this.protonEmitterArray[1].p.x = keypoints[6].x;  // right shoulder
+                this.protonEmitterArray[1].p.y = keypoints[6].y;
+                this.protonEmitterArray[2].p.x = keypoints[11].x; // left hip
+                this.protonEmitterArray[2].p.y = keypoints[11].y;
+                this.protonEmitterArray[3].p.x = keypoints[12].x; // right hip
+                this.protonEmitterArray[3].p.y = keypoints[12].y;
                 break;
 
             default:
@@ -1266,7 +1381,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
     }
 
     /**
-     * Dark energy - black/purple smoke from body
+     * Dark energy - black/purple smoke from body (tiny particles)
      */
     this.cParticleDarkEnergy = function() {
         this.proton = new Proton();
@@ -1274,16 +1389,16 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         // Create 12 emitters for body points
         for(let i = 0; i < 12; i++) {
             const emitter = new Proton.Emitter();
-            emitter.rate = new Proton.Rate(new Proton.Span(15, 25), 0.2);
+            emitter.rate = new Proton.Rate(new Proton.Span(10, 15), 0.25); // Reduced rate
             emitter.addInitialize(new Proton.Mass(1));
-            emitter.addInitialize(new Proton.Radius(20, 40));
-            emitter.addInitialize(new Proton.Life(3, 5));
+            emitter.addInitialize(new Proton.Radius(4, 8)); // Much smaller: was 20-40, now 4-8
+            emitter.addInitialize(new Proton.Life(2, 4)); // Shorter life
             emitter.addInitialize(new Proton.Velocity(new Proton.Span(1, 2), new Proton.Span(0, 360), 'polar'));
             
-            // Black/purple smoke
+            // Black/purple smoke - more transparent
             emitter.addBehaviour(new Proton.Color('#000000', '#6A0DAD'));
-            emitter.addBehaviour(new Proton.Alpha(0.6, 0));
-            emitter.addBehaviour(new Proton.Scale(3, 0.5));
+            emitter.addBehaviour(new Proton.Alpha(0.3, 0)); // Reduced from 0.6 to 0.3
+            emitter.addBehaviour(new Proton.Scale(1.5, 0.3)); // Much smaller scale: was 3, now 1.5
             emitter.addBehaviour(new Proton.Cyclone(1, 50)); // Swirling vortex
             emitter.addBehaviour(new Proton.RandomDrift(20, 20, 0.03));
             
@@ -1408,6 +1523,231 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         this.protonEmitterArray[1].p.x = keypoints[10].x;
         this.protonEmitterArray[1].p.y = keypoints[10].y;
     }
+
+    // ========== MYSTICAL POWERS ANIMATIONS ==========
+
+    /**
+     * Soul Stream - Ethereal souls flowing from body in spirals
+     */
+    this.cMysticSoulStream = function() {
+        this.proton = new Proton();
+        
+        // Create 8 emitters for major body points
+        for(let i = 0; i < 8; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(15, 25), 0.2); // Reduced rate
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(10, 18));
+            emitter.addInitialize(new Proton.Life(2, 4));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(1, 3), new Proton.Span(0, 360), 'polar'));
+            
+            // Ghostly white/cyan souls - much more transparent
+            emitter.addBehaviour(new Proton.Color('#FFFFFF', '#00FFFF'));
+            emitter.addBehaviour(new Proton.Alpha(0.25, 0)); // Reduced from 0.8 to 0.25
+            emitter.addBehaviour(new Proton.Scale(1.8, 0.2));
+            emitter.addBehaviour(new Proton.Cyclone(1.5, 60)); // Spiral upward
+            emitter.addBehaviour(new Proton.Gravity(-0.8)); // Float upward
+            
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        
+        this.tryWebGLRendererInit();
+    }
+
+    /**
+     * Blood Moon - Red orbs orbiting around head
+     */
+    this.cMysticBloodMoon = function() {
+        this.proton = new Proton();
+        
+        const emitter = new Proton.Emitter();
+        emitter.rate = new Proton.Rate(new Proton.Span(25, 35), 0.3);
+        emitter.addInitialize(new Proton.Mass(1));
+        emitter.addInitialize(new Proton.Radius(12, 20));
+        emitter.addInitialize(new Proton.Life(4, 6));
+        emitter.addInitialize(new Proton.Position(new Proton.CircleZone(this.canvas.width / 2, this.canvas.height / 2, 100)));
+        emitter.addInitialize(new Proton.Velocity(new Proton.Span(0.5, 1.5), new Proton.Span(0, 360), 'polar'));
+        
+        // Blood red with dark red
+        emitter.addBehaviour(new Proton.Color('#DC143C', '#8B0000'));
+        emitter.addBehaviour(new Proton.Alpha(0.9, 0.2));
+        emitter.addBehaviour(new Proton.Scale(1.5, 0.8));
+        emitter.addBehaviour(new Proton.Rotate());
+        
+        // Attraction to create orbit
+        this.nosePosition = { x: this.canvas.width / 2, y: this.canvas.height / 2 };
+        this.attractionBehaviour = new Proton.Attraction(this.nosePosition, 15, 300);
+        emitter.addBehaviour(this.attractionBehaviour);
+        
+        emitter.emit();
+        this.proton.addEmitter(emitter);
+        this.protonEmitterArray.push(emitter);
+        
+        this.tryWebGLRendererInit();
+    }
+
+    /**
+     * Curse - Dark purple symbols spiraling from hands
+     */
+    this.cMysticCurse = function() {
+        this.proton = new Proton();
+        
+        // Create 2 emitters for hands
+        for(let i = 0; i < 2; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(30, 40), 0.1);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(6, 12));
+            emitter.addInitialize(new Proton.Life(1.5, 2.5));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(2, 4), new Proton.Span(0, 360), 'polar'));
+            
+            // Dark purple/black curse
+            emitter.addBehaviour(new Proton.Color('#4B0082', '#000000'));
+            emitter.addBehaviour(new Proton.Alpha(1.0, 0));
+            emitter.addBehaviour(new Proton.Scale(2.5, 0.1));
+            emitter.addBehaviour(new Proton.Cyclone(3, 90)); // Fast spiral
+            emitter.addBehaviour(new Proton.RandomDrift(20, 20, 0.05));
+            
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        
+        this.tryWebGLRendererInit();
+    }
+
+    /**
+     * Portal - Swirling vortex at torso center
+     */
+    this.cMysticPortal = function() {
+        this.proton = new Proton();
+        
+        const emitter = new Proton.Emitter();
+        emitter.rate = new Proton.Rate(new Proton.Span(40, 60), 0.1);
+        emitter.addInitialize(new Proton.Mass(1));
+        emitter.addInitialize(new Proton.Radius(8, 16));
+        emitter.addInitialize(new Proton.Life(2, 3));
+        emitter.addInitialize(new Proton.Velocity(new Proton.Span(3, 6), new Proton.Span(0, 360), 'polar'));
+        
+        // Purple/blue portal colors
+        emitter.addBehaviour(new Proton.Color(['#8B00FF', '#4169E1', '#00CED1']));
+        emitter.addBehaviour(new Proton.Alpha(0.9, 0));
+        emitter.addBehaviour(new Proton.Scale(2, 0.1));
+        emitter.addBehaviour(new Proton.Cyclone(4, 100)); // Strong vortex
+        
+        emitter.p.x = this.canvas.width / 2;
+        emitter.p.y = this.canvas.height / 2;
+        emitter.emit();
+        this.proton.addEmitter(emitter);
+        this.protonEmitterArray.push(emitter);
+        
+        this.tryWebGLRendererInit();
+    }
+
+    /**
+     * Necromancy - Green death energy from hands attracted to head
+     */
+    this.cMysticNecromancy = function() {
+        this.proton = new Proton();
+        
+        // Create 2 emitters for hands
+        for(let i = 0; i < 2; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(25, 35), 0.15);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(10, 18));
+            emitter.addInitialize(new Proton.Life(2.5, 4));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(1.5, 3), new Proton.Span(0, 360), 'polar'));
+            
+            // Toxic green/black necromancy
+            emitter.addBehaviour(new Proton.Color('#00FF00', '#006400'));
+            emitter.addBehaviour(new Proton.Alpha(0.85, 0));
+            emitter.addBehaviour(new Proton.Scale(1.8, 0.3));
+            emitter.addBehaviour(new Proton.Cyclone(2, 70));
+            
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        
+        // Attraction to head
+        this.nosePosition = { x: this.canvas.width / 2, y: this.canvas.height / 2 };
+        this.attractionBehaviour = new Proton.Attraction(this.nosePosition, 25, 350);
+        this.protonEmitterArray[0].addBehaviour(this.attractionBehaviour);
+        this.protonEmitterArray[1].addBehaviour(this.attractionBehaviour);
+        
+        this.tryWebGLRendererInit();
+    }
+
+    /**
+     * Vortex - Massive swirling energy from torso
+     */
+    this.cMysticVortex = function() {
+        this.proton = new Proton();
+        
+        const emitter = new Proton.Emitter();
+        emitter.rate = new Proton.Rate(new Proton.Span(35, 50), 0.12); // Reduced rate
+        emitter.addInitialize(new Proton.Mass(1));
+        emitter.addInitialize(new Proton.Radius(6, 14));
+        emitter.addInitialize(new Proton.Life(1.5, 2.5));
+        emitter.addInitialize(new Proton.Velocity(new Proton.Span(4, 7), new Proton.Span(0, 360), 'polar'));
+        
+        // Multi-colored vortex - much more transparent
+        emitter.addBehaviour(new Proton.Color(['#FF00FF', '#00FFFF', '#FFFF00', '#FF6600']));
+        emitter.addBehaviour(new Proton.Alpha(0.3, 0)); // Reduced from 0.95 to 0.3
+        emitter.addBehaviour(new Proton.Scale(2.2, 0.1));
+        emitter.addBehaviour(new Proton.Cyclone(5, 120)); // Very strong spiral
+        
+        emitter.p.x = this.canvas.width / 2;
+        emitter.p.y = this.canvas.height / 2;
+        emitter.emit();
+        this.proton.addEmitter(emitter);
+        this.protonEmitterArray.push(emitter);
+        
+        this.tryWebGLRendererInit();
+    }
+
+    /**
+     * Runes - Mystical symbols from shoulders and hips
+     */
+    this.cMysticRunes = function() {
+        this.proton = new Proton();
+        
+        // Create 4 emitters for shoulders and hips
+        for(let i = 0; i < 4; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(12, 20), 0.25); // Reduced rate
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(12, 20));
+            emitter.addInitialize(new Proton.Life(3, 5));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(0.8, 2), new Proton.Span(0, 360), 'polar'));
+            
+            // Golden/orange runes - much more transparent
+            emitter.addBehaviour(new Proton.Color('#FFD700', '#FF8C00'));
+            emitter.addBehaviour(new Proton.Alpha(0.3, 0)); // Reduced from 0.9 to 0.3
+            emitter.addBehaviour(new Proton.Scale(1.5, 0.5));
+            emitter.addBehaviour(new Proton.Cyclone(1, 50)); // Gentle spiral
+            emitter.addBehaviour(new Proton.Rotate()); // Rotating symbols
+            
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        
+        this.tryWebGLRendererInit();
+    }
+
+    // ========== HELPER METHODS ==========
 
     /**
      * Try WebGL renderer, fallback to Canvas if unavailable
