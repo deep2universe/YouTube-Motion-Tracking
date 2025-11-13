@@ -444,3 +444,45 @@ Make each skeleton animation unique and more Halloween-themed with distinct visu
 5. **Neon**: Electric arcs, face network, neon tubes, crackling energy
 
 **Result**: Each skeleton animation is now completely unique with distinct Halloween-themed visual effects. No two animations look similar anymore.
+
+---
+
+## 18. Fix and Improve Creature Animations ✅ COMPLETED
+
+Fix pumpkin rotation and improve creature particle animations.
+
+- [x] 18.1 Fix pumpkin head rotation
+  - Added 180-degree rotation (Math.PI) to flip pumpkins right-side up
+  - Fixed both pumpkinClassic and pumpkinEvil animations
+  - Fixed skullHead animation rotation
+  - _Requirements: 2.1, 2.2, 2.3, 10.1_
+
+- [x] 18.2 Redesign Bat Swarm with real bat silhouettes
+  - Replaced simple particles with detailed bat silhouettes
+  - Implemented custom bat drawing function with body, head, ears, and wings
+  - Added animated wing flapping effect
+  - Created erratic flight patterns for realistic bat movement
+  - Bats spawn from both wrists with purple glow
+  - Canvas-based rendering for precise control
+  - _Requirements: 3.1, 3.2, 3.3, 10.1_
+
+- [x] 18.3 Make Ghost Trail more transparent
+  - Reduced alpha from 0.7 to 0.15 for much better transparency
+  - Reduced particle rate from 8-12 to 5-8 for less density
+  - Reduced particle size from 15-30 to 12-20
+  - Shortened particle life from 3-6 to 2-4 seconds
+  - Video now clearly visible through ghost particles
+  - _Requirements: 3.1, 3.2, 3.3, 10.1_
+
+- [x] 18.4 Build and verify
+  - Successfully rebuilt extension
+  - No compilation errors
+  - All fixes applied correctly
+  - _Requirements: 10.1, 10.2_
+
+**Improvements Made:**
+1. **Pumpkins**: Now display right-side up instead of upside down
+2. **Bat Swarm**: Real bat silhouettes with animated wings, body, head, and ears
+3. **Ghost Trail**: Much more transparent (85% more transparent), video clearly visible
+
+**Result**: Pumpkins are correctly oriented, bats look like actual bats with flapping wings, and ghosts are transparent enough to see the video behind them.

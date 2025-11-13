@@ -1076,7 +1076,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
     // ========== PARTICLE ANIMATIONS - CREATURES ==========
 
     /**
-     * Bat swarm from hands
+     * Bat swarm from hands - simple circles with high initial alpha that fades
      */
     this.cParticleBatSwarm = function() {
         this.proton = new Proton();
@@ -1090,9 +1090,9 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
             emitter.addInitialize(new Proton.Life(2, 4));
             emitter.addInitialize(new Proton.Velocity(new Proton.Span(3, 6), new Proton.Span(0, 360), 'polar'));
             
-            // Black bats with purple glow
+            // Black bats with purple glow - high initial alpha that fades to dark
             emitter.addBehaviour(new Proton.Color('#000000', '#8B00FF'));
-            emitter.addBehaviour(new Proton.Alpha(0.9, 0));
+            emitter.addBehaviour(new Proton.Alpha(1.0, 0)); // Start at full opacity (1.0), fade to 0
             emitter.addBehaviour(new Proton.Scale(1.5, 0.3));
             emitter.addBehaviour(new Proton.RandomDrift(40, 40, 0.08)); // Erratic flight
             
@@ -1115,17 +1115,17 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         // Create 12 emitters for major body points
         for(let i = 0; i < 12; i++) {
             const emitter = new Proton.Emitter();
-            emitter.rate = new Proton.Rate(new Proton.Span(8, 12), 0.15);
+            emitter.rate = new Proton.Rate(new Proton.Span(5, 8), 0.2); // Reduced rate for less density
             emitter.addInitialize(new Proton.Mass(1));
-            emitter.addInitialize(new Proton.Radius(15, 30));
-            emitter.addInitialize(new Proton.Life(3, 6));
-            emitter.addInitialize(new Proton.Velocity(new Proton.Span(0.5, 1.5), new Proton.Span(0, 360), 'polar'));
+            emitter.addInitialize(new Proton.Radius(12, 20)); // Smaller particles
+            emitter.addInitialize(new Proton.Life(2, 4)); // Shorter life
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(0.3, 1.0), new Proton.Span(0, 360), 'polar'));
             
-            // Translucent white/blue ghosts
+            // Much more translucent white/blue ghosts - reduced alpha significantly
             emitter.addBehaviour(new Proton.Color('#FFFFFF', '#E0F6FF'));
-            emitter.addBehaviour(new Proton.Alpha(0.7, 0));
-            emitter.addBehaviour(new Proton.Scale(2, 0.5));
-            emitter.addBehaviour(new Proton.Gravity(-0.5)); // Slight upward drift
+            emitter.addBehaviour(new Proton.Alpha(0.15, 0)); // Changed from 0.7 to 0.15 for transparency
+            emitter.addBehaviour(new Proton.Scale(1.5, 0.3)); // Smaller scale
+            emitter.addBehaviour(new Proton.Gravity(-0.3)); // Slight upward drift
             
             emitter.p.x = this.canvas.width / 2;
             emitter.p.y = this.canvas.height / 2;
