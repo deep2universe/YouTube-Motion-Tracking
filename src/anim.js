@@ -436,37 +436,50 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
     // ========== SKELETON CANVAS ANIMATIONS ==========
 
     /**
-     * Draw glowing skeleton with pulsating orange/green effect
+     * Draw glowing skeleton with pulsating energy rings
+     * Features: Pulsating rings around joints, energy connections, varying line thickness
      */
     this.drawSkeletonGlow = function(keypoints) {
-        // Pulsating glow effect
         const time = Date.now() / 1000;
-        const pulse = (Math.sin(time * 2) + 1) / 2; // 0 to 1
-        const alpha = 0.5 + pulse * 0.5; // 0.5 to 1
-
-        // Draw glowing keypoints
-        for (let keypoint of keypoints) {
-            if(keypoint.score < this.keypointScore) continue;
+        const pulse = (Math.sin(time * 3) + 1) / 2; // 0 to 1
+        
+        // Draw energy rings around major joints
+        const majorJoints = [0, 5, 6, 9, 10, 11, 12]; // nose, shoulders, wrists, hips
+        for (let i of majorJoints) {
+            const kp = keypoints[i];
+            if(kp.score < this.keypointScore) continue;
             
-            // Outer glow
-            this.ctx.shadowBlur = 20;
-            this.ctx.shadowColor = '#00FF00'; // Green glow
-            this.ctx.fillStyle = `rgba(255, 102, 0, ${alpha})`; // Orange
-            this.ctx.beginPath();
-            this.ctx.arc(keypoint.x, keypoint.y, 6, 0, 2 * Math.PI);
-            this.ctx.fill();
+            // Multiple pulsating rings
+            for(let ring = 0; ring < 3; ring++) {
+                const ringSize = 15 + ring * 10 + pulse * 8;
+                const ringAlpha = (1 - ring * 0.3) * (0.3 + pulse * 0.4);
+                
+                this.ctx.strokeStyle = `rgba(0, 255, 0, ${ringAlpha})`;
+                this.ctx.lineWidth = 2;
+                this.ctx.shadowBlur = 15;
+                this.ctx.shadowColor = '#00FF00';
+                this.ctx.beginPath();
+                this.ctx.arc(kp.x, kp.y, ringSize, 0, 2 * Math.PI);
+                this.ctx.stroke();
+            }
         }
 
-        // Draw glowing skeleton
-        this.ctx.shadowBlur = 15;
+        // Draw skeleton with varying thickness
+        this.ctx.shadowBlur = 10;
         this.ctx.shadowColor = '#FF6600';
-        this.ctx.strokeStyle = `rgba(255, 102, 0, ${alpha})`;
-        this.ctx.lineWidth = 3;
-
+        
         poseDetection.util.getAdjacentPairs(poseDetection.SupportedModels.MoveNet).forEach(([i, j]) => {
             const kp1 = keypoints[i];
             const kp2 = keypoints[j];
             if (kp1.score >= this.keypointScore && kp2.score >= this.keypointScore) {
+                // Vary thickness: face thin, torso thick, limbs medium
+                let thickness = 3;
+                if(i <= 4 || j <= 4) thickness = 1.5; // Face connections - thin
+                else if((i === 5 || i === 6) && (j === 11 || j === 12)) thickness = 6; // Torso - thick
+                else if(i >= 5 && i <= 10 && j >= 5 && j <= 10) thickness = 4; // Arms - medium
+                
+                this.ctx.strokeStyle = `rgba(255, 102, 0, ${0.7 + pulse * 0.3})`;
+                this.ctx.lineWidth = thickness;
                 this.ctx.beginPath();
                 this.ctx.moveTo(kp1.x, kp1.y);
                 this.ctx.lineTo(kp2.x, kp2.y);
@@ -474,24 +487,74 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
             }
         });
 
-        // Reset shadow
+        // Draw glowing core keypoints
+        for (let keypoint of keypoints) {
+            if(keypoint.score < this.keypointScore) continue;
+            
+            this.ctx.shadowBlur = 20;
+            this.ctx.shadowColor = '#00FF00';
+            this.ctx.fillStyle = `rgba(255, 255, 0, ${0.8 + pulse * 0.2})`;
+            this.ctx.beginPath();
+            this.ctx.arc(keypoint.x, keypoint.y, 4, 0, 2 * Math.PI);
+            this.ctx.fill();
+        }
+
         this.ctx.shadowBlur = 0;
     }
 
     /**
-     * Draw skeleton with shaking/dancing effect
+     * Draw dancing skeleton with trailing afterimages and rhythm-based movement
+     * Features: Multiple ghost trails, rhythmic scaling, face triangle connection
      */
     this.drawSkeletonDance = function(keypoints) {
-        // Add random jitter to create shaking effect
-        const jitterAmount = 3;
+        const time = Date.now() / 1000;
+        const beat = Math.sin(time * 4); // Fast rhythm
+        const jitterAmount = 2 + Math.abs(beat) * 3;
+        
+        // Draw 3 afterimage trails
+        for(let trail = 0; trail < 3; trail++) {
+            const trailAlpha = 0.15 - trail * 0.05;
+            const trailOffset = trail * 8;
+            
+            this.ctx.strokeStyle = `rgba(139, 0, 255, ${trailAlpha})`;
+            this.ctx.lineWidth = 3 - trail * 0.5;
+            
+            poseDetection.util.getAdjacentPairs(poseDetection.SupportedModels.MoveNet).forEach(([i, j]) => {
+                const kp1 = keypoints[i];
+                const kp2 = keypoints[j];
+                if (kp1.score >= this.keypointScore && kp2.score >= this.keypointScore) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(kp1.x - trailOffset, kp1.y);
+                    this.ctx.lineTo(kp2.x - trailOffset, kp2.y);
+                    this.ctx.stroke();
+                }
+            });
+        }
+        
+        // Draw main skeleton with jitter
         const jitteredKeypoints = keypoints.map(kp => ({
             ...kp,
             x: kp.x + (Math.random() - 0.5) * jitterAmount,
             y: kp.y + (Math.random() - 0.5) * jitterAmount
         }));
 
-        // Draw with purple/orange colors
-        this.ctx.strokeStyle = '#8B00FF'; // Purple
+        // Draw face triangle (nose to ears)
+        if(keypoints[0].score >= this.keypointScore && 
+           keypoints[3].score >= this.keypointScore && 
+           keypoints[4].score >= this.keypointScore) {
+            this.ctx.strokeStyle = '#FF00FF';
+            this.ctx.lineWidth = 2;
+            this.ctx.beginPath();
+            this.ctx.moveTo(jitteredKeypoints[0].x, jitteredKeypoints[0].y); // nose
+            this.ctx.lineTo(jitteredKeypoints[3].x, jitteredKeypoints[3].y); // left ear
+            this.ctx.lineTo(jitteredKeypoints[4].x, jitteredKeypoints[4].y); // right ear
+            this.ctx.closePath();
+            this.ctx.stroke();
+        }
+
+        // Draw main skeleton with rhythm-based colors
+        const colorShift = Math.floor((beat + 1) * 127);
+        this.ctx.strokeStyle = `rgb(${colorShift}, 0, ${255 - colorShift})`;
         this.ctx.lineWidth = 4;
 
         poseDetection.util.getAdjacentPairs(poseDetection.SupportedModels.MoveNet).forEach(([i, j]) => {
@@ -505,34 +568,73 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
             }
         });
 
-        // Draw keypoints
+        // Draw pulsating keypoints
         for (let kp of jitteredKeypoints) {
             if(kp.score < this.keypointScore) continue;
-            this.ctx.fillStyle = '#FF6600'; // Orange
+            const size = 4 + Math.abs(beat) * 3;
+            this.ctx.fillStyle = '#FF6600';
             this.ctx.beginPath();
-            this.ctx.arc(kp.x, kp.y, 5, 0, 2 * Math.PI);
+            this.ctx.arc(kp.x, kp.y, size, 0, 2 * Math.PI);
             this.ctx.fill();
         }
     }
 
     /**
-     * Draw X-ray style skeleton with green phosphorescent glow
+     * Draw X-ray skeleton with bone structure and medical scan lines
+     * Features: Thick bones, thin joints, scanning effect, medical grid
      */
     this.drawSkeletonXRay = function(keypoints) {
+        const time = Date.now() / 1000;
+        
         // Dark background overlay
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // X-ray green glow
-        this.ctx.shadowBlur = 25;
-        this.ctx.shadowColor = '#00FF00';
-        this.ctx.strokeStyle = '#00FF00';
-        this.ctx.lineWidth = 2;
+        // Draw scanning line effect
+        const scanY = (time * 100) % this.canvas.height;
+        this.ctx.fillStyle = 'rgba(0, 255, 0, 0.1)';
+        this.ctx.fillRect(0, scanY - 50, this.canvas.width, 100);
+        
+        // Draw medical grid
+        this.ctx.strokeStyle = 'rgba(0, 255, 0, 0.05)';
+        this.ctx.lineWidth = 1;
+        for(let x = 0; x < this.canvas.width; x += 50) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(x, 0);
+            this.ctx.lineTo(x, this.canvas.height);
+            this.ctx.stroke();
+        }
+        for(let y = 0; y < this.canvas.height; y += 50) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, y);
+            this.ctx.lineTo(this.canvas.width, y);
+            this.ctx.stroke();
+        }
 
+        // Draw bones with varying thickness (thicker = bone, thinner = joint)
+        this.ctx.shadowBlur = 20;
+        this.ctx.shadowColor = '#00FF00';
+        
         poseDetection.util.getAdjacentPairs(poseDetection.SupportedModels.MoveNet).forEach(([i, j]) => {
             const kp1 = keypoints[i];
             const kp2 = keypoints[j];
             if (kp1.score >= this.keypointScore && kp2.score >= this.keypointScore) {
+                // Bone thickness varies by body part
+                let thickness = 2;
+                if(i <= 4 || j <= 4) thickness = 1; // Face - very thin
+                else if((i >= 5 && i <= 6) || (j >= 5 && j <= 6)) thickness = 8; // Shoulders - thick
+                else if((i >= 7 && i <= 10) || (j >= 7 && j <= 10)) thickness = 5; // Arms - medium
+                else if((i >= 11 && i <= 12) || (j >= 11 && j <= 12)) thickness = 7; // Hips - thick
+                else if((i >= 13 && i <= 16) || (j >= 13 && j <= 16)) thickness = 6; // Legs - thick
+                
+                // Draw bone with gradient effect
+                const gradient = this.ctx.createLinearGradient(kp1.x, kp1.y, kp2.x, kp2.y);
+                gradient.addColorStop(0, '#00FF00');
+                gradient.addColorStop(0.5, '#00DD00');
+                gradient.addColorStop(1, '#00FF00');
+                
+                this.ctx.strokeStyle = gradient;
+                this.ctx.lineWidth = thickness;
                 this.ctx.beginPath();
                 this.ctx.moveTo(kp1.x, kp1.y);
                 this.ctx.lineTo(kp2.x, kp2.y);
@@ -540,94 +642,268 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
             }
         });
 
-        // Draw glowing joints
-        for (let kp of keypoints) {
+        // Draw glowing joints with size variation
+        for (let i = 0; i < keypoints.length; i++) {
+            const kp = keypoints[i];
             if(kp.score < this.keypointScore) continue;
+            
+            // Joint size varies
+            let jointSize = 3;
+            if(i <= 4) jointSize = 2; // Face - small
+            else if(i >= 5 && i <= 6) jointSize = 6; // Shoulders - large
+            else if(i >= 11 && i <= 12) jointSize = 6; // Hips - large
+            else jointSize = 4; // Others - medium
+            
             this.ctx.fillStyle = '#00FF00';
+            this.ctx.shadowBlur = 15;
+            this.ctx.beginPath();
+            this.ctx.arc(kp.x, kp.y, jointSize, 0, 2 * Math.PI);
+            this.ctx.fill();
+        }
+
+        this.ctx.shadowBlur = 0;
+    }
+
+    /**
+     * Draw zombie skeleton caught in spider web with external control lines
+     * Features: Web lines from edges, trapped effect, dripping decay, irregular movement
+     */
+    this.drawSkeletonZombie = function(keypoints) {
+        const time = Date.now() / 1000;
+        
+        // Draw spider web control lines from canvas edges to keypoints
+        const controlPoints = [
+            {x: 0, y: 0}, // top-left
+            {x: this.canvas.width, y: 0}, // top-right
+            {x: 0, y: this.canvas.height}, // bottom-left
+            {x: this.canvas.width, y: this.canvas.height}, // bottom-right
+            {x: this.canvas.width / 2, y: 0}, // top-center
+            {x: this.canvas.width / 2, y: this.canvas.height}, // bottom-center
+        ];
+        
+        // Draw web lines to major joints (shoulders, wrists, hips, ankles)
+        const trappedJoints = [5, 6, 9, 10, 11, 12, 15, 16];
+        this.ctx.strokeStyle = 'rgba(200, 200, 200, 0.3)';
+        this.ctx.lineWidth = 1;
+        
+        for(let jointIdx of trappedJoints) {
+            const kp = keypoints[jointIdx];
+            if(kp.score < this.keypointScore) continue;
+            
+            // Connect to nearest control point
+            const nearestControl = controlPoints.reduce((nearest, cp) => {
+                const dist = Math.sqrt(Math.pow(cp.x - kp.x, 2) + Math.pow(cp.y - kp.y, 2));
+                return dist < nearest.dist ? {cp, dist} : nearest;
+            }, {cp: controlPoints[0], dist: Infinity}).cp;
+            
+            // Draw web line with slight wave
+            const wave = Math.sin(time * 2 + jointIdx) * 5;
+            this.ctx.beginPath();
+            this.ctx.moveTo(nearestControl.x, nearestControl.y);
+            this.ctx.quadraticCurveTo(
+                (nearestControl.x + kp.x) / 2 + wave,
+                (nearestControl.y + kp.y) / 2 + wave,
+                kp.x, kp.y
+            );
+            this.ctx.stroke();
+        }
+
+        // Draw main skeleton with irregular, decaying appearance
+        poseDetection.util.getAdjacentPairs(poseDetection.SupportedModels.MoveNet).forEach(([i, j]) => {
+            const kp1 = keypoints[i];
+            const kp2 = keypoints[j];
+            if (kp1.score >= this.keypointScore && kp2.score >= this.keypointScore) {
+                // Irregular line width for decay effect
+                const irregularity = Math.random() * 2;
+                this.ctx.lineWidth = 4 + irregularity;
+                
+                // Alternating purple/green for zombie effect
+                const colorMix = Math.sin(time + i + j);
+                const r = 139 + colorMix * 50;
+                const g = colorMix > 0 ? 205 : 0;
+                const b = colorMix < 0 ? 255 : 50;
+                this.ctx.strokeStyle = `rgb(${r}, ${g}, ${b})`;
+                
+                // Draw with slight jitter
+                const jitter = 2;
+                this.ctx.beginPath();
+                this.ctx.moveTo(kp1.x + (Math.random() - 0.5) * jitter, kp1.y + (Math.random() - 0.5) * jitter);
+                this.ctx.lineTo(kp2.x + (Math.random() - 0.5) * jitter, kp2.y + (Math.random() - 0.5) * jitter);
+                this.ctx.stroke();
+            }
+        });
+
+        // Draw dripping decay effect from joints
+        for (let i = 0; i < keypoints.length; i++) {
+            const kp = keypoints[i];
+            if(kp.score < this.keypointScore) continue;
+            
+            // Main joint with pulsating glow
+            const pulse = Math.sin(time * 3 + i) * 0.3 + 0.7;
+            this.ctx.fillStyle = `rgba(50, 205, 50, ${pulse})`;
+            this.ctx.shadowBlur = 10;
+            this.ctx.shadowColor = '#32CD32';
+            this.ctx.beginPath();
+            this.ctx.arc(kp.x, kp.y, 5, 0, 2 * Math.PI);
+            this.ctx.fill();
+
+            // Random dripping effect
+            if(Math.random() > 0.6) {
+                const dripLength = 15 + Math.random() * 20;
+                const dripAlpha = 0.3 + Math.random() * 0.3;
+                this.ctx.fillStyle = `rgba(50, 205, 50, ${dripAlpha})`;
+                this.ctx.shadowBlur = 0;
+                this.ctx.fillRect(kp.x - 2, kp.y + 5, 3, dripLength);
+                
+                // Drip droplet at end
+                this.ctx.beginPath();
+                this.ctx.arc(kp.x, kp.y + 5 + dripLength, 2, 0, 2 * Math.PI);
+                this.ctx.fill();
+            }
+        }
+        
+        this.ctx.shadowBlur = 0;
+    }
+
+    /**
+     * Draw neon skeleton with electric arcs and lightning connections
+     * Features: Electric arcs between joints, neon tubes, face connections, crackling energy
+     */
+    this.drawSkeletonNeon = function(keypoints) {
+        const time = Date.now() / 1000;
+        const colors = ['#FF00FF', '#00FFFF', '#FF6600', '#FFFF00'];
+        
+        // Draw electric arcs between random nearby keypoints
+        for(let i = 0; i < keypoints.length; i++) {
+            const kp1 = keypoints[i];
+            if(kp1.score < this.keypointScore) continue;
+            
+            // Randomly connect to nearby keypoints with electric arcs
+            if(Math.random() > 0.7) {
+                for(let j = i + 1; j < keypoints.length; j++) {
+                    const kp2 = keypoints[j];
+                    if(kp2.score < this.keypointScore) continue;
+                    
+                    const dist = Math.sqrt(Math.pow(kp2.x - kp1.x, 2) + Math.pow(kp2.y - kp1.y, 2));
+                    if(dist < 150) { // Only connect nearby points
+                        const color = colors[Math.floor(Math.random() * colors.length)];
+                        this.ctx.strokeStyle = color;
+                        this.ctx.shadowColor = color;
+                        this.ctx.shadowBlur = 20;
+                        this.ctx.lineWidth = 1 + Math.random() * 2;
+                        
+                        // Draw jagged lightning arc
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(kp1.x, kp1.y);
+                        
+                        const segments = 3;
+                        for(let s = 1; s <= segments; s++) {
+                            const t = s / segments;
+                            const x = kp1.x + (kp2.x - kp1.x) * t + (Math.random() - 0.5) * 20;
+                            const y = kp1.y + (kp2.y - kp1.y) * t + (Math.random() - 0.5) * 20;
+                            this.ctx.lineTo(x, y);
+                        }
+                        this.ctx.lineTo(kp2.x, kp2.y);
+                        this.ctx.stroke();
+                    }
+                }
+            }
+        }
+        
+        // Draw face connections (nose to eyes to ears)
+        if(keypoints[0].score >= this.keypointScore) {
+            this.ctx.strokeStyle = '#FFFF00';
+            this.ctx.shadowColor = '#FFFF00';
+            this.ctx.shadowBlur = 25;
+            this.ctx.lineWidth = 2;
+            
+            // Nose to eyes
+            if(keypoints[1].score >= this.keypointScore) {
+                this.ctx.beginPath();
+                this.ctx.moveTo(keypoints[0].x, keypoints[0].y);
+                this.ctx.lineTo(keypoints[1].x, keypoints[1].y);
+                this.ctx.stroke();
+            }
+            if(keypoints[2].score >= this.keypointScore) {
+                this.ctx.beginPath();
+                this.ctx.moveTo(keypoints[0].x, keypoints[0].y);
+                this.ctx.lineTo(keypoints[2].x, keypoints[2].y);
+                this.ctx.stroke();
+            }
+            
+            // Eyes to ears
+            if(keypoints[1].score >= this.keypointScore && keypoints[3].score >= this.keypointScore) {
+                this.ctx.beginPath();
+                this.ctx.moveTo(keypoints[1].x, keypoints[1].y);
+                this.ctx.lineTo(keypoints[3].x, keypoints[3].y);
+                this.ctx.stroke();
+            }
+            if(keypoints[2].score >= this.keypointScore && keypoints[4].score >= this.keypointScore) {
+                this.ctx.beginPath();
+                this.ctx.moveTo(keypoints[2].x, keypoints[2].y);
+                this.ctx.lineTo(keypoints[4].x, keypoints[4].y);
+                this.ctx.stroke();
+            }
+        }
+
+        // Draw main skeleton with neon tube effect
+        this.ctx.shadowBlur = 30;
+        
+        poseDetection.util.getAdjacentPairs(poseDetection.SupportedModels.MoveNet).forEach(([i, j], index) => {
+            const kp1 = keypoints[i];
+            const kp2 = keypoints[j];
+            if (kp1.score >= this.keypointScore && kp2.score >= this.keypointScore) {
+                const color = colors[index % colors.length];
+                const pulse = Math.sin(time * 5 + index) * 0.3 + 0.7;
+                
+                // Outer glow
+                this.ctx.strokeStyle = color;
+                this.ctx.shadowColor = color;
+                this.ctx.lineWidth = 8;
+                this.ctx.globalAlpha = 0.3 * pulse;
+                this.ctx.beginPath();
+                this.ctx.moveTo(kp1.x, kp1.y);
+                this.ctx.lineTo(kp2.x, kp2.y);
+                this.ctx.stroke();
+                
+                // Inner bright line
+                this.ctx.lineWidth = 3;
+                this.ctx.globalAlpha = 1;
+                this.ctx.beginPath();
+                this.ctx.moveTo(kp1.x, kp1.y);
+                this.ctx.lineTo(kp2.x, kp2.y);
+                this.ctx.stroke();
+            }
+        });
+
+        // Draw crackling neon keypoints
+        for (let i = 0; i < keypoints.length; i++) {
+            const kp = keypoints[i];
+            if(kp.score < this.keypointScore) continue;
+            
+            const color = colors[i % colors.length];
+            const pulse = Math.sin(time * 6 + i) * 0.4 + 0.6;
+            
+            // Outer glow
+            this.ctx.fillStyle = color;
+            this.ctx.shadowColor = color;
+            this.ctx.shadowBlur = 25;
+            this.ctx.globalAlpha = 0.5 * pulse;
+            this.ctx.beginPath();
+            this.ctx.arc(kp.x, kp.y, 12, 0, 2 * Math.PI);
+            this.ctx.fill();
+            
+            // Inner bright core
+            this.ctx.globalAlpha = 1;
+            this.ctx.fillStyle = '#FFFFFF';
+            this.ctx.shadowBlur = 15;
             this.ctx.beginPath();
             this.ctx.arc(kp.x, kp.y, 4, 0, 2 * Math.PI);
             this.ctx.fill();
         }
 
         this.ctx.shadowBlur = 0;
-    }
-
-    /**
-     * Draw decaying zombie skeleton with purple/green tones
-     */
-    this.drawSkeletonZombie = function(keypoints) {
-        // Draw main skeleton with purple
-        this.ctx.strokeStyle = '#8B00FF';
-        this.ctx.lineWidth = 5;
-
-        poseDetection.util.getAdjacentPairs(poseDetection.SupportedModels.MoveNet).forEach(([i, j]) => {
-            const kp1 = keypoints[i];
-            const kp2 = keypoints[j];
-            if (kp1.score >= this.keypointScore && kp2.score >= this.keypointScore) {
-                // Irregular line width for decay effect
-                this.ctx.lineWidth = 3 + Math.random() * 3;
-                this.ctx.beginPath();
-                this.ctx.moveTo(kp1.x, kp1.y);
-                this.ctx.lineTo(kp2.x, kp2.y);
-                this.ctx.stroke();
-            }
-        });
-
-        // Draw dripping effect (small particles falling from joints)
-        for (let kp of keypoints) {
-            if(kp.score < this.keypointScore) continue;
-            
-            // Main joint
-            this.ctx.fillStyle = '#32CD32'; // Toxic green
-            this.ctx.beginPath();
-            this.ctx.arc(kp.x, kp.y, 6, 0, 2 * Math.PI);
-            this.ctx.fill();
-
-            // Drip effect
-            if(Math.random() > 0.7) {
-                this.ctx.fillStyle = 'rgba(50, 205, 50, 0.5)';
-                this.ctx.fillRect(kp.x - 2, kp.y + 5, 4, 10 + Math.random() * 10);
-            }
-        }
-    }
-
-    /**
-     * Draw neon skeleton with bright purple/orange electric glow
-     */
-    this.drawSkeletonNeon = function(keypoints) {
-        // Neon glow effect
-        this.ctx.shadowBlur = 30;
-        this.ctx.shadowColor = '#FF00FF';
-        
-        // Draw skeleton with neon colors
-        const colors = ['#FF00FF', '#FF6600', '#00FFFF'];
-        
-        poseDetection.util.getAdjacentPairs(poseDetection.SupportedModels.MoveNet).forEach(([i, j], index) => {
-            const kp1 = keypoints[i];
-            const kp2 = keypoints[j];
-            if (kp1.score >= this.keypointScore && kp2.score >= this.keypointScore) {
-                this.ctx.strokeStyle = colors[index % colors.length];
-                this.ctx.lineWidth = 4;
-                this.ctx.beginPath();
-                this.ctx.moveTo(kp1.x, kp1.y);
-                this.ctx.lineTo(kp2.x, kp2.y);
-                this.ctx.stroke();
-            }
-        });
-
-        // Draw neon keypoints
-        for (let i = 0; i < keypoints.length; i++) {
-            const kp = keypoints[i];
-            if(kp.score < this.keypointScore) continue;
-            
-            this.ctx.fillStyle = colors[i % colors.length];
-            this.ctx.shadowColor = colors[i % colors.length];
-            this.ctx.beginPath();
-            this.ctx.arc(kp.x, kp.y, 8, 0, 2 * Math.PI);
-            this.ctx.fill();
-        }
-
-        this.ctx.shadowBlur = 0;
+        this.ctx.globalAlpha = 1;
     }
 
     // ========== PUMPKIN/HEAD CANVAS ANIMATIONS ==========
