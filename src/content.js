@@ -578,7 +578,7 @@ function createCanvas() {
         videoContainerDIV.appendChild(canvas); // adds the canvas to the body element
     }
     setCanvasStyle(canvas);
-    ctx = canvas.getContext('2d');
+    ctx = canvas.getContext('2d', { willReadFrequently: true });
 }
 
 /**
