@@ -947,7 +947,8 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         // Save context
         this.ctx.save();
         this.ctx.translate(head.centerX, head.centerY);
-        this.ctx.rotate(head.angle);
+        // Rotate 180 degrees (Math.PI) to flip vertically
+        this.ctx.rotate(head.angle + Math.PI);
 
         // Draw pumpkin body
         const pumpkinColor = variant === 'evil' ? '#CC5500' : '#FF8C00';
@@ -1016,7 +1017,8 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         
         this.ctx.save();
         this.ctx.translate(head.centerX, head.centerY);
-        this.ctx.rotate(head.angle);
+        // Rotate 180 degrees (Math.PI) to flip vertically
+        this.ctx.rotate(head.angle + Math.PI);
 
         // Draw skull (bone white)
         this.ctx.fillStyle = '#FFFACD';
