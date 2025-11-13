@@ -242,36 +242,47 @@ function initVideoPlayerPopup(){
 
     div.className = 'posedream-video-popup';
 
-    // Halloween Edition - Generate animation grid for 18 animations
+    // Halloween Edition - Generate categorized animation grid for 18 animations
     let animationButtonsHTML = '';
     const allAnimations = AnimEnum.getAllAnimations();
 
     console.log('Halloween Edition - Total animations loaded:', allAnimations.length);
 
-    // Create rows with 5 animations each
-    const animsPerRow = 5;
-    for (let i = 0; i < allAnimations.length; i++) {
-        if (i % animsPerRow === 0) {
-            if (i > 0) animationButtonsHTML += '</div>';
-            animationButtonsHTML += '<div class="rowButton">';
-        }
+    // Define animation categories
+    const categories = [
+        { name: '💀 Skeletons', start: 0, end: 5 },
+        { name: '🎃 Pumpkins', start: 5, end: 8 },
+        { name: '🦇 Creatures', start: 8, end: 12 },
+        { name: '✨ Magic', start: 12, end: 15 },
+        { name: '🌫️ Atmosphere', start: 15, end: 18 }
+    ];
 
-        const anim = allAnimations[i];
-        const isFirst = (i === 0) ? ' selectButton' : '';
-        animationButtonsHTML += '<div id="' + anim.name + '" class="col-3-Button' + isFirst + '">';
-        animationButtonsHTML += '<span onclick="document.dispatchEvent(new CustomEvent(\'changeVisualizationFromPlayer\', { detail: {animationID:\'' + anim.name + '\'} }));">' + anim.icon + '</span>';
+    // Create categorized animation buttons
+    categories.forEach((category, catIndex) => {
+        animationButtonsHTML += '<div class="categoryHeader">' + category.name + '</div>';
+        animationButtonsHTML += '<div class="rowButton">';
+        
+        for (let i = category.start; i < category.end; i++) {
+            const anim = allAnimations[i];
+            const isFirst = (i === 0) ? ' selectButton' : '';
+            animationButtonsHTML += '<div id="' + anim.name + '" class="col-3-Button' + isFirst + '">';
+            animationButtonsHTML += '<span onclick="document.dispatchEvent(new CustomEvent(\'changeVisualizationFromPlayer\', { detail: {animationID:\'' + anim.name + '\'} }));">' + anim.icon + '</span>';
+            animationButtonsHTML += '</div>';
+        }
+        
         animationButtonsHTML += '</div>';
-    }
-    animationButtonsHTML += '</div>';
+    });
 
     div.innerHTML = `
-<div>
-<button id="randomButton" class="pdVideoButton" onclick="document.dispatchEvent(new CustomEvent('runRandomAnimation'));">Randomly change every 10s</button>
-<input type="range" min="2" max="60" value="10" id="randomRange" onclick="document.dispatchEvent(new CustomEvent('changeRandomInterval', { detail: {interval:this.value} }));">
+<div class="panelTitle">🎃 Halloween Animations 👻</div>
+
+<div style="padding: 0 15px;">
+    <button id="randomButton" class="pdVideoButton" onclick="document.dispatchEvent(new CustomEvent('runRandomAnimation'));">🎲 Random Mode (10s)</button>
+    <input type="range" min="2" max="60" value="10" id="randomRange" onclick="document.dispatchEvent(new CustomEvent('changeRandomInterval', { detail: {interval:this.value} }));">
 </div>
 
-<div>
-<button id="animDisabledDiv" class="pdAnimButtonGreen" onclick="document.dispatchEvent(new CustomEvent('changeIsAnimDisabled'));">   &#x2318 Stop/Play animation   </button>
+<div style="padding: 0 15px; margin-top: 10px;">
+    <button id="animDisabledDiv" class="pdAnimButtonGreen" onclick="document.dispatchEvent(new CustomEvent('changeIsAnimDisabled'));">⏯️ Stop/Play Animation</button>
 </div>
 
 <hr class="sep">
@@ -425,11 +436,16 @@ function updateSelectedButton(selected){
  * (Click event of extension logo icon in player)
  */
 document.addEventListener('displayPoseDreamPopup', function (e) {
+    console.log('displayPoseDreamPopup event triggered');
     var playerPopup = document.getElementsByClassName('posedream-video-popup');
+    console.log('Found popup elements:', playerPopup.length);
+    
     if(playerPopup && playerPopup.length > 0){
         if(showPlayerPopup){
+            console.log('Hiding popup');
             playerPopup[0].style.display = "none"
         }else{
+            console.log('Showing popup');
             playerPopup[0].style.display = "block"
         }
         showPlayerPopup = !showPlayerPopup;
@@ -718,8 +734,13 @@ function initButtonInPlayer() {
                     for (let i = 0; i < animControlsButton.length; i++) {
                         if(animControlsButton[i] !== undefined){
                             animControlsButton[i].insertBefore(button, animControlsButton[i].childNodes[0]);
+                            console.log('Halloween button added to player controls');
                         }
                     }
+                }
+                
+                playerImage.onerror = () => {
+                    console.error('Failed to load Halloween button image');
                 }
             }
             clearInterval(buttonAvailableInterval);

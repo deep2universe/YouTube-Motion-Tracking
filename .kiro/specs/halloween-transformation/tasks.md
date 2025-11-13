@@ -328,3 +328,57 @@ Fix issues when navigating between YouTube videos.
 4. **Error Handling**: Better error handling in animation rendering loop
 
 **Testing**: Please reload the extension in Chrome and test navigating between multiple YouTube videos
+
+---
+
+## 16. Improve UI Layout and Icons ✅ COMPLETED
+
+Redesign the animation panel with better layout and unique icons for each animation.
+
+- [x] 16.1 Update animation icons in AnimEnum
+  - Created unique, descriptive icon combinations for each animation
+  - Skeleton animations: Added sparkles, dance, X-ray, zombie, and explosion effects
+  - Pumpkin animations: Enhanced with evil face and skull variations
+  - Creature animations: Added swarm, trail, web, and floating effects
+  - Magic animations: Enhanced with witch, fire spell, and tornado icons
+  - Atmospheric animations: Improved fog, lightning, and leaf combinations
+  - _Requirements: 6.2, 7.2_
+
+- [x] 16.2 Redesign panel layout with categories
+  - Added category headers for better organization (Skeletons, Pumpkins, Creatures, Magic, Atmosphere)
+  - Improved visual hierarchy with colored category labels
+  - Added panel title "🎃 Halloween Animations 👻"
+  - Better spacing and grouping of animations
+  - _Requirements: 6.3, 7.1_
+
+- [x] 16.3 Enhance visual styling
+  - Increased panel width from 420px to 480px for better visibility
+  - Added gradient backgrounds for depth
+  - Improved button hover effects with scale and glow
+  - Enhanced shadows and borders for Halloween theme
+  - Added backdrop blur for modern look
+  - Better color scheme with orange/purple gradients
+  - _Requirements: 7.1, 7.2, 7.3, 7.4_
+
+- [x] 16.4 Improve button styling
+  - Redesigned random mode button with gradient background
+  - Enhanced Stop/Play button visibility
+  - Added emoji icons to buttons for clarity
+  - Improved hover states with smooth transitions
+  - Better visual feedback on interaction
+  - _Requirements: 7.1, 7.4_
+
+- [x] 16.5 Build and verify
+  - Successfully rebuilt extension
+  - No critical errors (only CSS vendor prefix warnings)
+  - All animations properly categorized
+  - _Requirements: 6.2, 7.1_
+
+**Improvements Made:**
+1. **Unique Icons**: Each animation now has a distinctive icon combination
+2. **Categorized Layout**: Animations grouped into 5 clear categories
+3. **Modern Design**: Gradient backgrounds, better shadows, backdrop blur
+4. **Better UX**: Larger buttons, clearer labels, improved hover effects
+5. **Professional Look**: Panel title, category headers, organized structure
+
+**Result**: The panel is now more visually appealing, easier to navigate, and each animation is clearly identifiable by its unique icon.
