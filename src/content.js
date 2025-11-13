@@ -296,7 +296,7 @@ function initVideoPlayerPopup(){
     // Find video player container with fallback options
     var html5VideoPlayer = document.getElementsByClassName("html5-video-player");
     let playerContainer = html5VideoPlayer && html5VideoPlayer.length > 0
-        ? html5VideoPlayer[videoCollection.length-1]
+        ? html5VideoPlayer[html5VideoPlayer.length-1]
         : null;
 
     if (!playerContainer) {

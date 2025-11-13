@@ -16,12 +16,13 @@
     -moz-user-select: none;
     -ms-user-select: none;
     -webkit-user-select: none;
+    user-select: none;
     width: 420px;
     max-height: 500px;
     height: auto;
     right: 140px;
     bottom: 70px;
-    z-index: 71;
+    z-index: 9999;
     backdrop-filter: blur(10px);
 }
 
