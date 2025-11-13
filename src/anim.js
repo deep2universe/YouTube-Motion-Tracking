@@ -1157,11 +1157,14 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
             }
         }
 
-        this.webGLtx.clear(
-            this.webGLtx.DEPTH_BUFFER_BIT | 
-            this.webGLtx.COLOR_BUFFER_BIT | 
-            this.webGLtx.STENCIL_BUFFER_BIT
-        );
+        // Check if webGLtx exists before trying to clear
+        if(this.webGLtx && this.webGLtx.clear) {
+            this.webGLtx.clear(
+                this.webGLtx.DEPTH_BUFFER_BIT | 
+                this.webGLtx.COLOR_BUFFER_BIT | 
+                this.webGLtx.STENCIL_BUFFER_BIT
+            );
+        }
     }
 }
 

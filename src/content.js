@@ -60,6 +60,68 @@ var randomSwitchIntervalID=null;    // interval for random animation switch
 var showPlayerPopup=false;          // Player popup initial don't show
 
 /**
+ * Cleanup function to remove old canvas elements and reset state
+ */
+function cleanup() {
+    console.log('Cleaning up old canvas elements and state');
+    
+    // Disconnect resize observer from old video
+    if(mainVideo) {
+        try {
+            resizeObserver.unobserve(mainVideo);
+            console.log('Disconnected resize observer from old video');
+        } catch(e) {
+            // Ignore errors if observer wasn't attached
+        }
+    }
+    
+    // Remove old canvas elements
+    const oldCanvas = document.getElementById('canvasdummy');
+    if (oldCanvas) {
+        oldCanvas.remove();
+        console.log('Removed old 2D canvas');
+    }
+    
+    const oldCanvasGL = document.getElementById('canvasdummyGL');
+    if (oldCanvasGL) {
+        oldCanvasGL.remove();
+        console.log('Removed old WebGL canvas');
+    }
+    
+    // Remove old popup
+    const oldPopup = document.querySelector('.posedream-video-popup');
+    if (oldPopup) {
+        oldPopup.remove();
+        console.log('Removed old popup');
+    }
+    
+    // Reset canvas variables
+    canvas = null;
+    canvasGL = null;
+    ctx = null;
+    webGLtx = null;
+    
+    // Reset anim object
+    if(anim !== null) {
+        // Clean up proton emitters if they exist
+        if(anim.proton) {
+            try {
+                anim.proton.destroy();
+            } catch(e) {
+                console.log('Error destroying proton:', e);
+            }
+        }
+        anim = null;
+        console.log('Reset anim object');
+    }
+    
+    // Reset flags
+    isVideoPlay = false;
+    showPlayerPopup = false;
+    isRequestAnimationFrame = false;
+}
+
+/**
  * Init function, called from background.js after url change
  * - get current video stream
  * - init buttons in player
@@ -67,6 +129,11 @@ var showPlayerPopup=false;          // Player popup initial don't show
  * - start motion detection from loadeddata event
  */
 function init() {
+    console.log('Init called for new video');
+    
+    // Cleanup old elements first
+    cleanup();
+    
     // get video element, check if not null and set it to mainVideo
     // because YouTube loads videos dynamically I get a collection
     // the current played video is the last one
@@ -89,6 +156,8 @@ function init() {
        }
        mainVideo = videoCollection ? videoCollection[videoCollection.length - 1] : null;
    }while (mainVideo === null || mainVideo === undefined);
+
+    console.log('Main video found:', !!mainVideo);
 
     readIsAnimDisabled();
     readCurrentAnimationName();
@@ -139,12 +208,22 @@ chrome.runtime.onMessage.addListener(
  */
 function setNewAnimation(animationId){
     console.log('content.js setNewAnimation called with:', animationId);
+    
+    // Validate animation ID - fallback to default if undefined or invalid
+    if(!animationId || animationId === 'undefined') {
+        console.log('Invalid animation ID, using default: skeletonGlow');
+        animationId = 'skeletonGlow';
+    }
+    
     if(anim !== null){
         anim.setNewAnimation(animationId);
         currentAnimation=animationId;
         saveCurrentAnimationName(animationId);
     } else {
-        console.log('ERROR: anim is null!');
+        console.log('WARNING: anim is null, deferring animation switch to:', animationId);
+        // Store the desired animation to apply it once anim is initialized
+        currentAnimation = animationId;
+        saveCurrentAnimationName(animationId);
     }
 
 }
@@ -216,7 +295,13 @@ function initVideoPlayerPopup(){
     }
 
     if (playerContainer) {
+        console.log('Appending popup to player container');
         playerContainer.appendChild(div);
+        console.log('Popup successfully created and appended');
+    } else {
+        console.error('Could not find player container to append popup!');
+        console.log('Tried selectors: .html5-video-player, #movie_player, #player');
+        console.log('videoCollection length:', videoCollection ? videoCollection.length : 'null');
     }
 }
 
@@ -231,13 +316,36 @@ function startDetection() {
 
     // create or update animation object
     if(anim === null){
-        anim = new Anim(mainVideo,canvas, canvasGL, ctx, webGLtx);
+        // Only create anim if canvas elements exist
+        if(canvas && canvasGL && ctx && webGLtx) {
+            console.log('Creating Anim object in startDetection');
+            anim = new Anim(mainVideo,canvas, canvasGL, ctx, webGLtx);
+            
+            // Apply the current animation after anim object is created
+            if(currentAnimation && currentAnimation !== 'undefined') {
+                console.log('Applying current animation in startDetection:', currentAnimation);
+                anim.setNewAnimation(currentAnimation);
+            } else {
+                console.log('No current animation set in startDetection, using default: skeletonGlow');
+                currentAnimation = 'skeletonGlow';
+                anim.setNewAnimation(currentAnimation);
+            }
+        } else {
+            console.log('Canvas elements not ready yet, skipping anim creation');
+        }
     }else{
         anim.updateCanvas(mainVideo,canvas, canvasGL, ctx, webGLtx);
     }
 
-    if (detector !== null && detector !== undefined && isAnimDisabled == false) {
+    if (detector !== null && detector !== undefined && isAnimDisabled == false && anim !== null) {
         if (mainVideo === undefined || !location.href.includes("watch")) {
+            return;
+        }
+
+        // Check if video has valid dimensions before attempting pose detection
+        if (mainVideo.videoWidth === 0 || mainVideo.videoHeight === 0) {
+            // Video not ready yet, skip this frame
+            requestAnimationFrame(startDetection);
             return;
         }
 
@@ -249,14 +357,18 @@ function startDetection() {
 
                 let canvasPoseCoordinates = detectUtils.transformKeypointsForRender(pose[0].keypoints, mainVideo, canvas);
                 // update new estimation keypoints for current animation
-                anim.updateKeypoint(pose, canvasPoseCoordinates);
+                if(anim !== null) {
+                    anim.updateKeypoint(pose, canvasPoseCoordinates);
+                }
 
             }
         }).catch(error => {
             console.error("Pose estimation error:", error);
         });
         // redraw particles
-        anim.updateProton();
+        if(anim !== null) {
+            anim.updateProton();
+        }
     }
     // create animationframe
     requestAnimationFrame(startDetection);
@@ -361,25 +473,35 @@ document.addEventListener('runRandomAnimation', function (e) {
 });
 
 /**
+ * Handler for loadeddata event
+ */
+function handleVideoLoaded(event) {
+    console.log('Video loadeddata event triggered');
+    isVideoPlay = true;
+
+    // Wait a bit for YouTube's player to fully initialize
+    setTimeout(() => {
+        initVideoPlayerPopup();
+        updateAnimDisabledDiv();
+        updateSelectedButton(currentAnimation);
+    }, 500);
+
+    if(isRequestAnimationFrame==false){
+        isRequestAnimationFrame=true;
+        startDetection();
+    }
+}
+
+/**
  * Video event listener.
  * If video is playing, start detection interval, create video player popup dialog
  */
 function addLoadedDataEvent() {
-    mainVideo.addEventListener('loadeddata', (event) => {
-        isVideoPlay = true;
-
-        // Wait a bit for YouTube's player to fully initialize
-        setTimeout(() => {
-            initVideoPlayerPopup();
-            updateAnimDisabledDiv();
-            updateSelectedButton(currentAnimation);
-        }, 500);
-
-        if(isRequestAnimationFrame==false){
-            isRequestAnimationFrame=true;
-            startDetection();
-        }
-    });
+    // Remove old event listener if it exists
+    mainVideo.removeEventListener('loadeddata', handleVideoLoaded);
+    
+    // Add new event listener
+    mainVideo.addEventListener('loadeddata', handleVideoLoaded);
 }
 
 /**
@@ -469,7 +591,64 @@ function createCanvasWebGL() {
         videoContainerDIV.appendChild(canvasGL); // adds the canvas to the body element
     }
     setCanvasStyle(canvasGL);
-    webGLtx = canvasGL.getContext("experimental-webgl");
+    
+    // Try to get WebGL context with fallbacks
+    webGLtx = canvasGL.getContext("webgl") || 
+              canvasGL.getContext("experimental-webgl") ||
+              canvasGL.getContext("webgl2");
+    
+    if (!webGLtx) {
+        console.warn('WebGL not available, particle animations may not work');
+    } else {
+        console.log('WebGL context created successfully');
+    }
+}
+
+/**
+ * Handler for onplaying event
+ */
+function handleVideoPlaying(event) {
+    console.log('Video onplaying event triggered');
+    
+    if (document.getElementById("canvasdummy") === null) {
+        createCanvas();
+    }
+
+    if (document.getElementById("canvasdummyGL") === null) {
+        createCanvasWebGL();
+    }
+
+    // Only observe if not already observing
+    try {
+        resizeObserver.observe(mainVideo);
+    } catch(e) {
+        // Already observing, ignore
+    }
+
+    // Verify canvas elements are ready
+    if(!canvas || !canvasGL || !ctx) {
+        console.error('Canvas elements not properly created!');
+        return;
+    }
+    
+    if(anim === null){
+        console.log('Creating new Anim object');
+        console.log('Canvas ready:', !!canvas, 'CanvasGL ready:', !!canvasGL, 'ctx ready:', !!ctx, 'webGLtx ready:', !!webGLtx);
+        anim = new Anim(mainVideo,canvas, canvasGL, ctx, webGLtx);
+        
+        // Apply the current animation after anim object is created
+        if(currentAnimation && currentAnimation !== 'undefined') {
+            console.log('Applying current animation to new anim object:', currentAnimation);
+            anim.setNewAnimation(currentAnimation);
+        } else {
+            console.log('No current animation set, using default: skeletonGlow');
+            currentAnimation = 'skeletonGlow';
+            anim.setNewAnimation(currentAnimation);
+        }
+    }else{
+        console.log('Updating existing Anim object canvas');
+        anim.updateCanvas(mainVideo,canvas, canvasGL, ctx, webGLtx);
+    }
 }
 
 /**
@@ -479,24 +658,13 @@ function createCanvasWebGL() {
  * - create or update animation object with video and canvas information
  */
 function addOnPlayingEvent(){
-    mainVideo.onplaying = (event) => {
-        if (document.getElementById("canvasdummy") === null) {
-            createCanvas();
-        }
-
-        if (document.getElementById("canvasdummyGL") === null) {
-            createCanvasWebGL();
-        }
-
-        resizeObserver.observe(mainVideo);
-
-        if(anim === null){
-            anim = new Anim(mainVideo,canvas, canvasGL, ctx, webGLtx);
-        }else{
-            anim.updateCanvas(mainVideo,canvas, canvasGL, ctx, webGLtx);
-        }
-
+    // Remove old event listener if it exists
+    if(mainVideo.onplaying) {
+        mainVideo.removeEventListener('playing', handleVideoPlaying);
     }
+    
+    // Add new event listener
+    mainVideo.addEventListener('playing', handleVideoPlaying);
 }
 
 /**
@@ -583,10 +751,18 @@ function saveCurrentAnimationName(value){
 function readCurrentAnimationName(){
     chrome.storage.sync.get(['currentAnimationName'], function (result) {
         let currentAnim = result.currentAnimationName;
-        if(currentAnim === undefined){
-            currentAnimation = "skeletonGlow" // Halloween Edition default
+        if(currentAnim === undefined || currentAnim === 'undefined' || currentAnim === null){
+            currentAnimation = "skeletonGlow"; // Halloween Edition default
+            console.log('No saved animation found, using default: skeletonGlow');
         }else {
             currentAnimation = currentAnim;
+            console.log('Loaded saved animation:', currentAnimation);
+        }
+        
+        // If anim object exists, apply the loaded animation
+        if(anim !== null) {
+            console.log('Applying loaded animation to anim object:', currentAnimation);
+            anim.setNewAnimation(currentAnimation);
         }
     });
 }
