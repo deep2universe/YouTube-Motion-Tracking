@@ -1786,4 +1786,173 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
     }
 }
 
-export {Anim}
+/**
+ * OverlayRenderer - Canvas Overlay Effects for Horror Filters
+ * 
+ * Renders semi-transparent overlay effects on canvas to enhance horror filters:
+ * - scanlines: VHS-style horizontal lines
+ * - grain: Film grain noise
+ * - grid: Medical/lab grid pattern with scanning line
+ * - vignette: Dark edges effect
+ * - glow: Radioactive glow effect
+ */
+class OverlayRenderer {
+    constructor(canvas, ctx) {
+        this.canvas = canvas;
+        this.ctx = ctx;
+        this.overlayType = null;
+        this.animationFrame = 0;
+    }
+
+    /**
+     * Set the overlay type to render
+     * @param {string|null} type - Overlay type or null to disable
+     */
+    setOverlayType(type) {
+        this.overlayType = type;
+        this.animationFrame = 0;
+    }
+
+    /**
+     * Main render method - calls appropriate overlay renderer
+     */
+    render() {
+        if (!this.overlayType) return;
+
+        switch (this.overlayType) {
+            case 'scanlines':
+                this.renderScanlines();
+                break;
+            case 'grain':
+                this.renderGrain();
+                break;
+            case 'grid':
+                this.renderGrid();
+                break;
+            case 'vignette':
+                this.renderVignette();
+                break;
+            case 'glow':
+                this.renderGlow();
+                break;
+        }
+
+        this.animationFrame++;
+    }
+
+    /**
+     * Render VHS-style horizontal scanlines
+     */
+    renderScanlines() {
+        const { width, height } = this.canvas;
+        this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+        this.ctx.lineWidth = 1;
+
+        for (let y = 0; y < height; y += 2) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, y);
+            this.ctx.lineTo(width, y);
+            this.ctx.stroke();
+        }
+    }
+
+    /**
+     * Render film grain noise effect
+     */
+    renderGrain() {
+        const { width, height } = this.canvas;
+        const imageData = this.ctx.createImageData(width, height);
+        const data = imageData.data;
+
+        // Sparse random sampling (5% density)
+        for (let i = 0; i < data.length; i += 4) {
+            if (Math.random() > 0.95) {
+                const value = Math.random() * 255;
+                data[i] = value;     // R
+                data[i + 1] = value; // G
+                data[i + 2] = value; // B
+                data[i + 3] = 100;   // A (semi-transparent)
+            }
+        }
+
+        this.ctx.putImageData(imageData, 0, 0);
+    }
+
+    /**
+     * Render medical/lab grid pattern with animated scanning line
+     */
+    renderGrid() {
+        const { width, height } = this.canvas;
+        
+        // Draw grid
+        this.ctx.strokeStyle = 'rgba(0, 255, 0, 0.3)';
+        this.ctx.lineWidth = 1;
+
+        // Vertical lines
+        for (let x = 0; x < width; x += 20) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(x, 0);
+            this.ctx.lineTo(x, height);
+            this.ctx.stroke();
+        }
+
+        // Horizontal lines
+        for (let y = 0; y < height; y += 20) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, y);
+            this.ctx.lineTo(width, y);
+            this.ctx.stroke();
+        }
+
+        // Animated scanning line
+        const scanY = (this.animationFrame * 2) % height;
+        this.ctx.strokeStyle = 'rgba(0, 255, 0, 0.8)';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, scanY);
+        this.ctx.lineTo(width, scanY);
+        this.ctx.stroke();
+    }
+
+    /**
+     * Render dark vignette effect (darkened edges)
+     */
+    renderVignette() {
+        const { width, height } = this.canvas;
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const radius = Math.max(width, height) * 0.7;
+
+        const gradient = this.ctx.createRadialGradient(
+            centerX, centerY, radius * 0.3,
+            centerX, centerY, radius
+        );
+        gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 0.7)');
+
+        this.ctx.fillStyle = gradient;
+        this.ctx.fillRect(0, 0, width, height);
+    }
+
+    /**
+     * Render radioactive glow effect
+     */
+    renderGlow() {
+        const { width, height } = this.canvas;
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const radius = Math.max(width, height) * 0.6;
+
+        const gradient = this.ctx.createRadialGradient(
+            centerX, centerY, 0,
+            centerX, centerY, radius
+        );
+        gradient.addColorStop(0, 'rgba(0, 255, 0, 0.2)');
+        gradient.addColorStop(1, 'rgba(0, 255, 0, 0)');
+
+        this.ctx.fillStyle = gradient;
+        this.ctx.fillRect(0, 0, width, height);
+    }
+}
+
+export {Anim, OverlayRenderer}

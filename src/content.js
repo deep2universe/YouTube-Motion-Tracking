@@ -4,8 +4,9 @@ import * as tf from '@tensorflow/tfjs-core';
 import '@tensorflow/tfjs-backend-webgl';
 // import '@tensorflow/tfjs-backend-wasm';
 import * as detectUtils from './detectUtils';
-import {Anim} from "./anim";
+import {Anim, OverlayRenderer} from "./anim";
 import {AnimEnum} from "./animEnum";
+import {FilterEnum} from "./filterEnum";
 
 // pose detector from tensorflow
 var detector = null;
@@ -39,6 +40,7 @@ var canvas;     // canvas 2d
 var canvasGL;   // canvas webGL
 var videoCollection;    // collection of main videos from YouTube
 var anim = null;   // anim.js object
+var filterManager = null;  // FilterManager object for horror video filters
 var isRequestAnimationFrame = false;   // only request animation frame once
 
 var isVideoPlay = false;  // if true, video is playint, do detection and play animations if not anim disabled
@@ -120,6 +122,76 @@ function cleanup() {
     isVideoPlay = false;
     showPlayerPopup = false;
     isRequestAnimationFrame = false;
+}
+
+/**
+ * FilterManager - Manages horror video filters
+ * 
+ * Applies CSS filters and canvas overlays to transform video appearance.
+ * Works additively with animations - both are visible simultaneously.
+ */
+class FilterManager {
+    constructor(videoElement, canvas, ctx) {
+        this.video = videoElement;
+        this.canvas = canvas;
+        this.ctx = ctx;
+        this.currentFilter = FilterEnum.none;
+        this.overlayRenderer = new OverlayRenderer(canvas, ctx);
+        console.log('FilterManager initialized');
+    }
+
+    /**
+     * Apply a horror filter to the video
+     * @param {string} filterName - Name of filter to apply
+     */
+    applyFilter(filterName) {
+        const filter = FilterEnum.getFilterByName(filterName);
+        
+        // Apply CSS filter to video element
+        this.video.style.filter = filter.cssFilter;
+        
+        // Update overlay renderer
+        this.overlayRenderer.setOverlayType(filter.overlayType);
+        
+        // Store current filter
+        this.currentFilter = filter;
+        
+        // Persist to Chrome storage
+        chrome.storage.sync.set({ currentFilter: filterName });
+        
+        console.log(`Applied filter: ${filter.displayName} (${filterName})`);
+    }
+
+    /**
+     * Clear all filters and return to normal video
+     */
+    clearFilter() {
+        this.applyFilter('none');
+    }
+
+    /**
+     * Render canvas overlay if filter has one
+     */
+    renderOverlay() {
+        if (this.currentFilter.overlayType) {
+            this.overlayRenderer.render();
+        }
+    }
+
+    /**
+     * Load saved filter from Chrome storage
+     */
+    async loadSavedFilter() {
+        try {
+            const result = await chrome.storage.sync.get('currentFilter');
+            const filterName = result.currentFilter || 'none';
+            this.applyFilter(filterName);
+            console.log(`Loaded saved filter: ${filterName}`);
+        } catch (error) {
+            console.error('Error loading saved filter:', error);
+            this.applyFilter('none');
+        }
+    }
 }
 
 /**
@@ -274,6 +346,19 @@ function initVideoPlayerPopup(){
         animationButtonsHTML += '</div>';
     });
 
+    // Generate filter buttons
+    let filterButtonsHTML = '';
+    const allFilters = FilterEnum.getAllFilters();
+    
+    allFilters.forEach((filter, index) => {
+        const isNone = filter.name === 'none';
+        const activeClass = (index === 0) ? ' active-filter' : '';
+        const noneClass = isNone ? ' filter-none' : '';
+        filterButtonsHTML += '<button class="filter-button' + noneClass + activeClass + '" data-filter="' + filter.name + '" onclick="document.dispatchEvent(new CustomEvent(\'changeFilter\', { detail: {filterName:\'' + filter.name + '\'} }));">';
+        filterButtonsHTML += filter.icon + ' ' + filter.displayName;
+        filterButtonsHTML += '</button>';
+    });
+
     div.innerHTML = `
 <div class="panelTitle">🎃 Halloween Animations 👻</div>
 
@@ -290,6 +375,15 @@ function initVideoPlayerPopup(){
 
 <div class="containerButton">
 ` + animationButtonsHTML + `
+</div>
+
+<hr class="sep filter-separator">
+
+<div class="filter-section">
+    <div class="filter-section-title">🎬 Horror Filters 🎥</div>
+    <div class="filter-buttons-container">
+` + filterButtonsHTML + `
+    </div>
 </div>
     `;
 
@@ -368,6 +462,12 @@ function startDetection() {
             if (pose !== undefined && pose[0] !== undefined && pose[0].keypoints !== undefined) {
 
                 let canvasPoseCoordinates = detectUtils.transformKeypointsForRender(pose[0].keypoints, mainVideo, canvas);
+                
+                // Render filter overlay first (before animations)
+                if(filterManager !== null) {
+                    filterManager.renderOverlay();
+                }
+                
                 // update new estimation keypoints for current animation
                 if(anim !== null) {
                     anim.updateKeypoint(pose, canvasPoseCoordinates);
@@ -403,6 +503,40 @@ document.addEventListener('changeIsAnimDisabled', function (e) {
 
     updateAnimDisabledDiv();
 });
+
+/**
+ * Called from player popup to change horror filter
+ * (Click event of filter buttons)
+ */
+document.addEventListener('changeFilter', function (e) {
+    const filterName = e.detail.filterName;
+    console.log('Filter change requested:', filterName);
+    
+    if(filterManager !== null) {
+        filterManager.applyFilter(filterName);
+        updateSelectedFilterButton(filterName);
+    } else {
+        console.error('FilterManager not initialized');
+    }
+});
+
+/**
+ * Update active filter button styling
+ * @param {string} filterName - Name of selected filter
+ */
+function updateSelectedFilterButton(filterName) {
+    // Remove active class from all filter buttons
+    const filterButtons = document.querySelectorAll('.filter-button');
+    filterButtons.forEach(btn => {
+        btn.classList.remove('active-filter');
+    });
+    
+    // Add active class to selected filter button
+    const selectedButton = document.querySelector(`.filter-button[data-filter="${filterName}"]`);
+    if (selectedButton) {
+        selectedButton.classList.add('active-filter');
+    }
+}
 
 function updateAnimDisabledDiv(){
     const animDisabledDiv = document.getElementById('animDisabledDiv');
@@ -694,6 +828,14 @@ function handleVideoPlaying(event) {
     }else{
         console.log('Updating existing Anim object canvas');
         anim.updateCanvas(mainVideo,canvas, canvasGL, ctx, webGLtx);
+    }
+    
+    // Initialize FilterManager if not already created
+    if(filterManager === null) {
+        console.log('Creating new FilterManager object');
+        filterManager = new FilterManager(mainVideo, canvas, ctx);
+        // Load saved filter from storage
+        filterManager.loadSavedFilter();
     }
 }
 

@@ -270,3 +270,90 @@ input[type="range"]:hover::-moz-range-thumb {
 .col-3-Button:hover span {
     filter: drop-shadow(0 0 10px rgba(255, 102, 0, 0.9));
 }
+
+/* ========== HORROR FILTERS SECTION ========== */
+
+/* Filter separator - distinct from animation separator */
+hr.filter-separator {
+    margin-top: 20px;
+    margin-bottom: 15px;
+    border: none;
+    border-top: 2px solid rgba(220, 20, 60, 0.5); /* Red line */
+    opacity: 0.8;
+}
+
+/* Filter section container */
+.filter-section {
+    padding: 0 15px 15px 15px;
+}
+
+/* Filter section title */
+.filter-section-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #DC143C; /* Crimson red */
+    text-align: center;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 10px rgba(220, 20, 60, 0.8), 0 0 20px rgba(220, 20, 60, 0.4);
+}
+
+/* Filter buttons container */
+.filter-buttons-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+/* Filter button base styles */
+.filter-button {
+    background: linear-gradient(135deg, rgba(139, 0, 0, 0.8), rgba(220, 20, 60, 0.8));
+    border: 2px solid #DC143C;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(220, 20, 60, 0.3);
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+.filter-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(220, 20, 60, 0.6);
+    background: linear-gradient(135deg, rgba(220, 20, 60, 0.9), rgba(255, 20, 147, 0.8));
+    border-color: #FF1493;
+}
+
+.filter-button:active {
+    transform: scale(0.98);
+}
+
+/* Active filter button */
+.filter-button.active-filter {
+    border: 3px solid #FFD700; /* Gold border */
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 4px 12px rgba(220, 20, 60, 0.5);
+    background: linear-gradient(135deg, rgba(220, 20, 60, 0.9), rgba(139, 0, 0, 0.9));
+}
+
+/* None/Clear filter button - special styling */
+.filter-button.filter-none {
+    background: linear-gradient(135deg, rgba(45, 45, 45, 0.8), rgba(26, 26, 26, 0.8));
+    border: 2px solid #666;
+}
+
+.filter-button.filter-none:hover {
+    background: linear-gradient(135deg, rgba(61, 61, 61, 0.9), rgba(42, 42, 42, 0.9));
+    border-color: #888;
+    box-shadow: 0 4px 16px rgba(100, 100, 100, 0.4);
+}
+
+.filter-button.filter-none.active-filter {
+    border: 3px solid #999;
+    box-shadow: 0 0 15px rgba(150, 150, 150, 0.6);
+}
