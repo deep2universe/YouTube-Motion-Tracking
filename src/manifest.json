@@ -11,7 +11,12 @@
       "matches": ["https://www.youtube.com/*"],
       "run_at": "document_end",
       "js": ["content.js"],
-      "css": ["content.css"]
+      "css": [
+        "content.css",
+        "themes/youtube-theme-variables.css",
+        "themes/youtube-theme.css",
+        "themes/youtube-theme-particles.css"
+      ]
     }
   ],
   "permissions": ["activeTab", "tabs", "webNavigation", "storage"],

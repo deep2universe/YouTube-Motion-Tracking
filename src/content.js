@@ -62,6 +62,10 @@ var isRandomModeActive=false;       // track if random mode is currently active
 
 var showPlayerPopup=false;          // Player popup initial don't show
 
+// YouTube UI Theme System
+var themeStateManager = null;       // Theme state manager instance
+var uiControlManager = null;        // UI control manager instance
+
 /**
  * Cleanup function to remove old canvas elements and reset state
  */
@@ -235,6 +239,9 @@ function init() {
     readIsAnimDisabled();
     readCurrentAnimationName();
     readRandomSettings(); // Load random mode settings
+    
+    // Initialize theme system
+    initThemeSystem();
 
     initButtonInPlayer()
 
@@ -369,6 +376,32 @@ function initVideoPlayerPopup(){
 
 <div style="padding: 0 15px; margin-top: 10px;">
     <button id="animDisabledDiv" class="pdAnimButtonGreen" onclick="document.dispatchEvent(new CustomEvent('changeIsAnimDisabled'));">⏯️ Stop/Play Animation</button>
+</div>
+
+<hr class="sep theme-separator">
+
+<div class="theme-section">
+    <div class="theme-section-title">🌙 YouTube UI Theme</div>
+    
+    <button id="themeToggleButton" class="theme-toggle-button" onclick="document.dispatchEvent(new CustomEvent('toggleHalloweenTheme'));">
+        🌙 Enable Halloween UI Theme
+    </button>
+    
+    <div class="theme-intensity-container">
+        <button class="theme-intensity-btn" data-intensity="low" onclick="document.dispatchEvent(new CustomEvent('setThemeIntensity', { detail: {intensity:'low'} }));">
+            🌑 Low
+        </button>
+        <button class="theme-intensity-btn active-intensity" data-intensity="medium" onclick="document.dispatchEvent(new CustomEvent('setThemeIntensity', { detail: {intensity:'medium'} }));">
+            🌓 Medium
+        </button>
+        <button class="theme-intensity-btn" data-intensity="high" onclick="document.dispatchEvent(new CustomEvent('setThemeIntensity', { detail: {intensity:'high'} }));">
+            🌕 High
+        </button>
+    </div>
+    
+    <button id="particleToggleButton" class="theme-particle-toggle" onclick="document.dispatchEvent(new CustomEvent('toggleParticles'));">
+        ✨ Particle Effects: OFF
+    </button>
 </div>
 
 <hr class="sep">
@@ -664,6 +697,11 @@ function handleVideoLoaded(event) {
         initVideoPlayerPopup();
         updateAnimDisabledDiv();
         updateSelectedButton(currentAnimation);
+        
+        // Update theme UI controls after popup is created
+        if (uiControlManager) {
+            uiControlManager.updateAll();
+        }
     }, 500);
 
     if(isRequestAnimationFrame==false){
@@ -990,3 +1028,396 @@ function readRandomSettings(){
         }
     });
 }
+
+
+// ============================================
+// YouTube UI Theme System - ParticleManager
+// ============================================
+
+/**
+ * ParticleManager - Static class for managing Halloween particle overlay
+ * Creates and removes animated emoji particles that fall across the screen
+ */
+class ParticleManager {
+    static PARTICLE_EMOJIS = ['🦇', '🍂', '🍁', '👻', '🕷️'];
+    static PARTICLE_COUNT = 12;
+    static OVERLAY_ID = 'halloween-particle-overlay';
+    
+    /**
+     * Create particle overlay with animated Halloween emojis
+     */
+    static createOverlay() {
+        // Remove any existing overlay first
+        this.removeOverlay();
+        
+        const overlay = document.createElement('div');
+        overlay.id = this.OVERLAY_ID;
+        overlay.className = 'halloween-particle-overlay';
+        overlay.setAttribute('aria-hidden', 'true'); // Decorative only
+        
+        // Generate particles with random properties
+        for (let i = 0; i < this.PARTICLE_COUNT; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'halloween-particle';
+            
+            // Random emoji selection
+            const randomEmoji = this.PARTICLE_EMOJIS[Math.floor(Math.random() * this.PARTICLE_EMOJIS.length)];
+            particle.textContent = randomEmoji;
+            
+            // Random horizontal position (0-100%)
+            particle.style.left = `${Math.random() * 100}%`;
+            
+            // Random animation delay (0-8s)
+            particle.style.animationDelay = `${Math.random() * 8}s`;
+            
+            // Random animation duration (8-12s)
+            particle.style.animationDuration = `${8 + Math.random() * 4}s`;
+            
+            overlay.appendChild(particle);
+        }
+        
+        document.body.appendChild(overlay);
+        console.log('Particle overlay created with', this.PARTICLE_COUNT, 'particles');
+    }
+    
+    /**
+     * Remove particle overlay from DOM
+     */
+    static removeOverlay() {
+        const existing = document.getElementById(this.OVERLAY_ID);
+        if (existing) {
+            existing.remove();
+            console.log('Particle overlay removed');
+        }
+    }
+    
+    /**
+     * Check if particle overlay exists
+     * @returns {boolean} True if overlay exists
+     */
+    static exists() {
+        return document.getElementById(this.OVERLAY_ID) !== null;
+    }
+}
+
+
+// ============================================
+// YouTube UI Theme System - ThemeStateManager
+// ============================================
+
+/**
+ * ThemeStateManager - Manages Halloween theme state and persistence
+ * Handles theme toggle, intensity levels, and particle effects
+ */
+class ThemeStateManager {
+    constructor() {
+        this.state = {
+            enabled: false,
+            intensity: 'medium',
+            particlesEnabled: false
+        };
+    }
+    
+    /**
+     * Load theme settings from Chrome Storage
+     * @returns {Promise<void>}
+     */
+    async loadSettings() {
+        try {
+            const result = await chrome.storage.sync.get([
+                'halloweenThemeEnabled',
+                'themeIntensity',
+                'particlesEnabled'
+            ]);
+            
+            this.state.enabled = result.halloweenThemeEnabled || false;
+            this.state.intensity = result.themeIntensity || 'medium';
+            this.state.particlesEnabled = result.particlesEnabled || false;
+            
+            console.log('Theme settings loaded:', this.state);
+            
+            // Apply loaded settings
+            if (this.state.enabled) {
+                this.applyTheme();
+            }
+            if (this.state.particlesEnabled) {
+                ParticleManager.createOverlay();
+            }
+        } catch (error) {
+            console.warn('Failed to load theme settings:', error);
+            // Continue with default state
+        }
+    }
+    
+    /**
+     * Apply theme to document body
+     */
+    applyTheme() {
+        document.body.classList.add('halloween-theme');
+        document.body.classList.add(`theme-intensity-${this.state.intensity}`);
+        console.log('Theme applied with intensity:', this.state.intensity);
+    }
+    
+    /**
+     * Remove theme from document body
+     */
+    removeTheme() {
+        document.body.classList.remove('halloween-theme');
+        document.body.classList.remove('theme-intensity-low');
+        document.body.classList.remove('theme-intensity-medium');
+        document.body.classList.remove('theme-intensity-high');
+        console.log('Theme removed');
+    }
+    
+    /**
+     * Toggle theme on/off
+     */
+    toggleTheme() {
+        this.state.enabled = !this.state.enabled;
+        
+        if (this.state.enabled) {
+            this.applyTheme();
+        } else {
+            this.removeTheme();
+            // Also remove particles when theme is disabled
+            if (this.state.particlesEnabled) {
+                ParticleManager.removeOverlay();
+                this.state.particlesEnabled = false;
+            }
+        }
+        
+        this.saveState();
+    }
+    
+    /**
+     * Set theme intensity level
+     * @param {string} level - 'low', 'medium', or 'high'
+     */
+    setIntensity(level) {
+        if (!['low', 'medium', 'high'].includes(level)) {
+            console.warn('Invalid intensity level:', level);
+            return;
+        }
+        
+        // Remove old intensity class
+        document.body.classList.remove('theme-intensity-low');
+        document.body.classList.remove('theme-intensity-medium');
+        document.body.classList.remove('theme-intensity-high');
+        
+        // Add new intensity class
+        this.state.intensity = level;
+        if (this.state.enabled) {
+            document.body.classList.add(`theme-intensity-${level}`);
+        }
+        
+        console.log('Theme intensity set to:', level);
+        this.saveState();
+    }
+    
+    /**
+     * Toggle particle effects on/off
+     */
+    toggleParticles() {
+        this.state.particlesEnabled = !this.state.particlesEnabled;
+        
+        if (this.state.particlesEnabled) {
+            ParticleManager.createOverlay();
+        } else {
+            ParticleManager.removeOverlay();
+        }
+        
+        this.saveState();
+    }
+    
+    /**
+     * Save current state to Chrome Storage
+     * @returns {Promise<void>}
+     */
+    async saveState() {
+        try {
+            await chrome.storage.sync.set({
+                halloweenThemeEnabled: this.state.enabled,
+                themeIntensity: this.state.intensity,
+                particlesEnabled: this.state.particlesEnabled
+            });
+            console.log('Theme state saved:', this.state);
+        } catch (error) {
+            console.warn('Failed to save theme state:', error);
+            // Continue - theme still works for current session
+        }
+    }
+    
+    /**
+     * Get current state
+     * @returns {Object} Current theme state
+     */
+    getState() {
+        return { ...this.state };
+    }
+}
+
+
+// ============================================
+// YouTube UI Theme System - UIControlManager
+// ============================================
+
+/**
+ * UIControlManager - Manages theme control UI elements and user interactions
+ * Updates button states and handles visual feedback
+ */
+class UIControlManager {
+    constructor(themeStateManager) {
+        this.stateManager = themeStateManager;
+        this.elements = {
+            toggleButton: null,
+            intensityButtons: [],
+            particleButton: null
+        };
+    }
+    
+    /**
+     * Cache references to UI elements
+     */
+    cacheElements() {
+        this.elements.toggleButton = document.getElementById('themeToggleButton');
+        this.elements.intensityButtons = Array.from(document.querySelectorAll('.theme-intensity-btn'));
+        this.elements.particleButton = document.getElementById('particleToggleButton');
+    }
+    
+    /**
+     * Update toggle button appearance based on theme state
+     * @param {boolean} enabled - Whether theme is enabled
+     */
+    updateToggleButton(enabled) {
+        if (!this.elements.toggleButton) {
+            this.cacheElements();
+        }
+        
+        if (this.elements.toggleButton) {
+            if (enabled) {
+                this.elements.toggleButton.textContent = '🌙 Disable Halloween UI Theme';
+                this.elements.toggleButton.classList.add('theme-active');
+            } else {
+                this.elements.toggleButton.textContent = '🌙 Enable Halloween UI Theme';
+                this.elements.toggleButton.classList.remove('theme-active');
+            }
+        }
+    }
+    
+    /**
+     * Update intensity button states
+     * @param {string} level - Active intensity level ('low', 'medium', 'high')
+     */
+    updateIntensityButtons(level) {
+        if (this.elements.intensityButtons.length === 0) {
+            this.cacheElements();
+        }
+        
+        this.elements.intensityButtons.forEach(btn => {
+            const btnLevel = btn.getAttribute('data-intensity');
+            if (btnLevel === level) {
+                btn.classList.add('active-intensity');
+            } else {
+                btn.classList.remove('active-intensity');
+            }
+        });
+    }
+    
+    /**
+     * Update particle button text and appearance
+     * @param {boolean} enabled - Whether particles are enabled
+     */
+    updateParticleButton(enabled) {
+        if (!this.elements.particleButton) {
+            this.cacheElements();
+        }
+        
+        if (this.elements.particleButton) {
+            if (enabled) {
+                this.elements.particleButton.textContent = '✨ Particle Effects: ON';
+                this.elements.particleButton.classList.add('particles-active');
+            } else {
+                this.elements.particleButton.textContent = '✨ Particle Effects: OFF';
+                this.elements.particleButton.classList.remove('particles-active');
+            }
+        }
+    }
+    
+    /**
+     * Update all UI elements based on current state
+     */
+    updateAll() {
+        const state = this.stateManager.getState();
+        this.updateToggleButton(state.enabled);
+        this.updateIntensityButtons(state.intensity);
+        this.updateParticleButton(state.particlesEnabled);
+    }
+}
+
+
+// ============================================
+// YouTube UI Theme System - Initialization & Event Handlers
+// ============================================
+
+/**
+ * Initialize theme system
+ * Creates manager instances and loads saved settings
+ */
+async function initThemeSystem() {
+    // Create theme state manager
+    if (themeStateManager === null) {
+        themeStateManager = new ThemeStateManager();
+        await themeStateManager.loadSettings();
+        console.log('ThemeStateManager initialized');
+    }
+    
+    // Create UI control manager
+    if (uiControlManager === null) {
+        uiControlManager = new UIControlManager(themeStateManager);
+        console.log('UIControlManager initialized');
+    }
+}
+
+/**
+ * Event handler: Toggle Halloween theme
+ */
+document.addEventListener('toggleHalloweenTheme', function(e) {
+    if (themeStateManager) {
+        themeStateManager.toggleTheme();
+        
+        // Update UI controls
+        if (uiControlManager) {
+            uiControlManager.updateAll();
+        }
+    }
+});
+
+/**
+ * Event handler: Set theme intensity
+ */
+document.addEventListener('setThemeIntensity', function(e) {
+    const intensity = e.detail.intensity;
+    
+    if (themeStateManager) {
+        themeStateManager.setIntensity(intensity);
+        
+        // Update UI controls
+        if (uiControlManager) {
+            uiControlManager.updateIntensityButtons(intensity);
+        }
+    }
+});
+
+/**
+ * Event handler: Toggle particle effects
+ */
+document.addEventListener('toggleParticles', function(e) {
+    if (themeStateManager) {
+        themeStateManager.toggleParticles();
+        
+        // Update UI controls
+        if (uiControlManager) {
+            uiControlManager.updateParticleButton(themeStateManager.getState().particlesEnabled);
+        }
+    }
+});

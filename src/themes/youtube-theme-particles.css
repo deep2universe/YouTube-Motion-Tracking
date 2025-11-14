@@ -1,0 +1,240 @@
+/* ============================================
+   YouTube Halloween Theme - Particle Effects
+   ============================================ */
+
+/* ============================================
+   Particle Overlay Container
+   ============================================ */
+.halloween-particle-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998;
+  overflow: hidden;
+}
+
+/* ============================================
+   Individual Particles
+   ============================================ */
+.halloween-particle {
+  position: absolute;
+  font-size: 24px;
+  opacity: 0.4;
+  animation: fall-and-sway linear infinite;
+  will-change: transform;
+  user-select: none;
+}
+
+/* ============================================
+   Particle Animation Keyframes
+   ============================================ */
+@keyframes fall-and-sway {
+  0% {
+    transform: translateY(-50px) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  
+  10% {
+    opacity: 0.4;
+  }
+  
+  50% {
+    transform: translateY(50vh) translateX(50px) rotate(180deg);
+    opacity: 0.4;
+  }
+  
+  90% {
+    opacity: 0.4;
+  }
+  
+  100% {
+    transform: translateY(calc(100vh + 50px)) translateX(100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* ============================================
+   Accessibility: Reduced Motion
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .halloween-particle {
+    animation-duration: 20s !important;
+    opacity: 0.2;
+  }
+  
+  @keyframes fall-and-sway {
+    0% {
+      transform: translateY(-50px) translateX(0) rotate(0deg);
+      opacity: 0;
+    }
+    
+    10% {
+      opacity: 0.2;
+    }
+    
+    90% {
+      opacity: 0.2;
+    }
+    
+    100% {
+      transform: translateY(calc(100vh + 50px)) translateX(30px) rotate(90deg);
+      opacity: 0;
+    }
+  }
+}
+
+/* ============================================
+   Optional: Candle Flicker Effect
+   ============================================ */
+body.halloween-theme::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 102, 0, 0.02);
+  pointer-events: none;
+  z-index: 9997;
+  animation: candle-flicker 3s ease-in-out infinite;
+  opacity: 0;
+}
+
+@keyframes candle-flicker {
+  0%, 100% {
+    opacity: 0;
+  }
+  
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* Disable flicker on low intensity */
+body.halloween-theme.theme-intensity-low::after {
+  animation: none;
+  opacity: 0;
+}
+
+/* Intensify flicker on high intensity */
+body.halloween-theme.theme-intensity-high::after {
+  animation: candle-flicker 2s ease-in-out infinite;
+}
+
+@keyframes candle-flicker {
+  0%, 100% {
+    opacity: 0;
+  }
+  
+  25% {
+    opacity: 0.15;
+  }
+  
+  50% {
+    opacity: 0.4;
+  }
+  
+  75% {
+    opacity: 0.2;
+  }
+}
+
+/* ============================================
+   Optional: Film Grain Texture
+   ============================================ */
+body.halloween-theme ytd-app::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.03) 2px,
+      rgba(255, 255, 255, 0.03) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 4px
+    );
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.3;
+  animation: grain-shift 0.5s steps(1) infinite;
+}
+
+@keyframes grain-shift {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  
+  25% {
+    transform: translate(-1px, 1px);
+  }
+  
+  50% {
+    transform: translate(1px, -1px);
+  }
+  
+  75% {
+    transform: translate(-1px, -1px);
+  }
+}
+
+/* Disable grain on low intensity */
+body.halloween-theme.theme-intensity-low ytd-app::after {
+  opacity: 0.1;
+}
+
+/* Intensify grain on high intensity */
+body.halloween-theme.theme-intensity-high ytd-app::after {
+  opacity: 0.5;
+}
+
+/* ============================================
+   Optional: Glow Pulse Effect
+   ============================================ */
+@keyframes glow-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 5px var(--halloween-primary));
+  }
+  
+  50% {
+    filter: drop-shadow(0 0 15px var(--halloween-primary));
+  }
+}
+
+/* Apply pulse to specific elements on hover */
+body.halloween-theme #video-title:hover,
+body.halloween-theme ytd-thumbnail:hover {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* ============================================
+   Optional: Search Box Pulse
+   ============================================ */
+@keyframes search-pulse {
+  0%, 100% {
+    box-shadow: 0 0 10px var(--halloween-glow-primary);
+  }
+  
+  50% {
+    box-shadow: 0 0 20px var(--halloween-glow-primary),
+                0 0 30px var(--halloween-glow-secondary);
+  }
+}
+
+body.halloween-theme #search-form:focus-within,
+body.halloween-theme #search-input:focus {
+  animation: search-pulse 2s ease-in-out infinite;
+}

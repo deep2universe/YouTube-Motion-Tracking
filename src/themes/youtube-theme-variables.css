@@ -1,0 +1,147 @@
+/* ============================================
+   YouTube Halloween Theme - CSS Variables
+   ============================================ */
+
+/* Base Theme Variables - Medium Intensity (Default) */
+body.halloween-theme {
+  /* Primary Colors */
+  --halloween-primary: #FF6600;
+  --halloween-secondary: #8B00FF;
+  --halloween-accent: #FFD700;
+  
+  /* Background Colors - Medium Intensity */
+  --halloween-bg-dark: rgba(10, 5, 15, 0.95);
+  --halloween-bg-medium: rgba(20, 15, 25, 0.8);
+  --halloween-bg-light: rgba(30, 20, 35, 0.6);
+  
+  /* Text Colors */
+  --halloween-text-primary: #FFD700;
+  --halloween-text-secondary: #FF8C00;
+  --halloween-text-body: #E0E0E0;
+  --halloween-text-muted: #B0B0B0;
+  
+  /* Border Colors */
+  --halloween-border-primary: rgba(255, 102, 0, 0.6);
+  --halloween-border-secondary: rgba(139, 0, 255, 0.5);
+  --halloween-border-accent: rgba(255, 215, 0, 0.7);
+  
+  /* Glow Effects - Medium Intensity */
+  --halloween-glow-opacity: 0.4;
+  --halloween-glow-size: 20px;
+  --halloween-glow-primary: rgba(255, 102, 0, 0.4);
+  --halloween-glow-secondary: rgba(139, 0, 255, 0.4);
+  
+  /* Shadow Sizes */
+  --halloween-shadow-small: 10px;
+  --halloween-shadow-medium: 20px;
+  --halloween-shadow-large: 40px;
+  
+  /* Transition Speeds */
+  --halloween-transition-fast: 0.15s;
+  --halloween-transition-normal: 0.3s;
+  --halloween-transition-slow: 0.5s;
+  
+  /* Z-Index Layers */
+  --halloween-z-particle-overlay: 9998;
+  --halloween-z-theme-overlay: 9997;
+}
+
+/* ============================================
+   Low Intensity Overrides
+   ============================================ */
+body.halloween-theme.theme-intensity-low {
+  /* Lighter Backgrounds */
+  --halloween-bg-dark: rgba(10, 5, 15, 0.7);
+  --halloween-bg-medium: rgba(20, 15, 25, 0.5);
+  --halloween-bg-light: rgba(30, 20, 35, 0.3);
+  
+  /* Reduced Glow Effects */
+  --halloween-glow-opacity: 0.2;
+  --halloween-glow-size: 10px;
+  --halloween-glow-primary: rgba(255, 102, 0, 0.2);
+  --halloween-glow-secondary: rgba(139, 0, 255, 0.2);
+  
+  /* Smaller Shadows */
+  --halloween-shadow-small: 5px;
+  --halloween-shadow-medium: 10px;
+  --halloween-shadow-large: 20px;
+  
+  /* Softer Borders */
+  --halloween-border-primary: rgba(255, 102, 0, 0.3);
+  --halloween-border-secondary: rgba(139, 0, 255, 0.25);
+  --halloween-border-accent: rgba(255, 215, 0, 0.4);
+}
+
+/* ============================================
+   High Intensity Overrides
+   ============================================ */
+body.halloween-theme.theme-intensity-high {
+  /* Darker Backgrounds */
+  --halloween-bg-dark: rgba(5, 2, 10, 0.98);
+  --halloween-bg-medium: rgba(15, 10, 20, 0.95);
+  --halloween-bg-light: rgba(25, 15, 30, 0.85);
+  
+  /* Intensified Glow Effects */
+  --halloween-glow-opacity: 0.7;
+  --halloween-glow-size: 30px;
+  --halloween-glow-primary: rgba(255, 102, 0, 0.7);
+  --halloween-glow-secondary: rgba(139, 0, 255, 0.6);
+  
+  /* Larger Shadows */
+  --halloween-shadow-small: 15px;
+  --halloween-shadow-medium: 30px;
+  --halloween-shadow-large: 60px;
+  
+  /* Stronger Borders */
+  --halloween-border-primary: rgba(255, 102, 0, 0.8);
+  --halloween-border-secondary: rgba(139, 0, 255, 0.7);
+  --halloween-border-accent: rgba(255, 215, 0, 0.9);
+}
+
+/* ============================================
+   Gradient Definitions
+   ============================================ */
+body.halloween-theme {
+  --halloween-gradient-bg: linear-gradient(
+    180deg,
+    rgba(10, 5, 20, 0.95) 0%,
+    rgba(20, 10, 15, 0.95) 50%,
+    rgba(30, 10, 10, 0.95) 100%
+  );
+  
+  --halloween-gradient-sidebar: linear-gradient(
+    180deg,
+    rgba(15, 10, 25, 0.9) 0%,
+    rgba(20, 10, 20, 0.9) 100%
+  );
+  
+  --halloween-gradient-header: linear-gradient(
+    90deg,
+    rgba(10, 5, 15, 0.95) 0%,
+    rgba(20, 10, 20, 0.95) 100%
+  );
+  
+  --halloween-gradient-button-inactive: linear-gradient(
+    135deg,
+    rgba(139, 0, 255, 0.3) 0%,
+    rgba(75, 0, 130, 0.3) 100%
+  );
+  
+  --halloween-gradient-button-active: linear-gradient(
+    135deg,
+    rgba(255, 102, 0, 0.8) 0%,
+    rgba(255, 140, 0, 0.8) 100%
+  );
+  
+  --halloween-gradient-scrollbar: linear-gradient(
+    180deg,
+    var(--halloween-secondary) 0%,
+    var(--halloween-primary) 100%
+  );
+  
+  --halloween-gradient-thumbnail-hover: linear-gradient(
+    0deg,
+    rgba(139, 0, 255, 0.3) 0%,
+    rgba(255, 102, 0, 0.3) 100%
+  );
+}

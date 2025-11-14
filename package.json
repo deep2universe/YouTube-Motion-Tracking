@@ -6,7 +6,7 @@
     "copyHTML": "cp src/*.html dist/",
     "copyManifest": "cp src/manifest.json dist/",
     "copyImages": "cp -r src/images dist/",
-    "copyCSS": "cp src/*.css dist/",
+    "copyCSS": "cp src/*.css dist/ && mkdir -p dist/themes && cp src/themes/*.css dist/themes/",
     "copy": "npm run copyManifest && npm run copyHTML && npm run copyImages && npm run copyCSS",
     "clean": "rm -rf dist .parcel-cache",
     "build:parcel": "npx parcel build src/*.html src/*.js --public-url ./ && npm run copy",
