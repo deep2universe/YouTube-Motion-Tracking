@@ -460,3 +460,278 @@ body.halloween-theme input:focus-visible {
   outline: 2px solid var(--halloween-accent) !important;
   outline-offset: 2px;
 }
+
+
+/* ============================================
+   TEXT READABILITY FIXES
+   ============================================ */
+
+/* Global text color override for all elements */
+body.halloween-theme,
+body.halloween-theme * {
+  color: var(--halloween-text-body) !important;
+}
+
+/* Ensure all text elements are readable */
+body.halloween-theme ytd-app,
+body.halloween-theme ytd-page-manager,
+body.halloween-theme #content,
+body.halloween-theme #primary,
+body.halloween-theme #secondary {
+  color: var(--halloween-text-body) !important;
+}
+
+/* Video renderer text elements */
+body.halloween-theme ytd-video-renderer *,
+body.halloween-theme ytd-grid-video-renderer *,
+body.halloween-theme ytd-compact-video-renderer *,
+body.halloween-theme ytd-rich-item-renderer * {
+  color: var(--halloween-text-body) !important;
+}
+
+/* Playlist panel text */
+body.halloween-theme ytd-playlist-panel-renderer,
+body.halloween-theme ytd-playlist-panel-renderer * {
+  color: var(--halloween-text-body) !important;
+  background: var(--halloween-bg-medium) !important;
+}
+
+body.halloween-theme ytd-playlist-panel-video-renderer {
+  background: var(--halloween-bg-light) !important;
+}
+
+body.halloween-theme ytd-playlist-panel-video-renderer:hover {
+  background: var(--halloween-bg-medium) !important;
+}
+
+/* Playlist panel title */
+body.halloween-theme #publisher-container,
+body.halloween-theme .publisher {
+  color: var(--halloween-text-primary) !important;
+}
+
+/* Video metadata text */
+body.halloween-theme #info,
+body.halloween-theme #info *,
+body.halloween-theme ytd-video-primary-info-renderer,
+body.halloween-theme ytd-video-primary-info-renderer * {
+  color: var(--halloween-text-body) !important;
+}
+
+/* Video description */
+body.halloween-theme ytd-text-inline-expander,
+body.halloween-theme ytd-text-inline-expander *,
+body.halloween-theme #description,
+body.halloween-theme #description * {
+  color: var(--halloween-text-body) !important;
+}
+
+/* Secondary info (channel info below video) */
+body.halloween-theme ytd-video-secondary-info-renderer *,
+body.halloween-theme ytd-channel-name *,
+body.halloween-theme #owner-sub-count {
+  color: var(--halloween-text-body) !important;
+}
+
+/* Comment section header */
+body.halloween-theme #comments #header,
+body.halloween-theme ytd-comments-header-renderer,
+body.halloween-theme ytd-comments-header-renderer * {
+  color: var(--halloween-text-body) !important;
+}
+
+/* Comment input */
+body.halloween-theme #simple-box,
+body.halloween-theme #contenteditable-root {
+  color: var(--halloween-text-body) !important;
+  background: var(--halloween-bg-light) !important;
+}
+
+/* Comment action buttons */
+body.halloween-theme ytd-comment-action-buttons-renderer,
+body.halloween-theme ytd-comment-action-buttons-renderer * {
+  color: var(--halloween-text-muted) !important;
+}
+
+/* Sidebar section headers */
+body.halloween-theme #guide-section-title,
+body.halloween-theme ytd-guide-section-renderer #guide-section-title {
+  color: var(--halloween-text-primary) !important;
+}
+
+/* Search suggestions */
+body.halloween-theme #search-suggestions,
+body.halloween-theme ytd-search-suggestions,
+body.halloween-theme ytd-search-suggestions * {
+  color: var(--halloween-text-body) !important;
+  background: var(--halloween-bg-dark) !important;
+}
+
+/* Dropdown menus */
+body.halloween-theme ytd-menu-popup-renderer,
+body.halloween-theme ytd-menu-popup-renderer *,
+body.halloween-theme tp-yt-paper-listbox,
+body.halloween-theme tp-yt-paper-listbox * {
+  color: var(--halloween-text-body) !important;
+  background: var(--halloween-bg-dark) !important;
+}
+
+body.halloween-theme ytd-menu-service-item-renderer:hover,
+body.halloween-theme tp-yt-paper-item:hover {
+  background: var(--halloween-bg-medium) !important;
+}
+
+/* Notification panel */
+body.halloween-theme ytd-notification-renderer,
+body.halloween-theme ytd-notification-renderer * {
+  color: var(--halloween-text-body) !important;
+  background: var(--halloween-bg-dark) !important;
+}
+
+/* Shorts shelf */
+body.halloween-theme ytd-reel-shelf-renderer,
+body.halloween-theme ytd-reel-shelf-renderer * {
+  color: var(--halloween-text-body) !important;
+}
+
+/* Channel page elements */
+body.halloween-theme ytd-channel-name,
+body.halloween-theme #channel-header,
+body.halloween-theme #channel-header * {
+  color: var(--halloween-text-body) !important;
+}
+
+/* Tab headers */
+body.halloween-theme tp-yt-paper-tab,
+body.halloween-theme tp-yt-paper-tab * {
+  color: var(--halloween-text-body) !important;
+}
+
+body.halloween-theme tp-yt-paper-tab[aria-selected="true"] {
+  color: var(--halloween-text-primary) !important;
+}
+
+/* Video stats (views, date) */
+body.halloween-theme #metadata,
+body.halloween-theme #metadata *,
+body.halloween-theme ytd-video-meta-block,
+body.halloween-theme ytd-video-meta-block * {
+  color: var(--halloween-text-muted) !important;
+}
+
+/* Ensure links are visible */
+body.halloween-theme a,
+body.halloween-theme a * {
+  color: var(--halloween-text-secondary) !important;
+}
+
+body.halloween-theme a:hover,
+body.halloween-theme a:hover * {
+  color: var(--halloween-primary) !important;
+}
+
+/* Button text */
+body.halloween-theme button,
+body.halloween-theme button * {
+  color: var(--halloween-text-body) !important;
+}
+
+/* Ensure icons remain visible */
+body.halloween-theme yt-icon,
+body.halloween-theme ytd-button-renderer yt-icon,
+body.halloween-theme ytd-toggle-button-renderer yt-icon {
+  color: var(--halloween-text-body) !important;
+}
+
+/* Time stamps and badges */
+body.halloween-theme .badge,
+body.halloween-theme ytd-badge-supported-renderer,
+body.halloween-theme #time-status,
+body.halloween-theme .ytd-thumbnail-overlay-time-status-renderer {
+  color: #FFFFFF !important;
+  background: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Ensure all headings are visible */
+body.halloween-theme h1,
+body.halloween-theme h2,
+body.halloween-theme h3,
+body.halloween-theme h4,
+body.halloween-theme h5,
+body.halloween-theme h6 {
+  color: var(--halloween-text-primary) !important;
+}
+
+/* Ensure all paragraphs are visible */
+body.halloween-theme p,
+body.halloween-theme span,
+body.halloween-theme div {
+  color: var(--halloween-text-body) !important;
+}
+
+/* Override any dark text on dark background */
+body.halloween-theme [style*="color: rgb(15"],
+body.halloween-theme [style*="color: rgb(3,"],
+body.halloween-theme [style*="color: #0"],
+body.halloween-theme [style*="color: #1"],
+body.halloween-theme [style*="color: #2"],
+body.halloween-theme [style*="color: #3"] {
+  color: var(--halloween-text-body) !important;
+}
+
+/* Playlist video count and stats */
+body.halloween-theme #stats,
+body.halloween-theme #stats * {
+  color: var(--halloween-text-muted) !important;
+}
+
+/* Video owner info */
+body.halloween-theme #owner,
+body.halloween-theme #owner * {
+  color: var(--halloween-text-body) !important;
+}
+
+/* Top-level menu items */
+body.halloween-theme ytd-guide-entry-renderer #endpoint,
+body.halloween-theme ytd-guide-entry-renderer #endpoint * {
+  color: var(--halloween-text-body) !important;
+}
+
+/* Ensure all formatted strings are readable */
+body.halloween-theme yt-formatted-string {
+  color: var(--halloween-text-body) !important;
+}
+
+/* Special case: Keep video titles gold */
+body.halloween-theme #video-title,
+body.halloween-theme yt-formatted-string#video-title,
+body.halloween-theme a#video-title {
+  color: var(--halloween-text-primary) !important;
+}
+
+/* Special case: Keep channel names orange */
+body.halloween-theme #channel-name,
+body.halloween-theme #channel-name *,
+body.halloween-theme ytd-channel-name a,
+body.halloween-theme ytd-channel-name a * {
+  color: var(--halloween-text-secondary) !important;
+}
+
+/* Special case: Keep comment authors orange */
+body.halloween-theme #author-text,
+body.halloween-theme #author-text * {
+  color: var(--halloween-text-secondary) !important;
+}
+
+/* Ensure input fields have readable text */
+body.halloween-theme input,
+body.halloween-theme textarea {
+  color: var(--halloween-text-body) !important;
+  background: var(--halloween-bg-light) !important;
+}
+
+/* Placeholder text */
+body.halloween-theme input::placeholder,
+body.halloween-theme textarea::placeholder {
+  color: var(--halloween-text-muted) !important;
+}
