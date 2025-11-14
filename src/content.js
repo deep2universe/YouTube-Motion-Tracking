@@ -378,6 +378,21 @@ function initVideoPlayerPopup(){
     <button id="animDisabledDiv" class="pdAnimButtonGreen" onclick="document.dispatchEvent(new CustomEvent('changeIsAnimDisabled'));">⏯️ Stop/Play Animation</button>
 </div>
 
+<hr class="sep">
+
+<div class="containerButton">
+` + animationButtonsHTML + `
+</div>
+
+<hr class="sep filter-separator">
+
+<div class="filter-section">
+    <div class="filter-section-title">🎬 Horror Filters 🎥</div>
+    <div class="filter-buttons-container">
+` + filterButtonsHTML + `
+    </div>
+</div>
+
 <hr class="sep theme-separator">
 
 <div class="theme-section">
@@ -402,21 +417,6 @@ function initVideoPlayerPopup(){
     <button id="particleToggleButton" class="theme-particle-toggle" onclick="document.dispatchEvent(new CustomEvent('toggleParticles'));">
         ✨ Particle Effects: OFF
     </button>
-</div>
-
-<hr class="sep">
-
-<div class="containerButton">
-` + animationButtonsHTML + `
-</div>
-
-<hr class="sep filter-separator">
-
-<div class="filter-section">
-    <div class="filter-section-title">🎬 Horror Filters 🎥</div>
-    <div class="filter-buttons-container">
-` + filterButtonsHTML + `
-    </div>
 </div>
     `;
 
