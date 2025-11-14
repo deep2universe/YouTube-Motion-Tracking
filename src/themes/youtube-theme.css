@@ -5,13 +5,23 @@
 /* ============================================
    A) Page Background
    ============================================ */
-body.halloween-theme ytd-app {
+body.halloween-theme ytd-app,
+body.theme-cyberpunk ytd-app,
+body.theme-matrix ytd-app,
+body.theme-synthwave ytd-app,
+body.theme-deepspace ytd-app,
+body.theme-toxic ytd-app{
   background: var(--halloween-gradient-bg) !important;
   position: relative;
 }
 
 /* Atmospheric overlay effect */
-body.halloween-theme ytd-app::before {
+body.halloween-theme ytd-app::before,
+body.theme-cyberpunk ytd-app::before,
+body.theme-matrix ytd-app::before,
+body.theme-synthwave ytd-app::before,
+body.theme-deepspace ytd-app::before,
+body.theme-toxic ytd-app::before{
   content: '';
   position: fixed;
   top: 0;
@@ -36,7 +46,17 @@ body.halloween-theme ytd-app::before {
    B) Header / Masthead
    ============================================ */
 body.halloween-theme #masthead-container,
-body.halloween-theme ytd-masthead {
+body.theme-cyberpunk #masthead-container,
+body.theme-matrix #masthead-container,
+body.theme-synthwave #masthead-container,
+body.theme-deepspace #masthead-container,
+body.theme-toxic #masthead-container,
+body.halloween-theme ytd-masthead,
+body.theme-cyberpunk ytd-masthead,
+body.theme-matrix ytd-masthead,
+body.theme-synthwave ytd-masthead,
+body.theme-deepspace ytd-masthead,
+body.theme-toxic ytd-masthead{
   background: var(--halloween-gradient-header) !important;
   border-bottom: 2px solid var(--halloween-border-primary) !important;
   box-shadow: 0 2px var(--halloween-shadow-medium) var(--halloween-glow-primary) !important;
@@ -44,20 +64,55 @@ body.halloween-theme ytd-masthead {
 
 /* YouTube Logo */
 body.halloween-theme #logo,
-body.halloween-theme ytd-logo {
+body.theme-cyberpunk #logo,
+body.theme-matrix #logo,
+body.theme-synthwave #logo,
+body.theme-deepspace #logo,
+body.theme-toxic #logo,
+body.halloween-theme ytd-logo,
+body.theme-cyberpunk ytd-logo,
+body.theme-matrix ytd-logo,
+body.theme-synthwave ytd-logo,
+body.theme-deepspace ytd-logo,
+body.theme-toxic ytd-logo{
   filter: hue-rotate(20deg) drop-shadow(0 0 10px var(--halloween-primary));
   transition: filter var(--halloween-transition-normal) ease;
 }
 
 body.halloween-theme #logo:hover,
-body.halloween-theme ytd-logo:hover {
+body.theme-cyberpunk #logo:hover,
+body.theme-matrix #logo:hover,
+body.theme-synthwave #logo:hover,
+body.theme-deepspace #logo:hover,
+body.theme-toxic #logo:hover,
+body.halloween-theme ytd-logo:hover,
+body.theme-cyberpunk ytd-logo:hover,
+body.theme-matrix ytd-logo:hover,
+body.theme-synthwave ytd-logo:hover,
+body.theme-deepspace ytd-logo:hover,
+body.theme-toxic ytd-logo:hover{
   filter: hue-rotate(20deg) drop-shadow(0 0 20px var(--halloween-primary));
 }
 
 /* Search Box */
 body.halloween-theme #search-form,
+body.theme-cyberpunk #search-form,
+body.theme-matrix #search-form,
+body.theme-synthwave #search-form,
+body.theme-deepspace #search-form,
+body.theme-toxic #search-form,
 body.halloween-theme #search-input,
-body.halloween-theme #search {
+body.theme-cyberpunk #search-input,
+body.theme-matrix #search-input,
+body.theme-synthwave #search-input,
+body.theme-deepspace #search-input,
+body.theme-toxic #search-input,
+body.halloween-theme #search,
+body.theme-cyberpunk #search,
+body.theme-matrix #search,
+body.theme-synthwave #search,
+body.theme-deepspace #search,
+body.theme-toxic #search{
   background: var(--halloween-bg-dark) !important;
   border: 1px solid var(--halloween-border-secondary) !important;
   transition: border-color var(--halloween-transition-normal) ease,
@@ -65,28 +120,83 @@ body.halloween-theme #search {
 }
 
 body.halloween-theme #search-form:focus-within,
+body.theme-cyberpunk #search-form:focus-within,
+body.theme-matrix #search-form:focus-within,
+body.theme-synthwave #search-form:focus-within,
+body.theme-deepspace #search-form:focus-within,
+body.theme-toxic #search-form:focus-within,
 body.halloween-theme #search-input:focus,
-body.halloween-theme #search:focus {
+body.theme-cyberpunk #search-input:focus,
+body.theme-matrix #search-input:focus,
+body.theme-synthwave #search-input:focus,
+body.theme-deepspace #search-input:focus,
+body.theme-toxic #search-input:focus,
+body.halloween-theme #search:focus,
+body.theme-cyberpunk #search:focus,
+body.theme-matrix #search:focus,
+body.theme-synthwave #search:focus,
+body.theme-deepspace #search:focus,
+body.theme-toxic #search:focus{
   border-color: var(--halloween-border-primary) !important;
   box-shadow: 0 0 15px var(--halloween-glow-primary) !important;
 }
 
 /* Search input text */
 body.halloween-theme #search-input input,
-body.halloween-theme #search input {
+body.theme-cyberpunk #search-input input,
+body.theme-matrix #search-input input,
+body.theme-synthwave #search-input input,
+body.theme-deepspace #search-input input,
+body.theme-toxic #search-input input,
+body.halloween-theme #search input,
+body.theme-cyberpunk #search input,
+body.theme-matrix #search input,
+body.theme-synthwave #search input,
+body.theme-deepspace #search input,
+body.theme-toxic #search input{
   color: var(--halloween-text-body) !important;
 }
 
 /* Header Icons */
 body.halloween-theme #masthead ytd-topbar-menu-button-renderer button,
+body.theme-cyberpunk #masthead ytd-topbar-menu-button-renderer button,
+body.theme-matrix #masthead ytd-topbar-menu-button-renderer button,
+body.theme-synthwave #masthead ytd-topbar-menu-button-renderer button,
+body.theme-deepspace #masthead ytd-topbar-menu-button-renderer button,
+body.theme-toxic #masthead ytd-topbar-menu-button-renderer button,
 body.halloween-theme #masthead yt-icon-button,
-body.halloween-theme #masthead ytd-notification-topbar-button-renderer {
+body.theme-cyberpunk #masthead yt-icon-button,
+body.theme-matrix #masthead yt-icon-button,
+body.theme-synthwave #masthead yt-icon-button,
+body.theme-deepspace #masthead yt-icon-button,
+body.theme-toxic #masthead yt-icon-button,
+body.halloween-theme #masthead ytd-notification-topbar-button-renderer,
+body.theme-cyberpunk #masthead ytd-notification-topbar-button-renderer,
+body.theme-matrix #masthead ytd-notification-topbar-button-renderer,
+body.theme-synthwave #masthead ytd-notification-topbar-button-renderer,
+body.theme-deepspace #masthead ytd-notification-topbar-button-renderer,
+body.theme-toxic #masthead ytd-notification-topbar-button-renderer{
   transition: filter var(--halloween-transition-normal) ease;
 }
 
 body.halloween-theme #masthead ytd-topbar-menu-button-renderer button:hover,
+body.theme-cyberpunk #masthead ytd-topbar-menu-button-renderer button:hover,
+body.theme-matrix #masthead ytd-topbar-menu-button-renderer button:hover,
+body.theme-synthwave #masthead ytd-topbar-menu-button-renderer button:hover,
+body.theme-deepspace #masthead ytd-topbar-menu-button-renderer button:hover,
+body.theme-toxic #masthead ytd-topbar-menu-button-renderer button:hover,
 body.halloween-theme #masthead yt-icon-button:hover,
-body.halloween-theme #masthead ytd-notification-topbar-button-renderer:hover {
+body.theme-cyberpunk #masthead yt-icon-button:hover,
+body.theme-matrix #masthead yt-icon-button:hover,
+body.theme-synthwave #masthead yt-icon-button:hover,
+body.theme-deepspace #masthead yt-icon-button:hover,
+body.theme-toxic #masthead yt-icon-button:hover,
+body.halloween-theme #masthead ytd-notification-topbar-button-renderer:hover,
+body.theme-cyberpunk #masthead ytd-notification-topbar-button-renderer:hover,
+body.theme-matrix #masthead ytd-notification-topbar-button-renderer:hover,
+body.theme-synthwave #masthead ytd-notification-topbar-button-renderer:hover,
+body.theme-deepspace #masthead ytd-notification-topbar-button-renderer:hover,
+body.theme-toxic #masthead ytd-notification-topbar-button-renderer:hover{
   filter: drop-shadow(0 0 8px var(--halloween-primary));
 }
 
@@ -94,41 +204,106 @@ body.halloween-theme #masthead ytd-notification-topbar-button-renderer:hover {
    C) Sidebar / Guide
    ============================================ */
 body.halloween-theme #guide,
+body.theme-cyberpunk #guide,
+body.theme-matrix #guide,
+body.theme-synthwave #guide,
+body.theme-deepspace #guide,
+body.theme-toxic #guide,
 body.halloween-theme ytd-guide-renderer,
-body.halloween-theme #guide-inner-content {
+body.theme-cyberpunk ytd-guide-renderer,
+body.theme-matrix ytd-guide-renderer,
+body.theme-synthwave ytd-guide-renderer,
+body.theme-deepspace ytd-guide-renderer,
+body.theme-toxic ytd-guide-renderer,
+body.halloween-theme #guide-inner-content,
+body.theme-cyberpunk #guide-inner-content,
+body.theme-matrix #guide-inner-content,
+body.theme-synthwave #guide-inner-content,
+body.theme-deepspace #guide-inner-content,
+body.theme-toxic #guide-inner-content{
   background: var(--halloween-gradient-sidebar) !important;
   border-right: 2px solid var(--halloween-border-primary) !important;
 }
 
 /* Sidebar Items */
 body.halloween-theme ytd-guide-entry-renderer,
-body.halloween-theme ytd-guide-collapsible-entry-renderer {
+body.theme-cyberpunk ytd-guide-entry-renderer,
+body.theme-matrix ytd-guide-entry-renderer,
+body.theme-synthwave ytd-guide-entry-renderer,
+body.theme-deepspace ytd-guide-entry-renderer,
+body.theme-toxic ytd-guide-entry-renderer,
+body.halloween-theme ytd-guide-collapsible-entry-renderer,
+body.theme-cyberpunk ytd-guide-collapsible-entry-renderer,
+body.theme-matrix ytd-guide-collapsible-entry-renderer,
+body.theme-synthwave ytd-guide-collapsible-entry-renderer,
+body.theme-deepspace ytd-guide-collapsible-entry-renderer,
+body.theme-toxic ytd-guide-collapsible-entry-renderer{
   transition: box-shadow var(--halloween-transition-normal) ease,
               border-left var(--halloween-transition-normal) ease;
 }
 
 body.halloween-theme ytd-guide-entry-renderer:hover,
-body.halloween-theme ytd-guide-collapsible-entry-renderer:hover {
+body.theme-cyberpunk ytd-guide-entry-renderer:hover,
+body.theme-matrix ytd-guide-entry-renderer:hover,
+body.theme-synthwave ytd-guide-entry-renderer:hover,
+body.theme-deepspace ytd-guide-entry-renderer:hover,
+body.theme-toxic ytd-guide-entry-renderer:hover,
+body.halloween-theme ytd-guide-collapsible-entry-renderer:hover,
+body.theme-cyberpunk ytd-guide-collapsible-entry-renderer:hover,
+body.theme-matrix ytd-guide-collapsible-entry-renderer:hover,
+body.theme-synthwave ytd-guide-collapsible-entry-renderer:hover,
+body.theme-deepspace ytd-guide-collapsible-entry-renderer:hover,
+body.theme-toxic ytd-guide-collapsible-entry-renderer:hover{
   box-shadow: 0 0 15px var(--halloween-glow-primary);
   border-left: 3px solid var(--halloween-border-primary) !important;
 }
 
 /* Active Sidebar Item */
 body.halloween-theme ytd-guide-entry-renderer[active],
-body.halloween-theme ytd-guide-entry-renderer.iron-selected {
+body.theme-cyberpunk ytd-guide-entry-renderer[active],
+body.theme-matrix ytd-guide-entry-renderer[active],
+body.theme-synthwave ytd-guide-entry-renderer[active],
+body.theme-deepspace ytd-guide-entry-renderer[active],
+body.theme-toxic ytd-guide-entry-renderer[active],
+body.halloween-theme ytd-guide-entry-renderer.iron-selected,
+body.theme-cyberpunk ytd-guide-entry-renderer.iron-selected,
+body.theme-matrix ytd-guide-entry-renderer.iron-selected,
+body.theme-synthwave ytd-guide-entry-renderer.iron-selected,
+body.theme-deepspace ytd-guide-entry-renderer.iron-selected,
+body.theme-toxic ytd-guide-entry-renderer.iron-selected{
   border-left: 3px solid var(--halloween-border-secondary) !important;
   background: var(--halloween-bg-light) !important;
 }
 
 /* Sidebar Icons */
 body.halloween-theme ytd-guide-entry-renderer yt-icon,
-body.halloween-theme ytd-guide-collapsible-entry-renderer yt-icon {
+body.theme-cyberpunk ytd-guide-entry-renderer yt-icon,
+body.theme-matrix ytd-guide-entry-renderer yt-icon,
+body.theme-synthwave ytd-guide-entry-renderer yt-icon,
+body.theme-deepspace ytd-guide-entry-renderer yt-icon,
+body.theme-toxic ytd-guide-entry-renderer yt-icon,
+body.halloween-theme ytd-guide-collapsible-entry-renderer yt-icon,
+body.theme-cyberpunk ytd-guide-collapsible-entry-renderer yt-icon,
+body.theme-matrix ytd-guide-collapsible-entry-renderer yt-icon,
+body.theme-synthwave ytd-guide-collapsible-entry-renderer yt-icon,
+body.theme-deepspace ytd-guide-collapsible-entry-renderer yt-icon,
+body.theme-toxic ytd-guide-collapsible-entry-renderer yt-icon{
   filter: hue-rotate(20deg) drop-shadow(0 0 5px rgba(255, 102, 0, 0.3));
 }
 
 /* Sidebar Text */
 body.halloween-theme ytd-guide-entry-renderer yt-formatted-string,
-body.halloween-theme ytd-guide-collapsible-entry-renderer yt-formatted-string {
+body.theme-cyberpunk ytd-guide-entry-renderer yt-formatted-string,
+body.theme-matrix ytd-guide-entry-renderer yt-formatted-string,
+body.theme-synthwave ytd-guide-entry-renderer yt-formatted-string,
+body.theme-deepspace ytd-guide-entry-renderer yt-formatted-string,
+body.theme-toxic ytd-guide-entry-renderer yt-formatted-string,
+body.halloween-theme ytd-guide-collapsible-entry-renderer yt-formatted-string,
+body.theme-cyberpunk ytd-guide-collapsible-entry-renderer yt-formatted-string,
+body.theme-matrix ytd-guide-collapsible-entry-renderer yt-formatted-string,
+body.theme-synthwave ytd-guide-collapsible-entry-renderer yt-formatted-string,
+body.theme-deepspace ytd-guide-collapsible-entry-renderer yt-formatted-string,
+body.theme-toxic ytd-guide-collapsible-entry-renderer yt-formatted-string{
   color: var(--halloween-text-body) !important;
 }
 
@@ -136,7 +311,17 @@ body.halloween-theme ytd-guide-collapsible-entry-renderer yt-formatted-string {
    D) Video Player
    ============================================ */
 body.halloween-theme #movie_player,
-body.halloween-theme .html5-video-player {
+body.theme-cyberpunk #movie_player,
+body.theme-matrix #movie_player,
+body.theme-synthwave #movie_player,
+body.theme-deepspace #movie_player,
+body.theme-toxic #movie_player,
+body.halloween-theme .html5-video-player,
+body.theme-cyberpunk .html5-video-player,
+body.theme-matrix .html5-video-player,
+body.theme-synthwave .html5-video-player,
+body.theme-deepspace .html5-video-player,
+body.theme-toxic .html5-video-player{
   border: 3px solid var(--halloween-border-primary) !important;
   box-shadow: 0 0 var(--halloween-shadow-large) var(--halloween-glow-primary),
               0 0 var(--halloween-shadow-large) var(--halloween-glow-secondary) !important;
@@ -144,7 +329,12 @@ body.halloween-theme .html5-video-player {
 }
 
 /* Player Controls Bar */
-body.halloween-theme .ytp-chrome-bottom {
+body.halloween-theme .ytp-chrome-bottom,
+body.theme-cyberpunk .ytp-chrome-bottom,
+body.theme-matrix .ytp-chrome-bottom,
+body.theme-synthwave .ytp-chrome-bottom,
+body.theme-deepspace .ytp-chrome-bottom,
+body.theme-toxic .ytp-chrome-bottom{
   background: linear-gradient(
     180deg,
     transparent 0%,
@@ -154,36 +344,81 @@ body.halloween-theme .ytp-chrome-bottom {
 
 /* Progress Bar */
 body.halloween-theme .ytp-progress-bar-container,
-body.halloween-theme .ytp-progress-bar {
+body.theme-cyberpunk .ytp-progress-bar-container,
+body.theme-matrix .ytp-progress-bar-container,
+body.theme-synthwave .ytp-progress-bar-container,
+body.theme-deepspace .ytp-progress-bar-container,
+body.theme-toxic .ytp-progress-bar-container,
+body.halloween-theme .ytp-progress-bar,
+body.theme-cyberpunk .ytp-progress-bar,
+body.theme-matrix .ytp-progress-bar,
+body.theme-synthwave .ytp-progress-bar,
+body.theme-deepspace .ytp-progress-bar,
+body.theme-toxic .ytp-progress-bar{
   transition: height var(--halloween-transition-fast) ease;
 }
 
 body.halloween-theme .ytp-play-progress,
-body.halloween-theme .ytp-scrubber-button {
+body.theme-cyberpunk .ytp-play-progress,
+body.theme-matrix .ytp-play-progress,
+body.theme-synthwave .ytp-play-progress,
+body.theme-deepspace .ytp-play-progress,
+body.theme-toxic .ytp-play-progress,
+body.halloween-theme .ytp-scrubber-button,
+body.theme-cyberpunk .ytp-scrubber-button,
+body.theme-matrix .ytp-scrubber-button,
+body.theme-synthwave .ytp-scrubber-button,
+body.theme-deepspace .ytp-scrubber-button,
+body.theme-toxic .ytp-scrubber-button{
   background: var(--halloween-primary) !important;
   box-shadow: 0 0 10px var(--halloween-glow-primary);
 }
 
-body.halloween-theme .ytp-load-progress {
+body.halloween-theme .ytp-load-progress,
+body.theme-cyberpunk .ytp-load-progress,
+body.theme-matrix .ytp-load-progress,
+body.theme-synthwave .ytp-load-progress,
+body.theme-deepspace .ytp-load-progress,
+body.theme-toxic .ytp-load-progress{
   background: rgba(255, 102, 0, 0.3) !important;
 }
 
 /* Volume Slider */
-body.halloween-theme .ytp-volume-slider-handle {
+body.halloween-theme .ytp-volume-slider-handle,
+body.theme-cyberpunk .ytp-volume-slider-handle,
+body.theme-matrix .ytp-volume-slider-handle,
+body.theme-synthwave .ytp-volume-slider-handle,
+body.theme-deepspace .ytp-volume-slider-handle,
+body.theme-toxic .ytp-volume-slider-handle{
   background: var(--halloween-primary) !important;
   box-shadow: 0 0 8px var(--halloween-glow-primary);
 }
 
-body.halloween-theme .ytp-volume-slider-handle::before {
+body.halloween-theme .ytp-volume-slider-handle::before,
+body.theme-cyberpunk .ytp-volume-slider-handle::before,
+body.theme-matrix .ytp-volume-slider-handle::before,
+body.theme-synthwave .ytp-volume-slider-handle::before,
+body.theme-deepspace .ytp-volume-slider-handle::before,
+body.theme-toxic .ytp-volume-slider-handle::before{
   background: var(--halloween-primary) !important;
 }
 
 /* Player Buttons */
-body.halloween-theme .ytp-button {
+body.halloween-theme .ytp-button,
+body.theme-cyberpunk .ytp-button,
+body.theme-matrix .ytp-button,
+body.theme-synthwave .ytp-button,
+body.theme-deepspace .ytp-button,
+body.theme-toxic .ytp-button{
   transition: filter var(--halloween-transition-normal) ease;
 }
 
-body.halloween-theme .ytp-button:hover {
+body.halloween-theme .ytp-button:hover,
+body.theme-cyberpunk .ytp-button:hover,
+body.theme-matrix .ytp-button:hover,
+body.theme-synthwave .ytp-button:hover,
+body.theme-deepspace .ytp-button:hover,
+body.theme-toxic .ytp-button:hover{
   filter: drop-shadow(0 0 8px var(--halloween-primary));
 }
 
@@ -191,10 +426,35 @@ body.halloween-theme .ytp-button:hover {
    E) Video Thumbnails / Feed
    ============================================ */
 body.halloween-theme ytd-thumbnail,
+body.theme-cyberpunk ytd-thumbnail,
+body.theme-matrix ytd-thumbnail,
+body.theme-synthwave ytd-thumbnail,
+body.theme-deepspace ytd-thumbnail,
+body.theme-toxic ytd-thumbnail,
 body.halloween-theme ytd-video-renderer,
+body.theme-cyberpunk ytd-video-renderer,
+body.theme-matrix ytd-video-renderer,
+body.theme-synthwave ytd-video-renderer,
+body.theme-deepspace ytd-video-renderer,
+body.theme-toxic ytd-video-renderer,
 body.halloween-theme ytd-grid-video-renderer,
+body.theme-cyberpunk ytd-grid-video-renderer,
+body.theme-matrix ytd-grid-video-renderer,
+body.theme-synthwave ytd-grid-video-renderer,
+body.theme-deepspace ytd-grid-video-renderer,
+body.theme-toxic ytd-grid-video-renderer,
 body.halloween-theme ytd-compact-video-renderer,
-body.halloween-theme ytd-rich-item-renderer {
+body.theme-cyberpunk ytd-compact-video-renderer,
+body.theme-matrix ytd-compact-video-renderer,
+body.theme-synthwave ytd-compact-video-renderer,
+body.theme-deepspace ytd-compact-video-renderer,
+body.theme-toxic ytd-compact-video-renderer,
+body.halloween-theme ytd-rich-item-renderer,
+body.theme-cyberpunk ytd-rich-item-renderer,
+body.theme-matrix ytd-rich-item-renderer,
+body.theme-synthwave ytd-rich-item-renderer,
+body.theme-deepspace ytd-rich-item-renderer,
+body.theme-toxic ytd-rich-item-renderer{
   background: var(--halloween-bg-light) !important;
   border: 1px solid var(--halloween-border-secondary) !important;
   border-radius: 8px;
@@ -204,10 +464,35 @@ body.halloween-theme ytd-rich-item-renderer {
 }
 
 body.halloween-theme ytd-thumbnail:hover,
+body.theme-cyberpunk ytd-thumbnail:hover,
+body.theme-matrix ytd-thumbnail:hover,
+body.theme-synthwave ytd-thumbnail:hover,
+body.theme-deepspace ytd-thumbnail:hover,
+body.theme-toxic ytd-thumbnail:hover,
 body.halloween-theme ytd-video-renderer:hover,
+body.theme-cyberpunk ytd-video-renderer:hover,
+body.theme-matrix ytd-video-renderer:hover,
+body.theme-synthwave ytd-video-renderer:hover,
+body.theme-deepspace ytd-video-renderer:hover,
+body.theme-toxic ytd-video-renderer:hover,
 body.halloween-theme ytd-grid-video-renderer:hover,
+body.theme-cyberpunk ytd-grid-video-renderer:hover,
+body.theme-matrix ytd-grid-video-renderer:hover,
+body.theme-synthwave ytd-grid-video-renderer:hover,
+body.theme-deepspace ytd-grid-video-renderer:hover,
+body.theme-toxic ytd-grid-video-renderer:hover,
 body.halloween-theme ytd-compact-video-renderer:hover,
-body.halloween-theme ytd-rich-item-renderer:hover {
+body.theme-cyberpunk ytd-compact-video-renderer:hover,
+body.theme-matrix ytd-compact-video-renderer:hover,
+body.theme-synthwave ytd-compact-video-renderer:hover,
+body.theme-deepspace ytd-compact-video-renderer:hover,
+body.theme-toxic ytd-compact-video-renderer:hover,
+body.halloween-theme ytd-rich-item-renderer:hover,
+body.theme-cyberpunk ytd-rich-item-renderer:hover,
+body.theme-matrix ytd-rich-item-renderer:hover,
+body.theme-synthwave ytd-rich-item-renderer:hover,
+body.theme-deepspace ytd-rich-item-renderer:hover,
+body.theme-toxic ytd-rich-item-renderer:hover{
   transform: translateY(-4px);
   border-color: var(--halloween-border-primary) !important;
   box-shadow: 0 4px var(--halloween-shadow-medium) var(--halloween-glow-primary),
@@ -216,17 +501,42 @@ body.halloween-theme ytd-rich-item-renderer:hover {
 
 /* Thumbnail Image */
 body.halloween-theme ytd-thumbnail img,
-body.halloween-theme yt-image img {
+body.theme-cyberpunk ytd-thumbnail img,
+body.theme-matrix ytd-thumbnail img,
+body.theme-synthwave ytd-thumbnail img,
+body.theme-deepspace ytd-thumbnail img,
+body.theme-toxic ytd-thumbnail img,
+body.halloween-theme yt-image img,
+body.theme-cyberpunk yt-image img,
+body.theme-matrix yt-image img,
+body.theme-synthwave yt-image img,
+body.theme-deepspace yt-image img,
+body.theme-toxic yt-image img{
   transition: transform var(--halloween-transition-normal) ease;
 }
 
 body.halloween-theme ytd-thumbnail:hover img,
-body.halloween-theme yt-image:hover img {
+body.theme-cyberpunk ytd-thumbnail:hover img,
+body.theme-matrix ytd-thumbnail:hover img,
+body.theme-synthwave ytd-thumbnail:hover img,
+body.theme-deepspace ytd-thumbnail:hover img,
+body.theme-toxic ytd-thumbnail:hover img,
+body.halloween-theme yt-image:hover img,
+body.theme-cyberpunk yt-image:hover img,
+body.theme-matrix yt-image:hover img,
+body.theme-synthwave yt-image:hover img,
+body.theme-deepspace yt-image:hover img,
+body.theme-toxic yt-image:hover img{
   transform: scale(1.05);
 }
 
 /* Thumbnail Overlay on Hover */
-body.halloween-theme ytd-thumbnail::after {
+body.halloween-theme ytd-thumbnail::after,
+body.theme-cyberpunk ytd-thumbnail::after,
+body.theme-matrix ytd-thumbnail::after,
+body.theme-synthwave ytd-thumbnail::after,
+body.theme-deepspace ytd-thumbnail::after,
+body.theme-toxic ytd-thumbnail::after{
   content: '';
   position: absolute;
   top: 0;
@@ -240,39 +550,99 @@ body.halloween-theme ytd-thumbnail::after {
   border-radius: 8px;
 }
 
-body.halloween-theme ytd-thumbnail:hover::after {
+body.halloween-theme ytd-thumbnail:hover::after,
+body.theme-cyberpunk ytd-thumbnail:hover::after,
+body.theme-matrix ytd-thumbnail:hover::after,
+body.theme-synthwave ytd-thumbnail:hover::after,
+body.theme-deepspace ytd-thumbnail:hover::after,
+body.theme-toxic ytd-thumbnail:hover::after{
   opacity: 1;
 }
 
 /* Video Title */
 body.halloween-theme #video-title,
-body.halloween-theme yt-formatted-string#video-title {
+body.theme-cyberpunk #video-title,
+body.theme-matrix #video-title,
+body.theme-synthwave #video-title,
+body.theme-deepspace #video-title,
+body.theme-toxic #video-title,
+body.halloween-theme yt-formatted-string#video-title,
+body.theme-cyberpunk yt-formatted-string#video-title,
+body.theme-matrix yt-formatted-string#video-title,
+body.theme-synthwave yt-formatted-string#video-title,
+body.theme-deepspace yt-formatted-string#video-title,
+body.theme-toxic yt-formatted-string#video-title{
   color: var(--halloween-text-primary) !important;
   text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
   transition: text-shadow var(--halloween-transition-normal) ease;
 }
 
 body.halloween-theme #video-title:hover,
-body.halloween-theme yt-formatted-string#video-title:hover {
+body.theme-cyberpunk #video-title:hover,
+body.theme-matrix #video-title:hover,
+body.theme-synthwave #video-title:hover,
+body.theme-deepspace #video-title:hover,
+body.theme-toxic #video-title:hover,
+body.halloween-theme yt-formatted-string#video-title:hover,
+body.theme-cyberpunk yt-formatted-string#video-title:hover,
+body.theme-matrix yt-formatted-string#video-title:hover,
+body.theme-synthwave yt-formatted-string#video-title:hover,
+body.theme-deepspace yt-formatted-string#video-title:hover,
+body.theme-toxic yt-formatted-string#video-title:hover{
   text-shadow: 0 0 12px rgba(255, 215, 0, 0.8);
 }
 
 /* Channel Name */
 body.halloween-theme #channel-name,
+body.theme-cyberpunk #channel-name,
+body.theme-matrix #channel-name,
+body.theme-synthwave #channel-name,
+body.theme-deepspace #channel-name,
+body.theme-toxic #channel-name,
 body.halloween-theme ytd-channel-name a,
-body.halloween-theme yt-formatted-string.ytd-channel-name {
+body.theme-cyberpunk ytd-channel-name a,
+body.theme-matrix ytd-channel-name a,
+body.theme-synthwave ytd-channel-name a,
+body.theme-deepspace ytd-channel-name a,
+body.theme-toxic ytd-channel-name a,
+body.halloween-theme yt-formatted-string.ytd-channel-name,
+body.theme-cyberpunk yt-formatted-string.ytd-channel-name,
+body.theme-matrix yt-formatted-string.ytd-channel-name,
+body.theme-synthwave yt-formatted-string.ytd-channel-name,
+body.theme-deepspace yt-formatted-string.ytd-channel-name,
+body.theme-toxic yt-formatted-string.ytd-channel-name{
   color: var(--halloween-text-secondary) !important;
   transition: color var(--halloween-transition-normal) ease;
 }
 
 body.halloween-theme #channel-name:hover,
-body.halloween-theme ytd-channel-name a:hover {
+body.theme-cyberpunk #channel-name:hover,
+body.theme-matrix #channel-name:hover,
+body.theme-synthwave #channel-name:hover,
+body.theme-deepspace #channel-name:hover,
+body.theme-toxic #channel-name:hover,
+body.halloween-theme ytd-channel-name a:hover,
+body.theme-cyberpunk ytd-channel-name a:hover,
+body.theme-matrix ytd-channel-name a:hover,
+body.theme-synthwave ytd-channel-name a:hover,
+body.theme-deepspace ytd-channel-name a:hover,
+body.theme-toxic ytd-channel-name a:hover{
   color: var(--halloween-primary) !important;
 }
 
 /* Video Metadata */
 body.halloween-theme #metadata-line,
-body.halloween-theme ytd-video-meta-block {
+body.theme-cyberpunk #metadata-line,
+body.theme-matrix #metadata-line,
+body.theme-synthwave #metadata-line,
+body.theme-deepspace #metadata-line,
+body.theme-toxic #metadata-line,
+body.halloween-theme ytd-video-meta-block,
+body.theme-cyberpunk ytd-video-meta-block,
+body.theme-matrix ytd-video-meta-block,
+body.theme-synthwave ytd-video-meta-block,
+body.theme-deepspace ytd-video-meta-block,
+body.theme-toxic ytd-video-meta-block{
   color: var(--halloween-text-muted) !important;
 }
 
@@ -280,7 +650,17 @@ body.halloween-theme ytd-video-meta-block {
    F) Comments Section
    ============================================ */
 body.halloween-theme ytd-comments,
-body.halloween-theme #comments {
+body.theme-cyberpunk ytd-comments,
+body.theme-matrix ytd-comments,
+body.theme-synthwave ytd-comments,
+body.theme-deepspace ytd-comments,
+body.theme-toxic ytd-comments,
+body.halloween-theme #comments,
+body.theme-cyberpunk #comments,
+body.theme-matrix #comments,
+body.theme-synthwave #comments,
+body.theme-deepspace #comments,
+body.theme-toxic #comments{
   background: var(--halloween-bg-medium) !important;
   border-top: 2px solid var(--halloween-border-primary) !important;
   border-radius: 8px;
@@ -289,7 +669,17 @@ body.halloween-theme #comments {
 
 /* Comment Items */
 body.halloween-theme ytd-comment-thread-renderer,
-body.halloween-theme ytd-comment-renderer {
+body.theme-cyberpunk ytd-comment-thread-renderer,
+body.theme-matrix ytd-comment-thread-renderer,
+body.theme-synthwave ytd-comment-thread-renderer,
+body.theme-deepspace ytd-comment-thread-renderer,
+body.theme-toxic ytd-comment-thread-renderer,
+body.halloween-theme ytd-comment-renderer,
+body.theme-cyberpunk ytd-comment-renderer,
+body.theme-matrix ytd-comment-renderer,
+body.theme-synthwave ytd-comment-renderer,
+body.theme-deepspace ytd-comment-renderer,
+body.theme-toxic ytd-comment-renderer{
   background: var(--halloween-bg-light) !important;
   border-radius: 8px;
   padding: 12px;
@@ -298,13 +688,33 @@ body.halloween-theme ytd-comment-renderer {
 }
 
 body.halloween-theme ytd-comment-thread-renderer:hover,
-body.halloween-theme ytd-comment-renderer:hover {
+body.theme-cyberpunk ytd-comment-thread-renderer:hover,
+body.theme-matrix ytd-comment-thread-renderer:hover,
+body.theme-synthwave ytd-comment-thread-renderer:hover,
+body.theme-deepspace ytd-comment-thread-renderer:hover,
+body.theme-toxic ytd-comment-thread-renderer:hover,
+body.halloween-theme ytd-comment-renderer:hover,
+body.theme-cyberpunk ytd-comment-renderer:hover,
+body.theme-matrix ytd-comment-renderer:hover,
+body.theme-synthwave ytd-comment-renderer:hover,
+body.theme-deepspace ytd-comment-renderer:hover,
+body.theme-toxic ytd-comment-renderer:hover{
   border-left: 3px solid var(--halloween-border-secondary) !important;
 }
 
 /* Comment Author */
 body.halloween-theme #author-text,
-body.halloween-theme ytd-comment-renderer #author-text {
+body.theme-cyberpunk #author-text,
+body.theme-matrix #author-text,
+body.theme-synthwave #author-text,
+body.theme-deepspace #author-text,
+body.theme-toxic #author-text,
+body.halloween-theme ytd-comment-renderer #author-text,
+body.theme-cyberpunk ytd-comment-renderer #author-text,
+body.theme-matrix ytd-comment-renderer #author-text,
+body.theme-synthwave ytd-comment-renderer #author-text,
+body.theme-deepspace ytd-comment-renderer #author-text,
+body.theme-toxic ytd-comment-renderer #author-text{
   color: var(--halloween-text-secondary) !important;
   text-shadow: 0 0 5px rgba(255, 140, 0, 0.4);
   font-weight: 600;
@@ -312,38 +722,83 @@ body.halloween-theme ytd-comment-renderer #author-text {
 
 /* Comment Text */
 body.halloween-theme #content-text,
+body.theme-cyberpunk #content-text,
+body.theme-matrix #content-text,
+body.theme-synthwave #content-text,
+body.theme-deepspace #content-text,
+body.theme-toxic #content-text,
 body.halloween-theme ytd-comment-renderer #content-text,
-body.halloween-theme yt-formatted-string#content-text {
+body.theme-cyberpunk ytd-comment-renderer #content-text,
+body.theme-matrix ytd-comment-renderer #content-text,
+body.theme-synthwave ytd-comment-renderer #content-text,
+body.theme-deepspace ytd-comment-renderer #content-text,
+body.theme-toxic ytd-comment-renderer #content-text,
+body.halloween-theme yt-formatted-string#content-text,
+body.theme-cyberpunk yt-formatted-string#content-text,
+body.theme-matrix yt-formatted-string#content-text,
+body.theme-synthwave yt-formatted-string#content-text,
+body.theme-deepspace yt-formatted-string#content-text,
+body.theme-toxic yt-formatted-string#content-text{
   color: var(--halloween-text-body) !important;
 }
 
 /* Comment Header */
 body.halloween-theme #header-author,
-body.halloween-theme ytd-comment-renderer #header-author {
+body.theme-cyberpunk #header-author,
+body.theme-matrix #header-author,
+body.theme-synthwave #header-author,
+body.theme-deepspace #header-author,
+body.theme-toxic #header-author,
+body.halloween-theme ytd-comment-renderer #header-author,
+body.theme-cyberpunk ytd-comment-renderer #header-author,
+body.theme-matrix ytd-comment-renderer #header-author,
+body.theme-synthwave ytd-comment-renderer #header-author,
+body.theme-deepspace ytd-comment-renderer #header-author,
+body.theme-toxic ytd-comment-renderer #header-author{
   color: var(--halloween-text-body) !important;
 }
 
 /* ============================================
    G) Scrollbar
    ============================================ */
-body.halloween-theme ::-webkit-scrollbar {
+body.halloween-theme ::-webkit-scrollbar,
+body.theme-cyberpunk ::-webkit-scrollbar,
+body.theme-matrix ::-webkit-scrollbar,
+body.theme-synthwave ::-webkit-scrollbar,
+body.theme-deepspace ::-webkit-scrollbar,
+body.theme-toxic ::-webkit-scrollbar{
   width: 12px;
   height: 12px;
 }
 
-body.halloween-theme ::-webkit-scrollbar-track {
+body.halloween-theme ::-webkit-scrollbar-track,
+body.theme-cyberpunk ::-webkit-scrollbar-track,
+body.theme-matrix ::-webkit-scrollbar-track,
+body.theme-synthwave ::-webkit-scrollbar-track,
+body.theme-deepspace ::-webkit-scrollbar-track,
+body.theme-toxic ::-webkit-scrollbar-track{
   background: var(--halloween-bg-dark);
   border: 1px solid var(--halloween-border-secondary);
   border-radius: 6px;
 }
 
-body.halloween-theme ::-webkit-scrollbar-thumb {
+body.halloween-theme ::-webkit-scrollbar-thumb,
+body.theme-cyberpunk ::-webkit-scrollbar-thumb,
+body.theme-matrix ::-webkit-scrollbar-thumb,
+body.theme-synthwave ::-webkit-scrollbar-thumb,
+body.theme-deepspace ::-webkit-scrollbar-thumb,
+body.theme-toxic ::-webkit-scrollbar-thumb{
   background: var(--halloween-gradient-scrollbar);
   border-radius: 6px;
   transition: box-shadow var(--halloween-transition-normal) ease;
 }
 
-body.halloween-theme ::-webkit-scrollbar-thumb:hover {
+body.halloween-theme ::-webkit-scrollbar-thumb:hover,
+body.theme-cyberpunk ::-webkit-scrollbar-thumb:hover,
+body.theme-matrix ::-webkit-scrollbar-thumb:hover,
+body.theme-synthwave ::-webkit-scrollbar-thumb:hover,
+body.theme-deepspace ::-webkit-scrollbar-thumb:hover,
+body.theme-toxic ::-webkit-scrollbar-thumb:hover{
   background: linear-gradient(
     180deg,
     var(--halloween-primary) 0%,
@@ -358,7 +813,17 @@ body.halloween-theme ::-webkit-scrollbar-thumb:hover {
 
 /* Subscribe Button */
 body.halloween-theme ytd-subscribe-button-renderer button,
-body.halloween-theme ytd-button-renderer button {
+body.theme-cyberpunk ytd-subscribe-button-renderer button,
+body.theme-matrix ytd-subscribe-button-renderer button,
+body.theme-synthwave ytd-subscribe-button-renderer button,
+body.theme-deepspace ytd-subscribe-button-renderer button,
+body.theme-toxic ytd-subscribe-button-renderer button,
+body.halloween-theme ytd-button-renderer button,
+body.theme-cyberpunk ytd-button-renderer button,
+body.theme-matrix ytd-button-renderer button,
+body.theme-synthwave ytd-button-renderer button,
+body.theme-deepspace ytd-button-renderer button,
+body.theme-toxic ytd-button-renderer button{
   background: var(--halloween-gradient-button-inactive) !important;
   border: 1px solid var(--halloween-border-secondary) !important;
   color: var(--halloween-text-body) !important;
@@ -367,14 +832,34 @@ body.halloween-theme ytd-button-renderer button {
 }
 
 body.halloween-theme ytd-subscribe-button-renderer button:hover,
-body.halloween-theme ytd-button-renderer button:hover {
+body.theme-cyberpunk ytd-subscribe-button-renderer button:hover,
+body.theme-matrix ytd-subscribe-button-renderer button:hover,
+body.theme-synthwave ytd-subscribe-button-renderer button:hover,
+body.theme-deepspace ytd-subscribe-button-renderer button:hover,
+body.theme-toxic ytd-subscribe-button-renderer button:hover,
+body.halloween-theme ytd-button-renderer button:hover,
+body.theme-cyberpunk ytd-button-renderer button:hover,
+body.theme-matrix ytd-button-renderer button:hover,
+body.theme-synthwave ytd-button-renderer button:hover,
+body.theme-deepspace ytd-button-renderer button:hover,
+body.theme-toxic ytd-button-renderer button:hover{
   background: var(--halloween-gradient-button-active) !important;
   box-shadow: 0 0 15px var(--halloween-glow-primary);
 }
 
 /* Chips / Filter Buttons */
 body.halloween-theme yt-chip-cloud-chip-renderer,
-body.halloween-theme ytd-chip-cloud-chip-renderer {
+body.theme-cyberpunk yt-chip-cloud-chip-renderer,
+body.theme-matrix yt-chip-cloud-chip-renderer,
+body.theme-synthwave yt-chip-cloud-chip-renderer,
+body.theme-deepspace yt-chip-cloud-chip-renderer,
+body.theme-toxic yt-chip-cloud-chip-renderer,
+body.halloween-theme ytd-chip-cloud-chip-renderer,
+body.theme-cyberpunk ytd-chip-cloud-chip-renderer,
+body.theme-matrix ytd-chip-cloud-chip-renderer,
+body.theme-synthwave ytd-chip-cloud-chip-renderer,
+body.theme-deepspace ytd-chip-cloud-chip-renderer,
+body.theme-toxic ytd-chip-cloud-chip-renderer{
   background: var(--halloween-bg-medium) !important;
   border: 1px solid var(--halloween-border-secondary) !important;
   color: var(--halloween-text-body) !important;
@@ -383,38 +868,108 @@ body.halloween-theme ytd-chip-cloud-chip-renderer {
 }
 
 body.halloween-theme yt-chip-cloud-chip-renderer:hover,
-body.halloween-theme ytd-chip-cloud-chip-renderer:hover {
+body.theme-cyberpunk yt-chip-cloud-chip-renderer:hover,
+body.theme-matrix yt-chip-cloud-chip-renderer:hover,
+body.theme-synthwave yt-chip-cloud-chip-renderer:hover,
+body.theme-deepspace yt-chip-cloud-chip-renderer:hover,
+body.theme-toxic yt-chip-cloud-chip-renderer:hover,
+body.halloween-theme ytd-chip-cloud-chip-renderer:hover,
+body.theme-cyberpunk ytd-chip-cloud-chip-renderer:hover,
+body.theme-matrix ytd-chip-cloud-chip-renderer:hover,
+body.theme-synthwave ytd-chip-cloud-chip-renderer:hover,
+body.theme-deepspace ytd-chip-cloud-chip-renderer:hover,
+body.theme-toxic ytd-chip-cloud-chip-renderer:hover{
   border-color: var(--halloween-border-primary) !important;
   box-shadow: 0 0 10px var(--halloween-glow-primary);
 }
 
 body.halloween-theme yt-chip-cloud-chip-renderer[chip-style="STYLE_PRIMARY"],
-body.halloween-theme ytd-chip-cloud-chip-renderer[chip-style="STYLE_PRIMARY"] {
+body.theme-cyberpunk yt-chip-cloud-chip-renderer[chip-style="STYLE_PRIMARY"],
+body.theme-matrix yt-chip-cloud-chip-renderer[chip-style="STYLE_PRIMARY"],
+body.theme-synthwave yt-chip-cloud-chip-renderer[chip-style="STYLE_PRIMARY"],
+body.theme-deepspace yt-chip-cloud-chip-renderer[chip-style="STYLE_PRIMARY"],
+body.theme-toxic yt-chip-cloud-chip-renderer[chip-style="STYLE_PRIMARY"],
+body.halloween-theme ytd-chip-cloud-chip-renderer[chip-style="STYLE_PRIMARY"],
+body.theme-cyberpunk ytd-chip-cloud-chip-renderer[chip-style="STYLE_PRIMARY"],
+body.theme-matrix ytd-chip-cloud-chip-renderer[chip-style="STYLE_PRIMARY"],
+body.theme-synthwave ytd-chip-cloud-chip-renderer[chip-style="STYLE_PRIMARY"],
+body.theme-deepspace ytd-chip-cloud-chip-renderer[chip-style="STYLE_PRIMARY"],
+body.theme-toxic ytd-chip-cloud-chip-renderer[chip-style="STYLE_PRIMARY"]{
   background: var(--halloween-gradient-button-active) !important;
   border-color: var(--halloween-border-primary) !important;
 }
 
 /* General Buttons */
 body.halloween-theme button,
+body.theme-cyberpunk button,
+body.theme-matrix button,
+body.theme-synthwave button,
+body.theme-deepspace button,
+body.theme-toxic button,
 body.halloween-theme yt-button-renderer button,
-body.halloween-theme paper-button {
+body.theme-cyberpunk yt-button-renderer button,
+body.theme-matrix yt-button-renderer button,
+body.theme-synthwave yt-button-renderer button,
+body.theme-deepspace yt-button-renderer button,
+body.theme-toxic yt-button-renderer button,
+body.halloween-theme paper-button,
+body.theme-cyberpunk paper-button,
+body.theme-matrix paper-button,
+body.theme-synthwave paper-button,
+body.theme-deepspace paper-button,
+body.theme-toxic paper-button{
   transition: filter var(--halloween-transition-normal) ease;
 }
 
 body.halloween-theme button:hover,
+body.theme-cyberpunk button:hover,
+body.theme-matrix button:hover,
+body.theme-synthwave button:hover,
+body.theme-deepspace button:hover,
+body.theme-toxic button:hover,
 body.halloween-theme yt-button-renderer button:hover,
-body.halloween-theme paper-button:hover {
+body.theme-cyberpunk yt-button-renderer button:hover,
+body.theme-matrix yt-button-renderer button:hover,
+body.theme-synthwave yt-button-renderer button:hover,
+body.theme-deepspace yt-button-renderer button:hover,
+body.theme-toxic yt-button-renderer button:hover,
+body.halloween-theme paper-button:hover,
+body.theme-cyberpunk paper-button:hover,
+body.theme-matrix paper-button:hover,
+body.theme-synthwave paper-button:hover,
+body.theme-deepspace paper-button:hover,
+body.theme-toxic paper-button:hover{
   filter: drop-shadow(0 0 8px var(--halloween-primary));
 }
 
 /* Like/Dislike Buttons */
 body.halloween-theme ytd-toggle-button-renderer button,
-body.halloween-theme ytd-segmented-like-dislike-button-renderer button {
+body.theme-cyberpunk ytd-toggle-button-renderer button,
+body.theme-matrix ytd-toggle-button-renderer button,
+body.theme-synthwave ytd-toggle-button-renderer button,
+body.theme-deepspace ytd-toggle-button-renderer button,
+body.theme-toxic ytd-toggle-button-renderer button,
+body.halloween-theme ytd-segmented-like-dislike-button-renderer button,
+body.theme-cyberpunk ytd-segmented-like-dislike-button-renderer button,
+body.theme-matrix ytd-segmented-like-dislike-button-renderer button,
+body.theme-synthwave ytd-segmented-like-dislike-button-renderer button,
+body.theme-deepspace ytd-segmented-like-dislike-button-renderer button,
+body.theme-toxic ytd-segmented-like-dislike-button-renderer button{
   transition: filter var(--halloween-transition-normal) ease;
 }
 
 body.halloween-theme ytd-toggle-button-renderer button:hover,
-body.halloween-theme ytd-segmented-like-dislike-button-renderer button:hover {
+body.theme-cyberpunk ytd-toggle-button-renderer button:hover,
+body.theme-matrix ytd-toggle-button-renderer button:hover,
+body.theme-synthwave ytd-toggle-button-renderer button:hover,
+body.theme-deepspace ytd-toggle-button-renderer button:hover,
+body.theme-toxic ytd-toggle-button-renderer button:hover,
+body.halloween-theme ytd-segmented-like-dislike-button-renderer button:hover,
+body.theme-cyberpunk ytd-segmented-like-dislike-button-renderer button:hover,
+body.theme-matrix ytd-segmented-like-dislike-button-renderer button:hover,
+body.theme-synthwave ytd-segmented-like-dislike-button-renderer button:hover,
+body.theme-deepspace ytd-segmented-like-dislike-button-renderer button:hover,
+body.theme-toxic ytd-segmented-like-dislike-button-renderer button:hover{
   filter: drop-shadow(0 0 8px var(--halloween-primary));
 }
 
@@ -424,39 +979,84 @@ body.halloween-theme ytd-segmented-like-dislike-button-renderer button:hover {
 
 /* Description Box */
 body.halloween-theme ytd-video-secondary-info-renderer,
-body.halloween-theme ytd-expander {
+body.theme-cyberpunk ytd-video-secondary-info-renderer,
+body.theme-matrix ytd-video-secondary-info-renderer,
+body.theme-synthwave ytd-video-secondary-info-renderer,
+body.theme-deepspace ytd-video-secondary-info-renderer,
+body.theme-toxic ytd-video-secondary-info-renderer,
+body.halloween-theme ytd-expander,
+body.theme-cyberpunk ytd-expander,
+body.theme-matrix ytd-expander,
+body.theme-synthwave ytd-expander,
+body.theme-deepspace ytd-expander,
+body.theme-toxic ytd-expander{
   background: var(--halloween-bg-light) !important;
   border: 1px solid var(--halloween-border-secondary) !important;
   border-radius: 8px;
 }
 
 /* Playlist Items */
-body.halloween-theme ytd-playlist-panel-renderer {
+body.halloween-theme ytd-playlist-panel-renderer,
+body.theme-cyberpunk ytd-playlist-panel-renderer,
+body.theme-matrix ytd-playlist-panel-renderer,
+body.theme-synthwave ytd-playlist-panel-renderer,
+body.theme-deepspace ytd-playlist-panel-renderer,
+body.theme-toxic ytd-playlist-panel-renderer{
   background: var(--halloween-bg-medium) !important;
   border: 1px solid var(--halloween-border-secondary) !important;
 }
 
 /* Search Results */
-body.halloween-theme ytd-search ytd-item-section-renderer {
+body.halloween-theme ytd-search ytd-item-section-renderer,
+body.theme-cyberpunk ytd-search ytd-item-section-renderer,
+body.theme-matrix ytd-search ytd-item-section-renderer,
+body.theme-synthwave ytd-search ytd-item-section-renderer,
+body.theme-deepspace ytd-search ytd-item-section-renderer,
+body.theme-toxic ytd-search ytd-item-section-renderer{
   background: transparent !important;
 }
 
 /* Channel Header */
-body.halloween-theme ytd-c4-tabbed-header-renderer {
+body.halloween-theme ytd-c4-tabbed-header-renderer,
+body.theme-cyberpunk ytd-c4-tabbed-header-renderer,
+body.theme-matrix ytd-c4-tabbed-header-renderer,
+body.theme-synthwave ytd-c4-tabbed-header-renderer,
+body.theme-deepspace ytd-c4-tabbed-header-renderer,
+body.theme-toxic ytd-c4-tabbed-header-renderer{
   background: var(--halloween-gradient-header) !important;
   border-bottom: 2px solid var(--halloween-border-primary) !important;
 }
 
 /* Notification Badge */
-body.halloween-theme yt-notification-topbar-button-renderer .yt-spec-icon-badge-shape__badge {
+body.halloween-theme yt-notification-topbar-button-renderer .yt-spec-icon-badge-shape__badge,
+body.theme-cyberpunk yt-notification-topbar-button-renderer .yt-spec-icon-badge-shape__badge,
+body.theme-matrix yt-notification-topbar-button-renderer .yt-spec-icon-badge-shape__badge,
+body.theme-synthwave yt-notification-topbar-button-renderer .yt-spec-icon-badge-shape__badge,
+body.theme-deepspace yt-notification-topbar-button-renderer .yt-spec-icon-badge-shape__badge,
+body.theme-toxic yt-notification-topbar-button-renderer .yt-spec-icon-badge-shape__badge{
   background: var(--halloween-primary) !important;
   box-shadow: 0 0 8px var(--halloween-glow-primary);
 }
 
 /* Focus Indicators for Accessibility */
 body.halloween-theme button:focus-visible,
+body.theme-cyberpunk button:focus-visible,
+body.theme-matrix button:focus-visible,
+body.theme-synthwave button:focus-visible,
+body.theme-deepspace button:focus-visible,
+body.theme-toxic button:focus-visible,
 body.halloween-theme a:focus-visible,
-body.halloween-theme input:focus-visible {
+body.theme-cyberpunk a:focus-visible,
+body.theme-matrix a:focus-visible,
+body.theme-synthwave a:focus-visible,
+body.theme-deepspace a:focus-visible,
+body.theme-toxic a:focus-visible,
+body.halloween-theme input:focus-visible,
+body.theme-cyberpunk input:focus-visible,
+body.theme-matrix input:focus-visible,
+body.theme-synthwave input:focus-visible,
+body.theme-deepspace input:focus-visible,
+body.theme-toxic input:focus-visible{
   outline: 2px solid var(--halloween-accent) !important;
   outline-offset: 2px;
 }
@@ -468,270 +1068,811 @@ body.halloween-theme input:focus-visible {
 
 /* Global text color override for all elements */
 body.halloween-theme,
-body.halloween-theme * {
+body.theme-cyberpunk,
+body.theme-matrix,
+body.theme-synthwave,
+body.theme-deepspace,
+body.theme-toxic,
+body.halloween-theme *,
+body.theme-cyberpunk *,
+body.theme-matrix *,
+body.theme-synthwave *,
+body.theme-deepspace *,
+body.theme-toxic *{
   color: var(--halloween-text-body) !important;
 }
 
 /* Ensure all text elements are readable */
 body.halloween-theme ytd-app,
+body.theme-cyberpunk ytd-app,
+body.theme-matrix ytd-app,
+body.theme-synthwave ytd-app,
+body.theme-deepspace ytd-app,
+body.theme-toxic ytd-app,
 body.halloween-theme ytd-page-manager,
+body.theme-cyberpunk ytd-page-manager,
+body.theme-matrix ytd-page-manager,
+body.theme-synthwave ytd-page-manager,
+body.theme-deepspace ytd-page-manager,
+body.theme-toxic ytd-page-manager,
 body.halloween-theme #content,
+body.theme-cyberpunk #content,
+body.theme-matrix #content,
+body.theme-synthwave #content,
+body.theme-deepspace #content,
+body.theme-toxic #content,
 body.halloween-theme #primary,
-body.halloween-theme #secondary {
+body.theme-cyberpunk #primary,
+body.theme-matrix #primary,
+body.theme-synthwave #primary,
+body.theme-deepspace #primary,
+body.theme-toxic #primary,
+body.halloween-theme #secondary,
+body.theme-cyberpunk #secondary,
+body.theme-matrix #secondary,
+body.theme-synthwave #secondary,
+body.theme-deepspace #secondary,
+body.theme-toxic #secondary{
   color: var(--halloween-text-body) !important;
 }
 
 /* Video renderer text elements */
 body.halloween-theme ytd-video-renderer *,
+body.theme-cyberpunk ytd-video-renderer *,
+body.theme-matrix ytd-video-renderer *,
+body.theme-synthwave ytd-video-renderer *,
+body.theme-deepspace ytd-video-renderer *,
+body.theme-toxic ytd-video-renderer *,
 body.halloween-theme ytd-grid-video-renderer *,
+body.theme-cyberpunk ytd-grid-video-renderer *,
+body.theme-matrix ytd-grid-video-renderer *,
+body.theme-synthwave ytd-grid-video-renderer *,
+body.theme-deepspace ytd-grid-video-renderer *,
+body.theme-toxic ytd-grid-video-renderer *,
 body.halloween-theme ytd-compact-video-renderer *,
-body.halloween-theme ytd-rich-item-renderer * {
+body.theme-cyberpunk ytd-compact-video-renderer *,
+body.theme-matrix ytd-compact-video-renderer *,
+body.theme-synthwave ytd-compact-video-renderer *,
+body.theme-deepspace ytd-compact-video-renderer *,
+body.theme-toxic ytd-compact-video-renderer *,
+body.halloween-theme ytd-rich-item-renderer *,
+body.theme-cyberpunk ytd-rich-item-renderer *,
+body.theme-matrix ytd-rich-item-renderer *,
+body.theme-synthwave ytd-rich-item-renderer *,
+body.theme-deepspace ytd-rich-item-renderer *,
+body.theme-toxic ytd-rich-item-renderer *{
   color: var(--halloween-text-body) !important;
 }
 
 /* Playlist panel text */
 body.halloween-theme ytd-playlist-panel-renderer,
-body.halloween-theme ytd-playlist-panel-renderer * {
+body.theme-cyberpunk ytd-playlist-panel-renderer,
+body.theme-matrix ytd-playlist-panel-renderer,
+body.theme-synthwave ytd-playlist-panel-renderer,
+body.theme-deepspace ytd-playlist-panel-renderer,
+body.theme-toxic ytd-playlist-panel-renderer,
+body.halloween-theme ytd-playlist-panel-renderer *,
+body.theme-cyberpunk ytd-playlist-panel-renderer *,
+body.theme-matrix ytd-playlist-panel-renderer *,
+body.theme-synthwave ytd-playlist-panel-renderer *,
+body.theme-deepspace ytd-playlist-panel-renderer *,
+body.theme-toxic ytd-playlist-panel-renderer *{
   color: var(--halloween-text-body) !important;
   background: var(--halloween-bg-medium) !important;
 }
 
-body.halloween-theme ytd-playlist-panel-video-renderer {
+body.halloween-theme ytd-playlist-panel-video-renderer,
+body.theme-cyberpunk ytd-playlist-panel-video-renderer,
+body.theme-matrix ytd-playlist-panel-video-renderer,
+body.theme-synthwave ytd-playlist-panel-video-renderer,
+body.theme-deepspace ytd-playlist-panel-video-renderer,
+body.theme-toxic ytd-playlist-panel-video-renderer{
   background: var(--halloween-bg-light) !important;
 }
 
-body.halloween-theme ytd-playlist-panel-video-renderer:hover {
+body.halloween-theme ytd-playlist-panel-video-renderer:hover,
+body.theme-cyberpunk ytd-playlist-panel-video-renderer:hover,
+body.theme-matrix ytd-playlist-panel-video-renderer:hover,
+body.theme-synthwave ytd-playlist-panel-video-renderer:hover,
+body.theme-deepspace ytd-playlist-panel-video-renderer:hover,
+body.theme-toxic ytd-playlist-panel-video-renderer:hover{
   background: var(--halloween-bg-medium) !important;
 }
 
 /* Playlist panel title */
 body.halloween-theme #publisher-container,
-body.halloween-theme .publisher {
+body.theme-cyberpunk #publisher-container,
+body.theme-matrix #publisher-container,
+body.theme-synthwave #publisher-container,
+body.theme-deepspace #publisher-container,
+body.theme-toxic #publisher-container,
+body.halloween-theme .publisher,
+body.theme-cyberpunk .publisher,
+body.theme-matrix .publisher,
+body.theme-synthwave .publisher,
+body.theme-deepspace .publisher,
+body.theme-toxic .publisher{
   color: var(--halloween-text-primary) !important;
 }
 
 /* Video metadata text */
 body.halloween-theme #info,
+body.theme-cyberpunk #info,
+body.theme-matrix #info,
+body.theme-synthwave #info,
+body.theme-deepspace #info,
+body.theme-toxic #info,
 body.halloween-theme #info *,
+body.theme-cyberpunk #info *,
+body.theme-matrix #info *,
+body.theme-synthwave #info *,
+body.theme-deepspace #info *,
+body.theme-toxic #info *,
 body.halloween-theme ytd-video-primary-info-renderer,
-body.halloween-theme ytd-video-primary-info-renderer * {
+body.theme-cyberpunk ytd-video-primary-info-renderer,
+body.theme-matrix ytd-video-primary-info-renderer,
+body.theme-synthwave ytd-video-primary-info-renderer,
+body.theme-deepspace ytd-video-primary-info-renderer,
+body.theme-toxic ytd-video-primary-info-renderer,
+body.halloween-theme ytd-video-primary-info-renderer *,
+body.theme-cyberpunk ytd-video-primary-info-renderer *,
+body.theme-matrix ytd-video-primary-info-renderer *,
+body.theme-synthwave ytd-video-primary-info-renderer *,
+body.theme-deepspace ytd-video-primary-info-renderer *,
+body.theme-toxic ytd-video-primary-info-renderer *{
   color: var(--halloween-text-body) !important;
 }
 
 /* Video description */
 body.halloween-theme ytd-text-inline-expander,
+body.theme-cyberpunk ytd-text-inline-expander,
+body.theme-matrix ytd-text-inline-expander,
+body.theme-synthwave ytd-text-inline-expander,
+body.theme-deepspace ytd-text-inline-expander,
+body.theme-toxic ytd-text-inline-expander,
 body.halloween-theme ytd-text-inline-expander *,
+body.theme-cyberpunk ytd-text-inline-expander *,
+body.theme-matrix ytd-text-inline-expander *,
+body.theme-synthwave ytd-text-inline-expander *,
+body.theme-deepspace ytd-text-inline-expander *,
+body.theme-toxic ytd-text-inline-expander *,
 body.halloween-theme #description,
-body.halloween-theme #description * {
+body.theme-cyberpunk #description,
+body.theme-matrix #description,
+body.theme-synthwave #description,
+body.theme-deepspace #description,
+body.theme-toxic #description,
+body.halloween-theme #description *,
+body.theme-cyberpunk #description *,
+body.theme-matrix #description *,
+body.theme-synthwave #description *,
+body.theme-deepspace #description *,
+body.theme-toxic #description *{
   color: var(--halloween-text-body) !important;
 }
 
 /* Secondary info (channel info below video) */
 body.halloween-theme ytd-video-secondary-info-renderer *,
+body.theme-cyberpunk ytd-video-secondary-info-renderer *,
+body.theme-matrix ytd-video-secondary-info-renderer *,
+body.theme-synthwave ytd-video-secondary-info-renderer *,
+body.theme-deepspace ytd-video-secondary-info-renderer *,
+body.theme-toxic ytd-video-secondary-info-renderer *,
 body.halloween-theme ytd-channel-name *,
-body.halloween-theme #owner-sub-count {
+body.theme-cyberpunk ytd-channel-name *,
+body.theme-matrix ytd-channel-name *,
+body.theme-synthwave ytd-channel-name *,
+body.theme-deepspace ytd-channel-name *,
+body.theme-toxic ytd-channel-name *,
+body.halloween-theme #owner-sub-count,
+body.theme-cyberpunk #owner-sub-count,
+body.theme-matrix #owner-sub-count,
+body.theme-synthwave #owner-sub-count,
+body.theme-deepspace #owner-sub-count,
+body.theme-toxic #owner-sub-count{
   color: var(--halloween-text-body) !important;
 }
 
 /* Comment section header */
 body.halloween-theme #comments #header,
+body.theme-cyberpunk #comments #header,
+body.theme-matrix #comments #header,
+body.theme-synthwave #comments #header,
+body.theme-deepspace #comments #header,
+body.theme-toxic #comments #header,
 body.halloween-theme ytd-comments-header-renderer,
-body.halloween-theme ytd-comments-header-renderer * {
+body.theme-cyberpunk ytd-comments-header-renderer,
+body.theme-matrix ytd-comments-header-renderer,
+body.theme-synthwave ytd-comments-header-renderer,
+body.theme-deepspace ytd-comments-header-renderer,
+body.theme-toxic ytd-comments-header-renderer,
+body.halloween-theme ytd-comments-header-renderer *,
+body.theme-cyberpunk ytd-comments-header-renderer *,
+body.theme-matrix ytd-comments-header-renderer *,
+body.theme-synthwave ytd-comments-header-renderer *,
+body.theme-deepspace ytd-comments-header-renderer *,
+body.theme-toxic ytd-comments-header-renderer *{
   color: var(--halloween-text-body) !important;
 }
 
 /* Comment input */
 body.halloween-theme #simple-box,
-body.halloween-theme #contenteditable-root {
+body.theme-cyberpunk #simple-box,
+body.theme-matrix #simple-box,
+body.theme-synthwave #simple-box,
+body.theme-deepspace #simple-box,
+body.theme-toxic #simple-box,
+body.halloween-theme #contenteditable-root,
+body.theme-cyberpunk #contenteditable-root,
+body.theme-matrix #contenteditable-root,
+body.theme-synthwave #contenteditable-root,
+body.theme-deepspace #contenteditable-root,
+body.theme-toxic #contenteditable-root{
   color: var(--halloween-text-body) !important;
   background: var(--halloween-bg-light) !important;
 }
 
 /* Comment action buttons */
 body.halloween-theme ytd-comment-action-buttons-renderer,
-body.halloween-theme ytd-comment-action-buttons-renderer * {
+body.theme-cyberpunk ytd-comment-action-buttons-renderer,
+body.theme-matrix ytd-comment-action-buttons-renderer,
+body.theme-synthwave ytd-comment-action-buttons-renderer,
+body.theme-deepspace ytd-comment-action-buttons-renderer,
+body.theme-toxic ytd-comment-action-buttons-renderer,
+body.halloween-theme ytd-comment-action-buttons-renderer *,
+body.theme-cyberpunk ytd-comment-action-buttons-renderer *,
+body.theme-matrix ytd-comment-action-buttons-renderer *,
+body.theme-synthwave ytd-comment-action-buttons-renderer *,
+body.theme-deepspace ytd-comment-action-buttons-renderer *,
+body.theme-toxic ytd-comment-action-buttons-renderer *{
   color: var(--halloween-text-muted) !important;
 }
 
 /* Sidebar section headers */
 body.halloween-theme #guide-section-title,
-body.halloween-theme ytd-guide-section-renderer #guide-section-title {
+body.theme-cyberpunk #guide-section-title,
+body.theme-matrix #guide-section-title,
+body.theme-synthwave #guide-section-title,
+body.theme-deepspace #guide-section-title,
+body.theme-toxic #guide-section-title,
+body.halloween-theme ytd-guide-section-renderer #guide-section-title,
+body.theme-cyberpunk ytd-guide-section-renderer #guide-section-title,
+body.theme-matrix ytd-guide-section-renderer #guide-section-title,
+body.theme-synthwave ytd-guide-section-renderer #guide-section-title,
+body.theme-deepspace ytd-guide-section-renderer #guide-section-title,
+body.theme-toxic ytd-guide-section-renderer #guide-section-title{
   color: var(--halloween-text-primary) !important;
 }
 
 /* Search suggestions */
 body.halloween-theme #search-suggestions,
+body.theme-cyberpunk #search-suggestions,
+body.theme-matrix #search-suggestions,
+body.theme-synthwave #search-suggestions,
+body.theme-deepspace #search-suggestions,
+body.theme-toxic #search-suggestions,
 body.halloween-theme ytd-search-suggestions,
-body.halloween-theme ytd-search-suggestions * {
+body.theme-cyberpunk ytd-search-suggestions,
+body.theme-matrix ytd-search-suggestions,
+body.theme-synthwave ytd-search-suggestions,
+body.theme-deepspace ytd-search-suggestions,
+body.theme-toxic ytd-search-suggestions,
+body.halloween-theme ytd-search-suggestions *,
+body.theme-cyberpunk ytd-search-suggestions *,
+body.theme-matrix ytd-search-suggestions *,
+body.theme-synthwave ytd-search-suggestions *,
+body.theme-deepspace ytd-search-suggestions *,
+body.theme-toxic ytd-search-suggestions *{
   color: var(--halloween-text-body) !important;
   background: var(--halloween-bg-dark) !important;
 }
 
 /* Dropdown menus */
 body.halloween-theme ytd-menu-popup-renderer,
+body.theme-cyberpunk ytd-menu-popup-renderer,
+body.theme-matrix ytd-menu-popup-renderer,
+body.theme-synthwave ytd-menu-popup-renderer,
+body.theme-deepspace ytd-menu-popup-renderer,
+body.theme-toxic ytd-menu-popup-renderer,
 body.halloween-theme ytd-menu-popup-renderer *,
+body.theme-cyberpunk ytd-menu-popup-renderer *,
+body.theme-matrix ytd-menu-popup-renderer *,
+body.theme-synthwave ytd-menu-popup-renderer *,
+body.theme-deepspace ytd-menu-popup-renderer *,
+body.theme-toxic ytd-menu-popup-renderer *,
 body.halloween-theme tp-yt-paper-listbox,
-body.halloween-theme tp-yt-paper-listbox * {
+body.theme-cyberpunk tp-yt-paper-listbox,
+body.theme-matrix tp-yt-paper-listbox,
+body.theme-synthwave tp-yt-paper-listbox,
+body.theme-deepspace tp-yt-paper-listbox,
+body.theme-toxic tp-yt-paper-listbox,
+body.halloween-theme tp-yt-paper-listbox *,
+body.theme-cyberpunk tp-yt-paper-listbox *,
+body.theme-matrix tp-yt-paper-listbox *,
+body.theme-synthwave tp-yt-paper-listbox *,
+body.theme-deepspace tp-yt-paper-listbox *,
+body.theme-toxic tp-yt-paper-listbox *{
   color: var(--halloween-text-body) !important;
   background: var(--halloween-bg-dark) !important;
 }
 
 body.halloween-theme ytd-menu-service-item-renderer:hover,
-body.halloween-theme tp-yt-paper-item:hover {
+body.theme-cyberpunk ytd-menu-service-item-renderer:hover,
+body.theme-matrix ytd-menu-service-item-renderer:hover,
+body.theme-synthwave ytd-menu-service-item-renderer:hover,
+body.theme-deepspace ytd-menu-service-item-renderer:hover,
+body.theme-toxic ytd-menu-service-item-renderer:hover,
+body.halloween-theme tp-yt-paper-item:hover,
+body.theme-cyberpunk tp-yt-paper-item:hover,
+body.theme-matrix tp-yt-paper-item:hover,
+body.theme-synthwave tp-yt-paper-item:hover,
+body.theme-deepspace tp-yt-paper-item:hover,
+body.theme-toxic tp-yt-paper-item:hover{
   background: var(--halloween-bg-medium) !important;
 }
 
 /* Notification panel */
 body.halloween-theme ytd-notification-renderer,
-body.halloween-theme ytd-notification-renderer * {
+body.theme-cyberpunk ytd-notification-renderer,
+body.theme-matrix ytd-notification-renderer,
+body.theme-synthwave ytd-notification-renderer,
+body.theme-deepspace ytd-notification-renderer,
+body.theme-toxic ytd-notification-renderer,
+body.halloween-theme ytd-notification-renderer *,
+body.theme-cyberpunk ytd-notification-renderer *,
+body.theme-matrix ytd-notification-renderer *,
+body.theme-synthwave ytd-notification-renderer *,
+body.theme-deepspace ytd-notification-renderer *,
+body.theme-toxic ytd-notification-renderer *{
   color: var(--halloween-text-body) !important;
   background: var(--halloween-bg-dark) !important;
 }
 
 /* Shorts shelf */
 body.halloween-theme ytd-reel-shelf-renderer,
-body.halloween-theme ytd-reel-shelf-renderer * {
+body.theme-cyberpunk ytd-reel-shelf-renderer,
+body.theme-matrix ytd-reel-shelf-renderer,
+body.theme-synthwave ytd-reel-shelf-renderer,
+body.theme-deepspace ytd-reel-shelf-renderer,
+body.theme-toxic ytd-reel-shelf-renderer,
+body.halloween-theme ytd-reel-shelf-renderer *,
+body.theme-cyberpunk ytd-reel-shelf-renderer *,
+body.theme-matrix ytd-reel-shelf-renderer *,
+body.theme-synthwave ytd-reel-shelf-renderer *,
+body.theme-deepspace ytd-reel-shelf-renderer *,
+body.theme-toxic ytd-reel-shelf-renderer *{
   color: var(--halloween-text-body) !important;
 }
 
 /* Channel page elements */
 body.halloween-theme ytd-channel-name,
+body.theme-cyberpunk ytd-channel-name,
+body.theme-matrix ytd-channel-name,
+body.theme-synthwave ytd-channel-name,
+body.theme-deepspace ytd-channel-name,
+body.theme-toxic ytd-channel-name,
 body.halloween-theme #channel-header,
-body.halloween-theme #channel-header * {
+body.theme-cyberpunk #channel-header,
+body.theme-matrix #channel-header,
+body.theme-synthwave #channel-header,
+body.theme-deepspace #channel-header,
+body.theme-toxic #channel-header,
+body.halloween-theme #channel-header *,
+body.theme-cyberpunk #channel-header *,
+body.theme-matrix #channel-header *,
+body.theme-synthwave #channel-header *,
+body.theme-deepspace #channel-header *,
+body.theme-toxic #channel-header *{
   color: var(--halloween-text-body) !important;
 }
 
 /* Tab headers */
 body.halloween-theme tp-yt-paper-tab,
-body.halloween-theme tp-yt-paper-tab * {
+body.theme-cyberpunk tp-yt-paper-tab,
+body.theme-matrix tp-yt-paper-tab,
+body.theme-synthwave tp-yt-paper-tab,
+body.theme-deepspace tp-yt-paper-tab,
+body.theme-toxic tp-yt-paper-tab,
+body.halloween-theme tp-yt-paper-tab *,
+body.theme-cyberpunk tp-yt-paper-tab *,
+body.theme-matrix tp-yt-paper-tab *,
+body.theme-synthwave tp-yt-paper-tab *,
+body.theme-deepspace tp-yt-paper-tab *,
+body.theme-toxic tp-yt-paper-tab *{
   color: var(--halloween-text-body) !important;
 }
 
-body.halloween-theme tp-yt-paper-tab[aria-selected="true"] {
+body.halloween-theme tp-yt-paper-tab[aria-selected="true"],
+body.theme-cyberpunk tp-yt-paper-tab[aria-selected="true"],
+body.theme-matrix tp-yt-paper-tab[aria-selected="true"],
+body.theme-synthwave tp-yt-paper-tab[aria-selected="true"],
+body.theme-deepspace tp-yt-paper-tab[aria-selected="true"],
+body.theme-toxic tp-yt-paper-tab[aria-selected="true"]{
   color: var(--halloween-text-primary) !important;
 }
 
 /* Video stats (views, date) */
 body.halloween-theme #metadata,
+body.theme-cyberpunk #metadata,
+body.theme-matrix #metadata,
+body.theme-synthwave #metadata,
+body.theme-deepspace #metadata,
+body.theme-toxic #metadata,
 body.halloween-theme #metadata *,
+body.theme-cyberpunk #metadata *,
+body.theme-matrix #metadata *,
+body.theme-synthwave #metadata *,
+body.theme-deepspace #metadata *,
+body.theme-toxic #metadata *,
 body.halloween-theme ytd-video-meta-block,
-body.halloween-theme ytd-video-meta-block * {
+body.theme-cyberpunk ytd-video-meta-block,
+body.theme-matrix ytd-video-meta-block,
+body.theme-synthwave ytd-video-meta-block,
+body.theme-deepspace ytd-video-meta-block,
+body.theme-toxic ytd-video-meta-block,
+body.halloween-theme ytd-video-meta-block *,
+body.theme-cyberpunk ytd-video-meta-block *,
+body.theme-matrix ytd-video-meta-block *,
+body.theme-synthwave ytd-video-meta-block *,
+body.theme-deepspace ytd-video-meta-block *,
+body.theme-toxic ytd-video-meta-block *{
   color: var(--halloween-text-muted) !important;
 }
 
 /* Ensure links are visible */
 body.halloween-theme a,
-body.halloween-theme a * {
+body.theme-cyberpunk a,
+body.theme-matrix a,
+body.theme-synthwave a,
+body.theme-deepspace a,
+body.theme-toxic a,
+body.halloween-theme a *,
+body.theme-cyberpunk a *,
+body.theme-matrix a *,
+body.theme-synthwave a *,
+body.theme-deepspace a *,
+body.theme-toxic a *{
   color: var(--halloween-text-secondary) !important;
 }
 
 body.halloween-theme a:hover,
-body.halloween-theme a:hover * {
+body.theme-cyberpunk a:hover,
+body.theme-matrix a:hover,
+body.theme-synthwave a:hover,
+body.theme-deepspace a:hover,
+body.theme-toxic a:hover,
+body.halloween-theme a:hover *,
+body.theme-cyberpunk a:hover *,
+body.theme-matrix a:hover *,
+body.theme-synthwave a:hover *,
+body.theme-deepspace a:hover *,
+body.theme-toxic a:hover *{
   color: var(--halloween-primary) !important;
 }
 
 /* Button text */
 body.halloween-theme button,
-body.halloween-theme button * {
+body.theme-cyberpunk button,
+body.theme-matrix button,
+body.theme-synthwave button,
+body.theme-deepspace button,
+body.theme-toxic button,
+body.halloween-theme button *,
+body.theme-cyberpunk button *,
+body.theme-matrix button *,
+body.theme-synthwave button *,
+body.theme-deepspace button *,
+body.theme-toxic button *{
   color: var(--halloween-text-body) !important;
 }
 
 /* Ensure icons remain visible */
 body.halloween-theme yt-icon,
+body.theme-cyberpunk yt-icon,
+body.theme-matrix yt-icon,
+body.theme-synthwave yt-icon,
+body.theme-deepspace yt-icon,
+body.theme-toxic yt-icon,
 body.halloween-theme ytd-button-renderer yt-icon,
-body.halloween-theme ytd-toggle-button-renderer yt-icon {
+body.theme-cyberpunk ytd-button-renderer yt-icon,
+body.theme-matrix ytd-button-renderer yt-icon,
+body.theme-synthwave ytd-button-renderer yt-icon,
+body.theme-deepspace ytd-button-renderer yt-icon,
+body.theme-toxic ytd-button-renderer yt-icon,
+body.halloween-theme ytd-toggle-button-renderer yt-icon,
+body.theme-cyberpunk ytd-toggle-button-renderer yt-icon,
+body.theme-matrix ytd-toggle-button-renderer yt-icon,
+body.theme-synthwave ytd-toggle-button-renderer yt-icon,
+body.theme-deepspace ytd-toggle-button-renderer yt-icon,
+body.theme-toxic ytd-toggle-button-renderer yt-icon{
   color: var(--halloween-text-body) !important;
 }
 
 /* Time stamps and badges */
 body.halloween-theme .badge,
+body.theme-cyberpunk .badge,
+body.theme-matrix .badge,
+body.theme-synthwave .badge,
+body.theme-deepspace .badge,
+body.theme-toxic .badge,
 body.halloween-theme ytd-badge-supported-renderer,
+body.theme-cyberpunk ytd-badge-supported-renderer,
+body.theme-matrix ytd-badge-supported-renderer,
+body.theme-synthwave ytd-badge-supported-renderer,
+body.theme-deepspace ytd-badge-supported-renderer,
+body.theme-toxic ytd-badge-supported-renderer,
 body.halloween-theme #time-status,
-body.halloween-theme .ytd-thumbnail-overlay-time-status-renderer {
+body.theme-cyberpunk #time-status,
+body.theme-matrix #time-status,
+body.theme-synthwave #time-status,
+body.theme-deepspace #time-status,
+body.theme-toxic #time-status,
+body.halloween-theme .ytd-thumbnail-overlay-time-status-renderer,
+body.theme-cyberpunk .ytd-thumbnail-overlay-time-status-renderer,
+body.theme-matrix .ytd-thumbnail-overlay-time-status-renderer,
+body.theme-synthwave .ytd-thumbnail-overlay-time-status-renderer,
+body.theme-deepspace .ytd-thumbnail-overlay-time-status-renderer,
+body.theme-toxic .ytd-thumbnail-overlay-time-status-renderer{
   color: #FFFFFF !important;
   background: rgba(0, 0, 0, 0.8) !important;
 }
 
 /* Ensure all headings are visible */
 body.halloween-theme h1,
+body.theme-cyberpunk h1,
+body.theme-matrix h1,
+body.theme-synthwave h1,
+body.theme-deepspace h1,
+body.theme-toxic h1,
 body.halloween-theme h2,
+body.theme-cyberpunk h2,
+body.theme-matrix h2,
+body.theme-synthwave h2,
+body.theme-deepspace h2,
+body.theme-toxic h2,
 body.halloween-theme h3,
+body.theme-cyberpunk h3,
+body.theme-matrix h3,
+body.theme-synthwave h3,
+body.theme-deepspace h3,
+body.theme-toxic h3,
 body.halloween-theme h4,
+body.theme-cyberpunk h4,
+body.theme-matrix h4,
+body.theme-synthwave h4,
+body.theme-deepspace h4,
+body.theme-toxic h4,
 body.halloween-theme h5,
-body.halloween-theme h6 {
+body.theme-cyberpunk h5,
+body.theme-matrix h5,
+body.theme-synthwave h5,
+body.theme-deepspace h5,
+body.theme-toxic h5,
+body.halloween-theme h6,
+body.theme-cyberpunk h6,
+body.theme-matrix h6,
+body.theme-synthwave h6,
+body.theme-deepspace h6,
+body.theme-toxic h6{
   color: var(--halloween-text-primary) !important;
 }
 
 /* Ensure all paragraphs are visible */
 body.halloween-theme p,
+body.theme-cyberpunk p,
+body.theme-matrix p,
+body.theme-synthwave p,
+body.theme-deepspace p,
+body.theme-toxic p,
 body.halloween-theme span,
-body.halloween-theme div {
+body.theme-cyberpunk span,
+body.theme-matrix span,
+body.theme-synthwave span,
+body.theme-deepspace span,
+body.theme-toxic span,
+body.halloween-theme div,
+body.theme-cyberpunk div,
+body.theme-matrix div,
+body.theme-synthwave div,
+body.theme-deepspace div,
+body.theme-toxic div{
   color: var(--halloween-text-body) !important;
 }
 
 /* Override any dark text on dark background */
 body.halloween-theme [style*="color: rgb(15"],
-body.halloween-theme [style*="color: rgb(3,"],
+body.theme-cyberpunk [style*="color: rgb(15"],
+body.theme-matrix [style*="color: rgb(15"],
+body.theme-synthwave [style*="color: rgb(15"],
+body.theme-deepspace [style*="color: rgb(15"],
+body.theme-toxic [style*="color: rgb(15"],
+body.halloween-theme [style*="color: rgb(3,
+body.theme-cyberpunk [style*="color: rgb(3,
+body.theme-matrix [style*="color: rgb(3,
+body.theme-synthwave [style*="color: rgb(3,
+body.theme-deepspace [style*="color: rgb(3,
+body.theme-toxic [style*="color: rgb(3,
+"],
 body.halloween-theme [style*="color: #0"],
+body.theme-cyberpunk [style*="color: #0"],
+body.theme-matrix [style*="color: #0"],
+body.theme-synthwave [style*="color: #0"],
+body.theme-deepspace [style*="color: #0"],
+body.theme-toxic [style*="color: #0"],
 body.halloween-theme [style*="color: #1"],
+body.theme-cyberpunk [style*="color: #1"],
+body.theme-matrix [style*="color: #1"],
+body.theme-synthwave [style*="color: #1"],
+body.theme-deepspace [style*="color: #1"],
+body.theme-toxic [style*="color: #1"],
 body.halloween-theme [style*="color: #2"],
-body.halloween-theme [style*="color: #3"] {
+body.theme-cyberpunk [style*="color: #2"],
+body.theme-matrix [style*="color: #2"],
+body.theme-synthwave [style*="color: #2"],
+body.theme-deepspace [style*="color: #2"],
+body.theme-toxic [style*="color: #2"],
+body.halloween-theme [style*="color: #3"],
+body.theme-cyberpunk [style*="color: #3"],
+body.theme-matrix [style*="color: #3"],
+body.theme-synthwave [style*="color: #3"],
+body.theme-deepspace [style*="color: #3"],
+body.theme-toxic [style*="color: #3"]{
   color: var(--halloween-text-body) !important;
 }
 
 /* Playlist video count and stats */
 body.halloween-theme #stats,
-body.halloween-theme #stats * {
+body.theme-cyberpunk #stats,
+body.theme-matrix #stats,
+body.theme-synthwave #stats,
+body.theme-deepspace #stats,
+body.theme-toxic #stats,
+body.halloween-theme #stats *,
+body.theme-cyberpunk #stats *,
+body.theme-matrix #stats *,
+body.theme-synthwave #stats *,
+body.theme-deepspace #stats *,
+body.theme-toxic #stats *{
   color: var(--halloween-text-muted) !important;
 }
 
 /* Video owner info */
 body.halloween-theme #owner,
-body.halloween-theme #owner * {
+body.theme-cyberpunk #owner,
+body.theme-matrix #owner,
+body.theme-synthwave #owner,
+body.theme-deepspace #owner,
+body.theme-toxic #owner,
+body.halloween-theme #owner *,
+body.theme-cyberpunk #owner *,
+body.theme-matrix #owner *,
+body.theme-synthwave #owner *,
+body.theme-deepspace #owner *,
+body.theme-toxic #owner *{
   color: var(--halloween-text-body) !important;
 }
 
 /* Top-level menu items */
 body.halloween-theme ytd-guide-entry-renderer #endpoint,
-body.halloween-theme ytd-guide-entry-renderer #endpoint * {
+body.theme-cyberpunk ytd-guide-entry-renderer #endpoint,
+body.theme-matrix ytd-guide-entry-renderer #endpoint,
+body.theme-synthwave ytd-guide-entry-renderer #endpoint,
+body.theme-deepspace ytd-guide-entry-renderer #endpoint,
+body.theme-toxic ytd-guide-entry-renderer #endpoint,
+body.halloween-theme ytd-guide-entry-renderer #endpoint *,
+body.theme-cyberpunk ytd-guide-entry-renderer #endpoint *,
+body.theme-matrix ytd-guide-entry-renderer #endpoint *,
+body.theme-synthwave ytd-guide-entry-renderer #endpoint *,
+body.theme-deepspace ytd-guide-entry-renderer #endpoint *,
+body.theme-toxic ytd-guide-entry-renderer #endpoint *{
   color: var(--halloween-text-body) !important;
 }
 
 /* Ensure all formatted strings are readable */
-body.halloween-theme yt-formatted-string {
+body.halloween-theme yt-formatted-string,
+body.theme-cyberpunk yt-formatted-string,
+body.theme-matrix yt-formatted-string,
+body.theme-synthwave yt-formatted-string,
+body.theme-deepspace yt-formatted-string,
+body.theme-toxic yt-formatted-string{
   color: var(--halloween-text-body) !important;
 }
 
 /* Special case: Keep video titles gold */
 body.halloween-theme #video-title,
+body.theme-cyberpunk #video-title,
+body.theme-matrix #video-title,
+body.theme-synthwave #video-title,
+body.theme-deepspace #video-title,
+body.theme-toxic #video-title,
 body.halloween-theme yt-formatted-string#video-title,
-body.halloween-theme a#video-title {
+body.theme-cyberpunk yt-formatted-string#video-title,
+body.theme-matrix yt-formatted-string#video-title,
+body.theme-synthwave yt-formatted-string#video-title,
+body.theme-deepspace yt-formatted-string#video-title,
+body.theme-toxic yt-formatted-string#video-title,
+body.halloween-theme a#video-title,
+body.theme-cyberpunk a#video-title,
+body.theme-matrix a#video-title,
+body.theme-synthwave a#video-title,
+body.theme-deepspace a#video-title,
+body.theme-toxic a#video-title{
   color: var(--halloween-text-primary) !important;
 }
 
 /* Special case: Keep channel names orange */
 body.halloween-theme #channel-name,
+body.theme-cyberpunk #channel-name,
+body.theme-matrix #channel-name,
+body.theme-synthwave #channel-name,
+body.theme-deepspace #channel-name,
+body.theme-toxic #channel-name,
 body.halloween-theme #channel-name *,
+body.theme-cyberpunk #channel-name *,
+body.theme-matrix #channel-name *,
+body.theme-synthwave #channel-name *,
+body.theme-deepspace #channel-name *,
+body.theme-toxic #channel-name *,
 body.halloween-theme ytd-channel-name a,
-body.halloween-theme ytd-channel-name a * {
+body.theme-cyberpunk ytd-channel-name a,
+body.theme-matrix ytd-channel-name a,
+body.theme-synthwave ytd-channel-name a,
+body.theme-deepspace ytd-channel-name a,
+body.theme-toxic ytd-channel-name a,
+body.halloween-theme ytd-channel-name a *,
+body.theme-cyberpunk ytd-channel-name a *,
+body.theme-matrix ytd-channel-name a *,
+body.theme-synthwave ytd-channel-name a *,
+body.theme-deepspace ytd-channel-name a *,
+body.theme-toxic ytd-channel-name a *{
   color: var(--halloween-text-secondary) !important;
 }
 
 /* Special case: Keep comment authors orange */
 body.halloween-theme #author-text,
-body.halloween-theme #author-text * {
+body.theme-cyberpunk #author-text,
+body.theme-matrix #author-text,
+body.theme-synthwave #author-text,
+body.theme-deepspace #author-text,
+body.theme-toxic #author-text,
+body.halloween-theme #author-text *,
+body.theme-cyberpunk #author-text *,
+body.theme-matrix #author-text *,
+body.theme-synthwave #author-text *,
+body.theme-deepspace #author-text *,
+body.theme-toxic #author-text *{
   color: var(--halloween-text-secondary) !important;
 }
 
 /* Ensure input fields have readable text */
 body.halloween-theme input,
-body.halloween-theme textarea {
+body.theme-cyberpunk input,
+body.theme-matrix input,
+body.theme-synthwave input,
+body.theme-deepspace input,
+body.theme-toxic input,
+body.halloween-theme textarea,
+body.theme-cyberpunk textarea,
+body.theme-matrix textarea,
+body.theme-synthwave textarea,
+body.theme-deepspace textarea,
+body.theme-toxic textarea{
   color: var(--halloween-text-body) !important;
   background: var(--halloween-bg-light) !important;
 }
 
 /* Placeholder text */
 body.halloween-theme input::placeholder,
-body.halloween-theme textarea::placeholder {
+body.theme-cyberpunk input::placeholder,
+body.theme-matrix input::placeholder,
+body.theme-synthwave input::placeholder,
+body.theme-deepspace input::placeholder,
+body.theme-toxic input::placeholder,
+body.halloween-theme textarea::placeholder,
+body.theme-cyberpunk textarea::placeholder,
+body.theme-matrix textarea::placeholder,
+body.theme-synthwave textarea::placeholder,
+body.theme-deepspace textarea::placeholder,
+body.theme-toxic textarea::placeholder{
   color: var(--halloween-text-muted) !important;
 }

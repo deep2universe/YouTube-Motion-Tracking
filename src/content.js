@@ -414,6 +414,32 @@ function initVideoPlayerPopup(){
         </button>
     </div>
     
+    <div class="theme-color-section-title">Color Themes</div>
+    
+    <div class="theme-color-container">
+        <button class="theme-color-btn active-color-theme" data-color-theme="halloween" onclick="document.dispatchEvent(new CustomEvent('setColorTheme', { detail: {theme:'halloween'} }));">
+            🎃 Halloween
+        </button>
+        <button class="theme-color-btn" data-color-theme="cyberpunk" onclick="document.dispatchEvent(new CustomEvent('setColorTheme', { detail: {theme:'cyberpunk'} }));">
+            🌃 Cyberpunk
+        </button>
+        <button class="theme-color-btn" data-color-theme="matrix" onclick="document.dispatchEvent(new CustomEvent('setColorTheme', { detail: {theme:'matrix'} }));">
+            💚 Matrix
+        </button>
+    </div>
+    
+    <div class="theme-color-container">
+        <button class="theme-color-btn" data-color-theme="synthwave" onclick="document.dispatchEvent(new CustomEvent('setColorTheme', { detail: {theme:'synthwave'} }));">
+            🌆 Synthwave
+        </button>
+        <button class="theme-color-btn" data-color-theme="deepspace" onclick="document.dispatchEvent(new CustomEvent('setColorTheme', { detail: {theme:'deepspace'} }));">
+            🌌 Deep Space
+        </button>
+        <button class="theme-color-btn" data-color-theme="toxic" onclick="document.dispatchEvent(new CustomEvent('setColorTheme', { detail: {theme:'toxic'} }));">
+            ☢️ Toxic
+        </button>
+    </div>
+    
     <button id="particleToggleButton" class="theme-particle-toggle" onclick="document.dispatchEvent(new CustomEvent('toggleParticles'));">
         ✨ Particle Effects: OFF
     </button>
@@ -1114,7 +1140,8 @@ class ThemeStateManager {
         this.state = {
             enabled: false,
             intensity: 'medium',
-            particlesEnabled: false
+            particlesEnabled: false,
+            colorTheme: 'halloween'
         };
     }
     
@@ -1127,12 +1154,14 @@ class ThemeStateManager {
             const result = await chrome.storage.sync.get([
                 'halloweenThemeEnabled',
                 'themeIntensity',
-                'particlesEnabled'
+                'particlesEnabled',
+                'colorTheme'
             ]);
             
             this.state.enabled = result.halloweenThemeEnabled || false;
             this.state.intensity = result.themeIntensity || 'medium';
             this.state.particlesEnabled = result.particlesEnabled || false;
+            this.state.colorTheme = result.colorTheme || 'halloween';
             
             console.log('Theme settings loaded:', this.state);
             
@@ -1153,16 +1182,24 @@ class ThemeStateManager {
      * Apply theme to document body
      */
     applyTheme() {
-        document.body.classList.add('halloween-theme');
+        // Apply color theme class
+        const themeClass = this.state.colorTheme === 'halloween' ? 'halloween-theme' : `theme-${this.state.colorTheme}`;
+        document.body.classList.add(themeClass);
         document.body.classList.add(`theme-intensity-${this.state.intensity}`);
-        console.log('Theme applied with intensity:', this.state.intensity);
+        console.log('Theme applied:', themeClass, 'with intensity:', this.state.intensity);
     }
     
     /**
      * Remove theme from document body
      */
     removeTheme() {
+        // Remove all theme classes
         document.body.classList.remove('halloween-theme');
+        document.body.classList.remove('theme-cyberpunk');
+        document.body.classList.remove('theme-matrix');
+        document.body.classList.remove('theme-synthwave');
+        document.body.classList.remove('theme-deepspace');
+        document.body.classList.remove('theme-toxic');
         document.body.classList.remove('theme-intensity-low');
         document.body.classList.remove('theme-intensity-medium');
         document.body.classList.remove('theme-intensity-high');
@@ -1230,6 +1267,46 @@ class ThemeStateManager {
     }
     
     /**
+     * Set color theme
+     * @param {string} themeName - 'halloween', 'cyberpunk', 'matrix', 'synthwave', 'deepspace', 'toxic'
+     */
+    setColorTheme(themeName) {
+        const validThemes = ['halloween', 'cyberpunk', 'matrix', 'synthwave', 'deepspace', 'toxic'];
+        if (!validThemes.includes(themeName)) {
+            console.warn('Invalid color theme:', themeName);
+            return;
+        }
+        
+        console.log('setColorTheme called:', themeName, 'enabled:', this.state.enabled);
+        
+        // Remove old theme class
+        document.body.classList.remove('halloween-theme');
+        document.body.classList.remove('theme-cyberpunk');
+        document.body.classList.remove('theme-matrix');
+        document.body.classList.remove('theme-synthwave');
+        document.body.classList.remove('theme-deepspace');
+        document.body.classList.remove('theme-toxic');
+        
+        // Update state
+        this.state.colorTheme = themeName;
+        
+        // If theme is enabled, apply the new color theme immediately
+        if (this.state.enabled) {
+            const themeClass = themeName === 'halloween' ? 'halloween-theme' : `theme-${themeName}`;
+            console.log('Adding theme class:', themeClass);
+            document.body.classList.add(themeClass);
+            // Re-apply intensity
+            document.body.classList.add(`theme-intensity-${this.state.intensity}`);
+            console.log('Body classes after add:', document.body.className);
+        } else {
+            console.log('Theme not enabled, not applying class');
+        }
+        
+        console.log('Color theme set to:', themeName);
+        this.saveState();
+    }
+    
+    /**
      * Save current state to Chrome Storage
      * @returns {Promise<void>}
      */
@@ -1238,7 +1315,8 @@ class ThemeStateManager {
             await chrome.storage.sync.set({
                 halloweenThemeEnabled: this.state.enabled,
                 themeIntensity: this.state.intensity,
-                particlesEnabled: this.state.particlesEnabled
+                particlesEnabled: this.state.particlesEnabled,
+                colorTheme: this.state.colorTheme
             });
             console.log('Theme state saved:', this.state);
         } catch (error) {
@@ -1271,7 +1349,8 @@ class UIControlManager {
         this.elements = {
             toggleButton: null,
             intensityButtons: [],
-            particleButton: null
+            particleButton: null,
+            colorThemeButtons: []
         };
     }
     
@@ -1282,6 +1361,7 @@ class UIControlManager {
         this.elements.toggleButton = document.getElementById('themeToggleButton');
         this.elements.intensityButtons = Array.from(document.querySelectorAll('.theme-intensity-btn'));
         this.elements.particleButton = document.getElementById('particleToggleButton');
+        this.elements.colorThemeButtons = Array.from(document.querySelectorAll('.theme-color-btn'));
     }
     
     /**
@@ -1344,6 +1424,25 @@ class UIControlManager {
     }
     
     /**
+     * Update color theme button states
+     * @param {string} themeName - Active color theme name
+     */
+    updateColorThemeButtons(themeName) {
+        if (this.elements.colorThemeButtons.length === 0) {
+            this.cacheElements();
+        }
+        
+        this.elements.colorThemeButtons.forEach(btn => {
+            const btnTheme = btn.getAttribute('data-color-theme');
+            if (btnTheme === themeName) {
+                btn.classList.add('active-color-theme');
+            } else {
+                btn.classList.remove('active-color-theme');
+            }
+        });
+    }
+    
+    /**
      * Update all UI elements based on current state
      */
     updateAll() {
@@ -1351,6 +1450,7 @@ class UIControlManager {
         this.updateToggleButton(state.enabled);
         this.updateIntensityButtons(state.intensity);
         this.updateParticleButton(state.particlesEnabled);
+        this.updateColorThemeButtons(state.colorTheme);
     }
 }
 
@@ -1418,6 +1518,22 @@ document.addEventListener('toggleParticles', function(e) {
         // Update UI controls
         if (uiControlManager) {
             uiControlManager.updateParticleButton(themeStateManager.getState().particlesEnabled);
+        }
+    }
+});
+
+/**
+ * Event handler: Set color theme
+ */
+document.addEventListener('setColorTheme', function(e) {
+    const themeName = e.detail.theme;
+    
+    if (themeStateManager) {
+        themeStateManager.setColorTheme(themeName);
+        
+        // Update UI controls
+        if (uiControlManager) {
+            uiControlManager.updateColorThemeButtons(themeName);
         }
     }
 });

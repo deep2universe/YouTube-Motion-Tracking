@@ -1,0 +1,233 @@
+/* ============================================
+   YouTube Theme System - Color Themes
+   Additional color schemes beyond Halloween
+   ============================================ */
+
+/* ============================================
+   THEME 1: CYBERPUNK (Neon Pink + Cyan)
+   ============================================ */
+body.theme-cyberpunk {
+  /* Primary Colors */
+  --halloween-primary: #FF0080;
+  --halloween-secondary: #00FFFF;
+  --halloween-accent: #FF00FF;
+  
+  /* Text Colors - Very bright for readability */
+  --halloween-text-primary: #00FFFF;
+  --halloween-text-secondary: #FF0080;
+  --halloween-text-body: #F0F0F0;
+  --halloween-text-muted: #B0B0B0;
+  
+  /* Border Colors */
+  --halloween-border-primary: rgba(255, 0, 128, 0.6);
+  --halloween-border-secondary: rgba(0, 255, 255, 0.5);
+  --halloween-border-accent: rgba(255, 0, 255, 0.7);
+  
+  /* Glow Effects - Medium Intensity */
+  --halloween-glow-opacity: 0.4;
+  --halloween-glow-size: 20px;
+  --halloween-glow-primary: rgba(255, 0, 128, 0.4);
+  --halloween-glow-secondary: rgba(0, 255, 255, 0.4);
+  
+  /* Backgrounds */
+  --halloween-bg-dark: rgba(10, 0, 20, 0.95);
+  --halloween-bg-medium: rgba(20, 0, 30, 0.8);
+  --halloween-bg-light: rgba(30, 0, 40, 0.6);
+  
+  /* Gradients */
+  --halloween-gradient-bg: linear-gradient(180deg, rgba(10, 0, 20, 0.95) 0%, rgba(20, 0, 30, 0.95) 50%, rgba(30, 0, 40, 0.95) 100%);
+  --halloween-gradient-sidebar: linear-gradient(180deg, rgba(15, 0, 25, 0.9) 0%, rgba(20, 0, 30, 0.9) 100%);
+  --halloween-gradient-header: linear-gradient(90deg, rgba(10, 0, 20, 0.95) 0%, rgba(20, 0, 30, 0.95) 100%);
+  --halloween-gradient-button-inactive: linear-gradient(135deg, rgba(0, 255, 255, 0.3) 0%, rgba(0, 200, 200, 0.3) 100%);
+  --halloween-gradient-button-active: linear-gradient(135deg, rgba(255, 0, 128, 0.8) 0%, rgba(255, 0, 255, 0.8) 100%);
+  --halloween-gradient-scrollbar: linear-gradient(180deg, #00FFFF 0%, #FF0080 100%);
+  --halloween-gradient-thumbnail-hover: linear-gradient(0deg, rgba(0, 255, 255, 0.3) 0%, rgba(255, 0, 128, 0.3) 100%);
+}
+
+/* ============================================
+   THEME 2: MATRIX (Neon Green Hacker Style)
+   ============================================ */
+body.theme-matrix {
+  /* Primary Colors */
+  --halloween-primary: #00FF00;
+  --halloween-secondary: #00CC00;
+  --halloween-accent: #FFFFFF;
+  
+  /* Text Colors - Very bright green tints */
+  --halloween-text-primary: #00FF00;
+  --halloween-text-secondary: #00CC00;
+  --halloween-text-body: #E0FFE0;
+  --halloween-text-muted: #A0D0A0;
+  
+  /* Border Colors */
+  --halloween-border-primary: rgba(0, 255, 0, 0.6);
+  --halloween-border-secondary: rgba(0, 204, 0, 0.5);
+  --halloween-border-accent: rgba(255, 255, 255, 0.7);
+  
+  /* Glow Effects */
+  --halloween-glow-opacity: 0.4;
+  --halloween-glow-size: 20px;
+  --halloween-glow-primary: rgba(0, 255, 0, 0.4);
+  --halloween-glow-secondary: rgba(0, 204, 0, 0.4);
+  
+  /* Backgrounds */
+  --halloween-bg-dark: rgba(0, 10, 0, 0.95);
+  --halloween-bg-medium: rgba(0, 20, 0, 0.8);
+  --halloween-bg-light: rgba(0, 30, 0, 0.6);
+  
+  /* Gradients */
+  --halloween-gradient-bg: linear-gradient(180deg, rgba(0, 10, 0, 0.95) 0%, rgba(0, 20, 0, 0.95) 50%, rgba(0, 30, 0, 0.95) 100%);
+  --halloween-gradient-sidebar: linear-gradient(180deg, rgba(0, 15, 0, 0.9) 0%, rgba(0, 20, 0, 0.9) 100%);
+  --halloween-gradient-header: linear-gradient(90deg, rgba(0, 10, 0, 0.95) 0%, rgba(0, 20, 0, 0.95) 100%);
+  --halloween-gradient-button-inactive: linear-gradient(135deg, rgba(0, 204, 0, 0.3) 0%, rgba(0, 153, 0, 0.3) 100%);
+  --halloween-gradient-button-active: linear-gradient(135deg, rgba(0, 255, 0, 0.8) 0%, rgba(0, 204, 0, 0.8) 100%);
+  --halloween-gradient-scrollbar: linear-gradient(180deg, #00FF00 0%, #00CC00 100%);
+  --halloween-gradient-thumbnail-hover: linear-gradient(0deg, rgba(0, 204, 0, 0.3) 0%, rgba(0, 255, 0, 0.3) 100%);
+}
+
+/* ============================================
+   THEME 3: SYNTHWAVE (80s Retro Pink/Purple)
+   ============================================ */
+body.theme-synthwave {
+  /* Primary Colors */
+  --halloween-primary: #FF1493;
+  --halloween-secondary: #9D00FF;
+  --halloween-accent: #00D4FF;
+  
+  /* Text Colors - Very bright for readability */
+  --halloween-text-primary: #FF1493;
+  --halloween-text-secondary: #00D4FF;
+  --halloween-text-body: #FFE6F5;
+  --halloween-text-muted: #D0B0D0;
+  
+  /* Border Colors */
+  --halloween-border-primary: rgba(255, 20, 147, 0.6);
+  --halloween-border-secondary: rgba(157, 0, 255, 0.5);
+  --halloween-border-accent: rgba(0, 212, 255, 0.7);
+  
+  /* Glow Effects */
+  --halloween-glow-opacity: 0.4;
+  --halloween-glow-size: 20px;
+  --halloween-glow-primary: rgba(255, 20, 147, 0.4);
+  --halloween-glow-secondary: rgba(157, 0, 255, 0.4);
+  
+  /* Backgrounds */
+  --halloween-bg-dark: rgba(15, 0, 25, 0.95);
+  --halloween-bg-medium: rgba(25, 0, 35, 0.8);
+  --halloween-bg-light: rgba(35, 0, 45, 0.6);
+  
+  /* Gradients */
+  --halloween-gradient-bg: linear-gradient(180deg, rgba(15, 0, 25, 0.95) 0%, rgba(25, 0, 35, 0.95) 50%, rgba(35, 0, 45, 0.95) 100%);
+  --halloween-gradient-sidebar: linear-gradient(180deg, rgba(20, 0, 30, 0.9) 0%, rgba(25, 0, 35, 0.9) 100%);
+  --halloween-gradient-header: linear-gradient(90deg, rgba(15, 0, 25, 0.95) 0%, rgba(25, 0, 35, 0.95) 100%);
+  --halloween-gradient-button-inactive: linear-gradient(135deg, rgba(157, 0, 255, 0.3) 0%, rgba(120, 0, 200, 0.3) 100%);
+  --halloween-gradient-button-active: linear-gradient(135deg, rgba(255, 20, 147, 0.8) 0%, rgba(157, 0, 255, 0.8) 100%);
+  --halloween-gradient-scrollbar: linear-gradient(180deg, #FF1493 0%, #9D00FF 100%);
+  --halloween-gradient-thumbnail-hover: linear-gradient(0deg, rgba(157, 0, 255, 0.3) 0%, rgba(255, 20, 147, 0.3) 100%);
+}
+
+/* ============================================
+   THEME 4: DEEP SPACE (Blue/Purple Galaxy)
+   ============================================ */
+body.theme-deepspace {
+  /* Primary Colors */
+  --halloween-primary: #4169E1;
+  --halloween-secondary: #9370DB;
+  --halloween-accent: #FFFFFF;
+  
+  /* Text Colors - Very bright for readability */
+  --halloween-text-primary: #87CEEB;
+  --halloween-text-secondary: #DDA0DD;
+  --halloween-text-body: #E6F2FF;
+  --halloween-text-muted: #B0C0D0;
+  
+  /* Border Colors */
+  --halloween-border-primary: rgba(65, 105, 225, 0.6);
+  --halloween-border-secondary: rgba(147, 112, 219, 0.5);
+  --halloween-border-accent: rgba(255, 255, 255, 0.7);
+  
+  /* Glow Effects */
+  --halloween-glow-opacity: 0.4;
+  --halloween-glow-size: 20px;
+  --halloween-glow-primary: rgba(65, 105, 225, 0.4);
+  --halloween-glow-secondary: rgba(147, 112, 219, 0.4);
+  
+  /* Backgrounds */
+  --halloween-bg-dark: rgba(5, 5, 20, 0.95);
+  --halloween-bg-medium: rgba(10, 10, 30, 0.8);
+  --halloween-bg-light: rgba(15, 15, 40, 0.6);
+  
+  /* Gradients */
+  --halloween-gradient-bg: linear-gradient(180deg, rgba(5, 5, 20, 0.95) 0%, rgba(10, 10, 30, 0.95) 50%, rgba(15, 15, 40, 0.95) 100%);
+  --halloween-gradient-sidebar: linear-gradient(180deg, rgba(8, 8, 25, 0.9) 0%, rgba(10, 10, 30, 0.9) 100%);
+  --halloween-gradient-header: linear-gradient(90deg, rgba(5, 5, 20, 0.95) 0%, rgba(10, 10, 30, 0.95) 100%);
+  --halloween-gradient-button-inactive: linear-gradient(135deg, rgba(147, 112, 219, 0.3) 0%, rgba(100, 80, 180, 0.3) 100%);
+  --halloween-gradient-button-active: linear-gradient(135deg, rgba(65, 105, 225, 0.8) 0%, rgba(147, 112, 219, 0.8) 100%);
+  --halloween-gradient-scrollbar: linear-gradient(180deg, #4169E1 0%, #9370DB 100%);
+  --halloween-gradient-thumbnail-hover: linear-gradient(0deg, rgba(147, 112, 219, 0.3) 0%, rgba(65, 105, 225, 0.3) 100%);
+}
+
+/* ============================================
+   THEME 5: TOXIC (Radioactive Green/Yellow)
+   ============================================ */
+body.theme-toxic {
+  /* Primary Colors */
+  --halloween-primary: #39FF14;
+  --halloween-secondary: #FFFF00;
+  --halloween-accent: #00FF00;
+  
+  /* Text Colors - Very bright for readability */
+  --halloween-text-primary: #FFFF00;
+  --halloween-text-secondary: #39FF14;
+  --halloween-text-body: #F0FFE0;
+  --halloween-text-muted: #C0D0A0;
+  
+  /* Border Colors */
+  --halloween-border-primary: rgba(57, 255, 20, 0.6);
+  --halloween-border-secondary: rgba(255, 255, 0, 0.5);
+  --halloween-border-accent: rgba(0, 255, 0, 0.7);
+  
+  /* Glow Effects */
+  --halloween-glow-opacity: 0.4;
+  --halloween-glow-size: 20px;
+  --halloween-glow-primary: rgba(57, 255, 20, 0.4);
+  --halloween-glow-secondary: rgba(255, 255, 0, 0.4);
+  
+  /* Backgrounds */
+  --halloween-bg-dark: rgba(10, 15, 0, 0.95);
+  --halloween-bg-medium: rgba(20, 25, 0, 0.8);
+  --halloween-bg-light: rgba(30, 35, 0, 0.6);
+  
+  /* Gradients */
+  --halloween-gradient-bg: linear-gradient(180deg, rgba(10, 15, 0, 0.95) 0%, rgba(20, 25, 0, 0.95) 50%, rgba(30, 35, 0, 0.95) 100%);
+  --halloween-gradient-sidebar: linear-gradient(180deg, rgba(15, 20, 0, 0.9) 0%, rgba(20, 25, 0, 0.9) 100%);
+  --halloween-gradient-header: linear-gradient(90deg, rgba(10, 15, 0, 0.95) 0%, rgba(20, 25, 0, 0.95) 100%);
+  --halloween-gradient-button-inactive: linear-gradient(135deg, rgba(255, 255, 0, 0.3) 0%, rgba(200, 200, 0, 0.3) 100%);
+  --halloween-gradient-button-active: linear-gradient(135deg, rgba(57, 255, 20, 0.8) 0%, rgba(255, 255, 0, 0.8) 100%);
+  --halloween-gradient-scrollbar: linear-gradient(180deg, #39FF14 0%, #FFFF00 100%);
+  --halloween-gradient-thumbnail-hover: linear-gradient(0deg, rgba(255, 255, 0, 0.3) 0%, rgba(57, 255, 20, 0.3) 100%);
+}
+
+/* ============================================
+   Intensity Overrides for All Themes
+   ============================================ */
+
+/* Low Intensity */
+body.theme-cyberpunk.theme-intensity-low,
+body.theme-matrix.theme-intensity-low,
+body.theme-synthwave.theme-intensity-low,
+body.theme-deepspace.theme-intensity-low,
+body.theme-toxic.theme-intensity-low {
+  --halloween-glow-opacity: 0.2;
+  --halloween-glow-size: 10px;
+}
+
+/* High Intensity */
+body.theme-cyberpunk.theme-intensity-high,
+body.theme-matrix.theme-intensity-high,
+body.theme-synthwave.theme-intensity-high,
+body.theme-deepspace.theme-intensity-high,
+body.theme-toxic.theme-intensity-high {
+  --halloween-glow-opacity: 0.7;
+  --halloween-glow-size: 30px;
+}

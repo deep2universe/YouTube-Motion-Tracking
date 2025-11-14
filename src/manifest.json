@@ -15,7 +15,8 @@
         "content.css",
         "themes/youtube-theme-variables.css",
         "themes/youtube-theme.css",
-        "themes/youtube-theme-particles.css"
+        "themes/youtube-theme-particles.css",
+        "themes/youtube-theme-colors.css"
       ]
     }
   ],
