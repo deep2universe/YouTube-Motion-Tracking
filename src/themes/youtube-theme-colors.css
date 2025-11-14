@@ -212,22 +212,113 @@ body.theme-toxic {
    Intensity Overrides for All Themes
    ============================================ */
 
-/* Low Intensity */
+/* Low Intensity - Subtle, lighter appearance */
 body.theme-cyberpunk.theme-intensity-low,
 body.theme-matrix.theme-intensity-low,
 body.theme-synthwave.theme-intensity-low,
 body.theme-deepspace.theme-intensity-low,
 body.theme-toxic.theme-intensity-low {
+  /* Reduced Glow Effects */
   --halloween-glow-opacity: 0.2;
   --halloween-glow-size: 10px;
+  
+  /* Smaller Shadows */
+  --halloween-shadow-small: 5px;
+  --halloween-shadow-medium: 10px;
+  --halloween-shadow-large: 20px;
 }
 
-/* High Intensity */
+/* High Intensity - Strong, dramatic appearance */
 body.theme-cyberpunk.theme-intensity-high,
 body.theme-matrix.theme-intensity-high,
 body.theme-synthwave.theme-intensity-high,
 body.theme-deepspace.theme-intensity-high,
 body.theme-toxic.theme-intensity-high {
+  /* Intensified Glow Effects */
   --halloween-glow-opacity: 0.7;
   --halloween-glow-size: 30px;
+  
+  /* Larger Shadows */
+  --halloween-shadow-small: 15px;
+  --halloween-shadow-medium: 30px;
+  --halloween-shadow-large: 60px;
+}
+
+/* ============================================
+   Theme-Specific Intensity Overrides
+   ============================================ */
+
+/* CYBERPUNK - Adjust glow colors for intensity */
+body.theme-cyberpunk.theme-intensity-low {
+  --halloween-glow-primary: rgba(255, 0, 128, 0.2);
+  --halloween-glow-secondary: rgba(0, 255, 255, 0.2);
+  --halloween-border-primary: rgba(255, 0, 128, 0.3);
+  --halloween-border-secondary: rgba(0, 255, 255, 0.25);
+}
+
+body.theme-cyberpunk.theme-intensity-high {
+  --halloween-glow-primary: rgba(255, 0, 128, 0.7);
+  --halloween-glow-secondary: rgba(0, 255, 255, 0.6);
+  --halloween-border-primary: rgba(255, 0, 128, 0.8);
+  --halloween-border-secondary: rgba(0, 255, 255, 0.7);
+}
+
+/* MATRIX - Adjust green glow for intensity */
+body.theme-matrix.theme-intensity-low {
+  --halloween-glow-primary: rgba(0, 255, 0, 0.2);
+  --halloween-glow-secondary: rgba(0, 204, 0, 0.2);
+  --halloween-border-primary: rgba(0, 255, 0, 0.3);
+  --halloween-border-secondary: rgba(0, 204, 0, 0.25);
+}
+
+body.theme-matrix.theme-intensity-high {
+  --halloween-glow-primary: rgba(0, 255, 0, 0.7);
+  --halloween-glow-secondary: rgba(0, 204, 0, 0.6);
+  --halloween-border-primary: rgba(0, 255, 0, 0.8);
+  --halloween-border-secondary: rgba(0, 204, 0, 0.7);
+}
+
+/* SYNTHWAVE - Adjust pink/purple glow for intensity */
+body.theme-synthwave.theme-intensity-low {
+  --halloween-glow-primary: rgba(255, 20, 147, 0.2);
+  --halloween-glow-secondary: rgba(157, 0, 255, 0.2);
+  --halloween-border-primary: rgba(255, 20, 147, 0.3);
+  --halloween-border-secondary: rgba(157, 0, 255, 0.25);
+}
+
+body.theme-synthwave.theme-intensity-high {
+  --halloween-glow-primary: rgba(255, 20, 147, 0.7);
+  --halloween-glow-secondary: rgba(157, 0, 255, 0.6);
+  --halloween-border-primary: rgba(255, 20, 147, 0.8);
+  --halloween-border-secondary: rgba(157, 0, 255, 0.7);
+}
+
+/* DEEP SPACE - Adjust blue/purple glow for intensity */
+body.theme-deepspace.theme-intensity-low {
+  --halloween-glow-primary: rgba(65, 105, 225, 0.2);
+  --halloween-glow-secondary: rgba(147, 112, 219, 0.2);
+  --halloween-border-primary: rgba(65, 105, 225, 0.3);
+  --halloween-border-secondary: rgba(147, 112, 219, 0.25);
+}
+
+body.theme-deepspace.theme-intensity-high {
+  --halloween-glow-primary: rgba(65, 105, 225, 0.7);
+  --halloween-glow-secondary: rgba(147, 112, 219, 0.6);
+  --halloween-border-primary: rgba(65, 105, 225, 0.8);
+  --halloween-border-secondary: rgba(147, 112, 219, 0.7);
+}
+
+/* TOXIC - Adjust green/yellow glow for intensity */
+body.theme-toxic.theme-intensity-low {
+  --halloween-glow-primary: rgba(57, 255, 20, 0.2);
+  --halloween-glow-secondary: rgba(255, 255, 0, 0.2);
+  --halloween-border-primary: rgba(57, 255, 20, 0.3);
+  --halloween-border-secondary: rgba(255, 255, 0, 0.25);
+}
+
+body.theme-toxic.theme-intensity-high {
+  --halloween-glow-primary: rgba(57, 255, 20, 0.7);
+  --halloween-glow-secondary: rgba(255, 255, 0, 0.6);
+  --halloween-border-primary: rgba(57, 255, 20, 0.8);
+  --halloween-border-secondary: rgba(255, 255, 0, 0.7);
 }
