@@ -8,7 +8,7 @@ Some examples from this [Video source](https://www.youtube.com/watch?v=eRjUmsB9l
 
 ## 🎃 Halloween Features
 
-This special Halloween edition features **18 spooky animations** across multiple categories:
+This special Halloween edition features **38 spooky animations** across multiple categories:
 
 ### 💀 Skeleton Animations (5)
 - **Glowing Skeleton** - Pulsating orange/green bones
@@ -38,6 +38,24 @@ This special Halloween edition features **18 spooky animations** across multiple
 - **Haunted Lightning** - Electric arcs and flashes
 - **Autumn Leaves** - Falling orange and brown leaves
 
+### 🔥 Skeleton Effects (13) - NEW!
+**Particle-Based (10):**
+- **Skeleton Flames** 🔥 - Flickering fire particles rising from joints
+- **Skeleton Frost** ❄️ - Falling snow with ice crystals
+- **Skeleton Lightning** ⚡ - High-intensity electric particles
+- **Skeleton Spectral** 👻 - Ghostly phasing particles
+- **Skeleton Toxic** ☢️ - Radioactive green bubbles
+- **Skeleton Inferno** 🌋 - Intense hellfire with embers
+- **Skeleton Blood** 🩸 - Dripping blood droplets
+- **Skeleton Chains** ⛓️ - Metallic sparkles
+- **Skeleton Shatter** 💎 - Exploding glass fragments
+- **Skeleton Voodoo** 🪡 - Mystical orbiting symbols
+
+**Canvas-Based (3):**
+- **Skeleton Shadow** 🌑 - Multiple orbiting shadow copies
+- **Skeleton Bones** 🦴 - Anatomically detailed bones
+- **Skeleton Mummy** 🧟 - Bandage-wrapped with hieroglyphics
+
 ## 🛠️ Technology
 
 Pose estimation is powered by [TensorFlow.js](https://www.tensorflow.org/js) using the MoveNet model.  
@@ -53,7 +71,7 @@ To see the Halloween animations in action, [watch this demo](https://www.youtube
 A new Halloween-themed button appears in the video player.  
 ![newIcon](assets/newIcon.png)  
 
-The button opens the Halloween animation selection menu with 18 spooky effects.  
+The button opens the Halloween animation selection menu with 38 spooky effects.  
 ![menu](assets/menu.png)
 
 # How it works

@@ -2,6 +2,43 @@
 
 All notable changes to the YouTube Motion Tracking extension will be documented in this file.
 
+## [2.1.0] - Halloween Skeleton Effects - 2024-11-15
+
+### 🔥 New Halloween Skeleton Effects Category
+
+Added 13 stunning new skeleton-themed animations with advanced particle effects, bringing the total animation count from 25 to 38.
+
+### Added
+
+#### Particle-Based Skeleton Effects (10 new animations)
+- **🔥 Skeleton Flames** - Flickering fire particles rising from all joints with yellow→orange→red gradient
+- **❄️ Skeleton Frost** - Falling snow particles with ice crystal effects and light blue colors
+- **⚡ Skeleton Lightning** - High-intensity electric particles with white/cyan colors and very short life
+- **👻 Skeleton Spectral** - Ghostly white particles with random drift and phasing effect
+- **☢️ Skeleton Toxic** - Radioactive green bubbles rising with pulsing glow
+- **🌋 Skeleton Inferno** - Intense hellfire with dark red→orange→yellow embers and turbulence
+- **🩸 Skeleton Blood** - Dripping blood droplets with gravity and dark red colors
+- **⛓️ Skeleton Chains** - Metallic gray/silver sparkles with shimmer effect
+- **💎 Skeleton Shatter** - Exploding glass fragments with rotation and light blue/white colors
+- **🪡 Skeleton Voodoo** - Mystical purple/red symbols orbiting joints with glow effect
+
+#### Canvas-Based Skeleton Effects (3 new animations)
+- **🌑 Skeleton Shadow** - Multiple shadow copies orbiting main skeleton with decreasing alpha
+- **🦴 Skeleton Bones** - Anatomically detailed bones with texture, marrow core, and joint sockets
+- **🧟 Skeleton Mummy** - Bandage-wrapped skeleton with hieroglyphics and unwrapping trails
+
+### Technical Improvements
+- Optimized particle counts for 30+ FPS performance
+- Added 13 new particle emitter configurations
+- Implemented helper methods for bone drawing, bandage wrapping, and shadow effects
+- Extended updateParticles switch with new skeleton effect cases
+- Total animation count: 38 (up from 25)
+
+### UI Updates
+- Added new "🔥 Skeleton Effects" category in animation panel
+- Category appears before Horror Filters section
+- All animations use themed emoji icons for easy identification
+
 ## [2.0.0] - Halloween Edition - 2024-11-13
 
 ### 🎃 Major Halloween Transformation

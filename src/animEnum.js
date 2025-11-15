@@ -44,6 +44,21 @@ class AnimEnum{
     static mysticVortex = new AnimEnum('mysticVortex', "&#x1F300;&#x1F7E3;", 15);            // 🌀🟣 Vortex
     static mysticRunes = new AnimEnum('mysticRunes', "&#x2734;&#xFE0F;&#x1F52E;", 16);       // ✴️🔮 Runes
 
+    // ========== HALLOWEEN SKELETON EFFECTS (Advanced Skeleton Animations) ==========
+    static skeletonFlames = new AnimEnum('skeletonFlames', "&#x1F525;", 17);                 // 🔥 Flames
+    static skeletonFrost = new AnimEnum('skeletonFrost', "&#x2744;&#xFE0F;", 18);            // ❄️ Frost
+    static skeletonLightning = new AnimEnum('skeletonLightning', "&#x26A1;", 19);            // ⚡ Lightning
+    static skeletonSpectral = new AnimEnum('skeletonSpectral', "&#x1F47B;", 20);             // 👻 Spectral
+    static skeletonToxic = new AnimEnum('skeletonToxic', "&#x2622;&#xFE0F;", 21);            // ☢️ Toxic
+    static skeletonInferno = new AnimEnum('skeletonInferno', "&#x1F30B;", 22);               // 🌋 Inferno
+    static skeletonBlood = new AnimEnum('skeletonBlood', "&#x1FA78;", 23);                   // 🩸 Blood
+    static skeletonChains = new AnimEnum('skeletonChains', "&#x26D3;&#xFE0F;", 24);          // ⛓️ Chains
+    static skeletonShatter = new AnimEnum('skeletonShatter', "&#x1F48E;", 25);               // 💎 Shatter
+    static skeletonVoodoo = new AnimEnum('skeletonVoodoo', "&#x1FAA1;", 26);                 // 🪡 Voodoo
+    static skeletonShadow = new AnimEnum('skeletonShadow', "&#x1F311;", null);               // 🌑 Shadow
+    static skeletonBones = new AnimEnum('skeletonBones', "&#x1F9B4;", null);                 // 🦴 Bones
+    static skeletonMummy = new AnimEnum('skeletonMummy', "&#x1F9DF;", null);                 // 🧟 Mummy
+
     constructor(name, icon, id) {
         this.name = name;
         this.icon = icon;
@@ -53,7 +68,7 @@ class AnimEnum{
     /**
      * Get all Halloween animation names as array
      *
-     * @returns {string[]} Array of 25 Halloween animation names
+     * @returns {string[]} Array of 38 Halloween animation names
      */
     static getNameArray(){
         return [
@@ -69,14 +84,18 @@ class AnimEnum{
             'particleFog', 'particleLightning', 'particleAutumnLeaves',
             // Particle - Mystical Powers (7)
             'mysticSoulStream', 'mysticBloodMoon', 'mysticCurse', 'mysticPortal', 
-            'mysticNecromancy', 'mysticVortex', 'mysticRunes'
+            'mysticNecromancy', 'mysticVortex', 'mysticRunes',
+            // Halloween Skeleton Effects (13)
+            'skeletonFlames', 'skeletonFrost', 'skeletonLightning', 'skeletonSpectral',
+            'skeletonToxic', 'skeletonInferno', 'skeletonBlood', 'skeletonChains',
+            'skeletonShatter', 'skeletonVoodoo', 'skeletonShadow', 'skeletonBones', 'skeletonMummy'
         ];
     }
 
     /**
      * Get all Halloween animation objects as array
      *
-     * @returns {AnimEnum[]} Array of 25 Halloween AnimEnum objects
+     * @returns {AnimEnum[]} Array of 38 Halloween AnimEnum objects
      */
     static getAllAnimations(){
         return [
@@ -94,7 +113,12 @@ class AnimEnum{
             AnimEnum.particleFog, AnimEnum.particleLightning, AnimEnum.particleAutumnLeaves,
             // Particle - Mystical Powers (7)
             AnimEnum.mysticSoulStream, AnimEnum.mysticBloodMoon, AnimEnum.mysticCurse, 
-            AnimEnum.mysticPortal, AnimEnum.mysticNecromancy, AnimEnum.mysticVortex, AnimEnum.mysticRunes
+            AnimEnum.mysticPortal, AnimEnum.mysticNecromancy, AnimEnum.mysticVortex, AnimEnum.mysticRunes,
+            // Halloween Skeleton Effects (13)
+            AnimEnum.skeletonFlames, AnimEnum.skeletonFrost, AnimEnum.skeletonLightning, AnimEnum.skeletonSpectral,
+            AnimEnum.skeletonToxic, AnimEnum.skeletonInferno, AnimEnum.skeletonBlood, AnimEnum.skeletonChains,
+            AnimEnum.skeletonShatter, AnimEnum.skeletonVoodoo, AnimEnum.skeletonShadow, AnimEnum.skeletonBones, 
+            AnimEnum.skeletonMummy
         ];
     }
 }

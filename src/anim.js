@@ -161,6 +161,56 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         } else if (animationId === AnimEnum.mysticRunes.name) {
             this.currentAnimation = this.PARTICLE;
             this.particleID = AnimEnum.mysticRunes.id;
+
+        // ========== HALLOWEEN SKELETON EFFECTS ==========
+        } else if (animationId === AnimEnum.skeletonFlames.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.skeletonFlames.id;
+
+        } else if (animationId === AnimEnum.skeletonFrost.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.skeletonFrost.id;
+
+        } else if (animationId === AnimEnum.skeletonLightning.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.skeletonLightning.id;
+
+        } else if (animationId === AnimEnum.skeletonSpectral.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.skeletonSpectral.id;
+
+        } else if (animationId === AnimEnum.skeletonToxic.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.skeletonToxic.id;
+
+        } else if (animationId === AnimEnum.skeletonInferno.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.skeletonInferno.id;
+
+        } else if (animationId === AnimEnum.skeletonBlood.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.skeletonBlood.id;
+
+        } else if (animationId === AnimEnum.skeletonChains.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.skeletonChains.id;
+
+        } else if (animationId === AnimEnum.skeletonShatter.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.skeletonShatter.id;
+
+        } else if (animationId === AnimEnum.skeletonVoodoo.name) {
+            this.currentAnimation = this.PARTICLE;
+            this.particleID = AnimEnum.skeletonVoodoo.id;
+
+        } else if (animationId === AnimEnum.skeletonShadow.name) {
+            this.currentAnimation = AnimEnum.skeletonShadow.name;
+
+        } else if (animationId === AnimEnum.skeletonBones.name) {
+            this.currentAnimation = AnimEnum.skeletonBones.name;
+
+        } else if (animationId === AnimEnum.skeletonMummy.name) {
+            this.currentAnimation = AnimEnum.skeletonMummy.name;
         }
 
         // Initialize particle system if particle animation selected
@@ -238,6 +288,37 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
 
         } else if (this.particleID === AnimEnum.mysticRunes.id) {
             this.cMysticRunes();
+
+        // ========== HALLOWEEN SKELETON EFFECTS ==========
+        } else if (this.particleID === AnimEnum.skeletonFlames.id) {
+            this.cParticleSkeletonFlames();
+
+        } else if (this.particleID === AnimEnum.skeletonFrost.id) {
+            this.cParticleSkeletonFrost();
+
+        } else if (this.particleID === AnimEnum.skeletonLightning.id) {
+            this.cParticleSkeletonLightning();
+
+        } else if (this.particleID === AnimEnum.skeletonSpectral.id) {
+            this.cParticleSkeletonSpectral();
+
+        } else if (this.particleID === AnimEnum.skeletonToxic.id) {
+            this.cParticleSkeletonToxic();
+
+        } else if (this.particleID === AnimEnum.skeletonInferno.id) {
+            this.cParticleSkeletonInferno();
+
+        } else if (this.particleID === AnimEnum.skeletonBlood.id) {
+            this.cParticleSkeletonBlood();
+
+        } else if (this.particleID === AnimEnum.skeletonChains.id) {
+            this.cParticleSkeletonChains();
+
+        } else if (this.particleID === AnimEnum.skeletonShatter.id) {
+            this.cParticleSkeletonShatter();
+
+        } else if (this.particleID === AnimEnum.skeletonVoodoo.id) {
+            this.cParticleSkeletonVoodoo();
         }
 
         this.startParticleInit = false;
@@ -285,6 +366,16 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
 
         } else if (this.currentAnimation === AnimEnum.skullHead.name) {
             this.drawSkullHead(canvasPoseCoordinates);
+
+        // ========== HALLOWEEN SKELETON EFFECTS (Canvas-Only) ==========
+        } else if (this.currentAnimation === AnimEnum.skeletonShadow.name) {
+            this.drawSkeletonShadow(canvasPoseCoordinates);
+
+        } else if (this.currentAnimation === AnimEnum.skeletonBones.name) {
+            this.drawSkeletonBones(canvasPoseCoordinates);
+
+        } else if (this.currentAnimation === AnimEnum.skeletonMummy.name) {
+            this.drawSkeletonMummy(canvasPoseCoordinates);
         }
     }
 
@@ -460,6 +551,73 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
                 this.protonEmitterArray[2].p.y = keypoints[11].y;
                 this.protonEmitterArray[3].p.x = keypoints[12].x; // right hip
                 this.protonEmitterArray[3].p.y = keypoints[12].y;
+                break;
+
+            // ========== HALLOWEEN SKELETON EFFECTS ==========
+            case AnimEnum.skeletonFlames.id:
+            case AnimEnum.skeletonFrost.id:
+            case AnimEnum.skeletonToxic.id:
+            case AnimEnum.skeletonInferno.id:
+                // Particles from all major joints
+                for(let i = 0; i < 12; i++) {
+                    const kpIndex = [5,6,7,8,9,10,11,12,13,14,15,16][i];
+                    this.protonEmitterArray[i].p.x = keypoints[kpIndex].x;
+                    this.protonEmitterArray[i].p.y = keypoints[kpIndex].y;
+                }
+                break;
+
+            case AnimEnum.skeletonLightning.id:
+                // Lightning from 8 keypoints
+                for(let i = 0; i < 8; i++) {
+                    const kpIndex = [5,6,7,8,9,10,11,12][i];
+                    this.protonEmitterArray[i].p.x = keypoints[kpIndex].x;
+                    this.protonEmitterArray[i].p.y = keypoints[kpIndex].y;
+                }
+                break;
+
+            case AnimEnum.skeletonSpectral.id:
+                // Ghost particles around body
+                for(let i = 0; i < 6; i++) {
+                    const kpIndex = [0,5,6,9,10,11][i];
+                    this.protonEmitterArray[i].p.x = keypoints[kpIndex].x;
+                    this.protonEmitterArray[i].p.y = keypoints[kpIndex].y;
+                }
+                break;
+
+            case AnimEnum.skeletonBlood.id:
+                // Blood drips from joints
+                for(let i = 0; i < 8; i++) {
+                    const kpIndex = [5,6,7,8,9,10,11,12][i];
+                    this.protonEmitterArray[i].p.x = keypoints[kpIndex].x;
+                    this.protonEmitterArray[i].p.y = keypoints[kpIndex].y;
+                }
+                break;
+
+            case AnimEnum.skeletonChains.id:
+                // Chain sparkles from joints
+                for(let i = 0; i < 6; i++) {
+                    const kpIndex = [5,6,9,10,11,12][i];
+                    this.protonEmitterArray[i].p.x = keypoints[kpIndex].x;
+                    this.protonEmitterArray[i].p.y = keypoints[kpIndex].y;
+                }
+                break;
+
+            case AnimEnum.skeletonShatter.id:
+                // Glass fragments from all joints
+                for(let i = 0; i < 12; i++) {
+                    const kpIndex = [5,6,7,8,9,10,11,12,13,14,15,16][i];
+                    this.protonEmitterArray[i].p.x = keypoints[kpIndex].x;
+                    this.protonEmitterArray[i].p.y = keypoints[kpIndex].y;
+                }
+                break;
+
+            case AnimEnum.skeletonVoodoo.id:
+                // Mystical symbols from major joints
+                for(let i = 0; i < 6; i++) {
+                    const kpIndex = [5,6,9,10,11,12][i];
+                    this.protonEmitterArray[i].p.x = keypoints[kpIndex].x;
+                    this.protonEmitterArray[i].p.y = keypoints[kpIndex].y;
+                }
                 break;
 
             default:
@@ -1747,6 +1905,322 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
         this.tryWebGLRendererInit();
     }
 
+    // ========== HALLOWEEN SKELETON EFFECTS - PARTICLE ANIMATIONS ==========
+
+    /**
+     * Skeleton Flames - Fire particles from all joints
+     */
+    this.cParticleSkeletonFlames = function() {
+        this.proton = new Proton();
+        
+        // Create 12 emitters for major joints
+        for(let i = 0; i < 12; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(5, 10), 0.1);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(8, 15));
+            emitter.addInitialize(new Proton.Life(0.5, 1.0));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(2, 4), new Proton.Span(240, 300), 'polar'));
+            
+            // Fire colors: yellow -> orange -> red
+            emitter.addBehaviour(new Proton.Color(['#FFFF00', '#FF8800', '#FF0000']));
+            emitter.addBehaviour(new Proton.Alpha(1.0, 0));
+            emitter.addBehaviour(new Proton.Scale(1.0, 0.5));
+            emitter.addBehaviour(new Proton.Gravity(-3)); // Upward movement
+            emitter.addBehaviour(new Proton.RandomDrift(20, 20, 0.05));
+            
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        
+        this.tryWebGLRendererInit();
+    }
+
+    /**
+     * Skeleton Frost - Snow particles falling
+     */
+    this.cParticleSkeletonFrost = function() {
+        this.proton = new Proton();
+        
+        // Create 12 emitters for major joints
+        for(let i = 0; i < 12; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(3, 5), 0.2);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(6, 12));
+            emitter.addInitialize(new Proton.Life(2, 3));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(0.5, 1.5), new Proton.Span(0, 360), 'polar'));
+            
+            // Ice colors: white/light blue
+            emitter.addBehaviour(new Proton.Color(['#FFFFFF', '#E0F6FF', '#B0E0FF']));
+            emitter.addBehaviour(new Proton.Alpha(0.7, 0));
+            emitter.addBehaviour(new Proton.Scale(0.5, 1.0)); // Grow (accumulation)
+            emitter.addBehaviour(new Proton.Gravity(1)); // Slow downward
+            emitter.addBehaviour(new Proton.RandomDrift(30, 10, 0.03));
+            
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        
+        this.tryWebGLRendererInit();
+    }
+
+    /**
+     * Skeleton Lightning - Electric particles
+     */
+    this.cParticleSkeletonLightning = function() {
+        this.proton = new Proton();
+        
+        // Create 8 emitters for joints
+        for(let i = 0; i < 8; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(20, 30), 0.05);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(4, 8));
+            emitter.addInitialize(new Proton.Life(0.1, 0.3)); // Very short life
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(8, 15), new Proton.Span(0, 360), 'polar'));
+            
+            // Electric colors: white/blue
+            emitter.addBehaviour(new Proton.Color(['#FFFFFF', '#00FFFF', '#0088FF']));
+            emitter.addBehaviour(new Proton.Alpha(1.0, 0));
+            emitter.addBehaviour(new Proton.Scale(1.0, 0.3));
+            
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        
+        this.tryWebGLRendererInit();
+    }
+
+    /**
+     * Skeleton Spectral - Ghost particles
+     */
+    this.cParticleSkeletonSpectral = function() {
+        this.proton = new Proton();
+        
+        // Create 6 emitters
+        for(let i = 0; i < 6; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(2, 4), 0.3);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(15, 25));
+            emitter.addInitialize(new Proton.Life(3, 4));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(0.5, 1.5), new Proton.Span(0, 360), 'polar'));
+            
+            // Ghost colors: white/pale
+            emitter.addBehaviour(new Proton.Color(['#FFFFFF', '#F0F0FF', '#E0E0FF']));
+            emitter.addBehaviour(new Proton.Alpha(0.3, 0));
+            emitter.addBehaviour(new Proton.Scale(1.5, 0.8));
+            emitter.addBehaviour(new Proton.RandomDrift(40, 40, 0.04));
+            
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        
+        this.tryWebGLRendererInit();
+    }
+
+    /**
+     * Skeleton Toxic - Radioactive bubbles
+     */
+    this.cParticleSkeletonToxic = function() {
+        this.proton = new Proton();
+        
+        // Create 12 emitters
+        for(let i = 0; i < 12; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(4, 6), 0.2);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(8, 16));
+            emitter.addInitialize(new Proton.Life(1.5, 2.5));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(1, 3), new Proton.Span(240, 300), 'polar'));
+            
+            // Toxic green
+            emitter.addBehaviour(new Proton.Color(['#00FF00', '#88FF00', '#00FF88']));
+            emitter.addBehaviour(new Proton.Alpha(0.9, 0));
+            emitter.addBehaviour(new Proton.Scale(0.5, 1.5)); // Grow (bubbles)
+            emitter.addBehaviour(new Proton.Gravity(-2)); // Upward
+            emitter.addBehaviour(new Proton.RandomDrift(25, 25, 0.06));
+            
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        
+        this.tryWebGLRendererInit();
+    }
+
+    /**
+     * Skeleton Inferno - Intense fire with embers
+     */
+    this.cParticleSkeletonInferno = function() {
+        this.proton = new Proton();
+        
+        // Create 12 emitters
+        for(let i = 0; i < 12; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(8, 12), 0.1);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(6, 14));
+            emitter.addInitialize(new Proton.Life(1.0, 2.0));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(2, 5), new Proton.Span(240, 300), 'polar'));
+            
+            // Hellfire colors: dark red -> orange -> yellow
+            emitter.addBehaviour(new Proton.Color(['#8B0000', '#FF4500', '#FF8C00', '#FFFF00']));
+            emitter.addBehaviour(new Proton.Alpha(1.0, 0));
+            emitter.addBehaviour(new Proton.Scale(0.5, 1.5));
+            emitter.addBehaviour(new Proton.Gravity(-2.5));
+            emitter.addBehaviour(new Proton.RandomDrift(35, 35, 0.08)); // Turbulence
+            
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        
+        this.tryWebGLRendererInit();
+    }
+
+    /**
+     * Skeleton Blood - Dripping blood droplets
+     */
+    this.cParticleSkeletonBlood = function() {
+        this.proton = new Proton();
+        
+        // Create 8 emitters for joints
+        for(let i = 0; i < 8; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(3, 5), 0.3);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(6, 10));
+            emitter.addInitialize(new Proton.Life(1.0, 2.0));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(0.5, 2), new Proton.Span(60, 120), 'polar'));
+            
+            // Blood red
+            emitter.addBehaviour(new Proton.Color(['#8B0000', '#B22222', '#DC143C']));
+            emitter.addBehaviour(new Proton.Alpha(0.9, 0));
+            emitter.addBehaviour(new Proton.Scale(1.0, 0.5));
+            emitter.addBehaviour(new Proton.Gravity(4)); // Drip downward
+            
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        
+        this.tryWebGLRendererInit();
+    }
+
+    /**
+     * Skeleton Chains - Metallic sparkles
+     */
+    this.cParticleSkeletonChains = function() {
+        this.proton = new Proton();
+        
+        // Create 6 emitters
+        for(let i = 0; i < 6; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(2, 3), 0.4);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(4, 8));
+            emitter.addInitialize(new Proton.Life(0.5, 1.0));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(1, 3), new Proton.Span(0, 360), 'polar'));
+            
+            // Metallic gray/silver
+            emitter.addBehaviour(new Proton.Color(['#C0C0C0', '#D3D3D3', '#A9A9A9']));
+            emitter.addBehaviour(new Proton.Alpha(0.8, 0));
+            emitter.addBehaviour(new Proton.Scale(1.0, 0.3));
+            
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        
+        this.tryWebGLRendererInit();
+    }
+
+    /**
+     * Skeleton Shatter - Glass fragments
+     */
+    this.cParticleSkeletonShatter = function() {
+        this.proton = new Proton();
+        
+        // Create 12 emitters
+        for(let i = 0; i < 12; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(5, 8), 0.2);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(6, 12));
+            emitter.addInitialize(new Proton.Life(1.0, 2.0));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(3, 6), new Proton.Span(0, 360), 'polar'));
+            
+            // Glass colors: light blue/white
+            emitter.addBehaviour(new Proton.Color(['#E0FFFF', '#B0E0FF', '#FFFFFF']));
+            emitter.addBehaviour(new Proton.Alpha(1.0, 0));
+            emitter.addBehaviour(new Proton.Scale(1.0, 0.3));
+            emitter.addBehaviour(new Proton.Gravity(2)); // Fall
+            emitter.addBehaviour(new Proton.Rotate()); // Spinning fragments
+            
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        
+        this.tryWebGLRendererInit();
+    }
+
+    /**
+     * Skeleton Voodoo - Mystical symbols
+     */
+    this.cParticleSkeletonVoodoo = function() {
+        this.proton = new Proton();
+        
+        // Create 6 emitters for major joints
+        for(let i = 0; i < 6; i++) {
+            const emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(2, 3), 0.4);
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Radius(10, 18));
+            emitter.addInitialize(new Proton.Life(2, 3));
+            emitter.addInitialize(new Proton.Velocity(new Proton.Span(0.5, 1.5), new Proton.Span(0, 360), 'polar'));
+            
+            // Mystical purple/red
+            emitter.addBehaviour(new Proton.Color(['#8B008B', '#FF0000', '#4B0082']));
+            emitter.addBehaviour(new Proton.Alpha(0.6, 0));
+            emitter.addBehaviour(new Proton.Scale(1.2, 0.5));
+            emitter.addBehaviour(new Proton.Cyclone(1, 40)); // Orbit
+            emitter.addBehaviour(new Proton.Rotate());
+            
+            emitter.p.x = this.canvas.width / 2;
+            emitter.p.y = this.canvas.height / 2;
+            emitter.emit();
+            this.proton.addEmitter(emitter);
+            this.protonEmitterArray.push(emitter);
+        }
+        
+        this.tryWebGLRendererInit();
+    }
+
     // ========== HELPER METHODS ==========
 
     /**
@@ -1953,6 +2427,222 @@ class OverlayRenderer {
         this.ctx.fillStyle = gradient;
         this.ctx.fillRect(0, 0, width, height);
     }
+}
+
+// ========== HALLOWEEN SKELETON EFFECTS - CANVAS ANIMATIONS ==========
+
+/**
+ * Draw skeleton with multiple shadow copies orbiting
+ */
+Anim.prototype.drawSkeletonShadow = function(keypoints) {
+    const time = Date.now() / 1000;
+    const shadowCount = 5;
+    
+    // Draw shadow copies
+    for(let i = 0; i < shadowCount; i++) {
+        const angle = (Math.PI * 2 / shadowCount) * i + time * 0.5;
+        const distance = 10 + i * 3;
+        const offsetX = Math.cos(angle) * distance;
+        const offsetY = Math.sin(angle) * distance;
+        const alpha = 0.3 - i * 0.05;
+        
+        this.ctx.save();
+        this.ctx.globalAlpha = alpha;
+        this.ctx.strokeStyle = 'rgb(50, 50, 50)';
+        this.ctx.lineWidth = 3;
+        
+        // Draw shadow skeleton
+        poseDetection.util.getAdjacentPairs(poseDetection.SupportedModels.MoveNet).forEach(([i, j]) => {
+            const kp1 = keypoints[i];
+            const kp2 = keypoints[j];
+            if (kp1.score >= this.keypointScore && kp2.score >= this.keypointScore) {
+                this.ctx.beginPath();
+                this.ctx.moveTo(kp1.x + offsetX, kp1.y + offsetY);
+                this.ctx.lineTo(kp2.x + offsetX, kp2.y + offsetY);
+                this.ctx.stroke();
+            }
+        });
+        
+        this.ctx.restore();
+    }
+    
+    // Draw main skeleton in white
+    this.ctx.globalAlpha = 1.0;
+    this.ctx.strokeStyle = 'rgb(240, 240, 240)';
+    this.ctx.lineWidth = 4;
+    
+    poseDetection.util.getAdjacentPairs(poseDetection.SupportedModels.MoveNet).forEach(([i, j]) => {
+        const kp1 = keypoints[i];
+        const kp2 = keypoints[j];
+        if (kp1.score >= this.keypointScore && kp2.score >= this.keypointScore) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(kp1.x, kp1.y);
+            this.ctx.lineTo(kp2.x, kp2.y);
+            this.ctx.stroke();
+        }
+    });
+    
+    // Draw keypoints
+    for(let kp of keypoints) {
+        if(kp.score < this.keypointScore) continue;
+        this.ctx.fillStyle = 'rgb(255, 255, 255)';
+        this.ctx.beginPath();
+        this.ctx.arc(kp.x, kp.y, 5, 0, Math.PI * 2);
+        this.ctx.fill();
+    }
+}
+
+/**
+ * Draw anatomically detailed bones
+ */
+Anim.prototype.drawSkeletonBones = function(keypoints) {
+    // Draw bones between joints
+    poseDetection.util.getAdjacentPairs(poseDetection.SupportedModels.MoveNet).forEach(([i, j]) => {
+        const kp1 = keypoints[i];
+        const kp2 = keypoints[j];
+        if (kp1.score >= this.keypointScore && kp2.score >= this.keypointScore) {
+            this.drawBone(kp1.x, kp1.y, kp2.x, kp2.y);
+        }
+    });
+    
+    // Draw joints
+    for(let kp of keypoints) {
+        if(kp.score < this.keypointScore) continue;
+        this.drawJoint(kp.x, kp.y);
+    }
+}
+
+/**
+ * Helper: Draw anatomical bone shape
+ */
+Anim.prototype.drawBone = function(x1, y1, x2, y2) {
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+    const length = Math.hypot(x2 - x1, y2 - y1);
+    
+    this.ctx.save();
+    this.ctx.translate(x1, y1);
+    this.ctx.rotate(angle);
+    
+    // Bone shape (wider at ends, narrow in middle)
+    const gradient = this.ctx.createLinearGradient(0, 0, length, 0);
+    gradient.addColorStop(0, 'rgb(245, 245, 220)');
+    gradient.addColorStop(0.5, 'rgb(235, 235, 210)');
+    gradient.addColorStop(1, 'rgb(245, 245, 220)');
+    
+    this.ctx.fillStyle = gradient;
+    this.ctx.beginPath();
+    this.ctx.moveTo(0, -6);
+    this.ctx.quadraticCurveTo(length / 2, -3, length, -6);
+    this.ctx.lineTo(length, 6);
+    this.ctx.quadraticCurveTo(length / 2, 3, 0, 6);
+    this.ctx.closePath();
+    this.ctx.fill();
+    
+    // Bone texture lines
+    this.ctx.strokeStyle = 'rgba(200, 200, 180, 0.5)';
+    this.ctx.lineWidth = 1;
+    for(let i = 0; i < 8; i++) {
+        const x = (length / 8) * i;
+        this.ctx.beginPath();
+        this.ctx.moveTo(x, -4);
+        this.ctx.lineTo(x, 4);
+        this.ctx.stroke();
+    }
+    
+    // Marrow core
+    this.ctx.fillStyle = 'rgba(200, 180, 160, 0.6)';
+    this.ctx.fillRect(length * 0.2, -2, length * 0.6, 4);
+    
+    this.ctx.restore();
+}
+
+/**
+ * Helper: Draw joint socket
+ */
+Anim.prototype.drawJoint = function(x, y) {
+    this.ctx.fillStyle = 'rgb(245, 245, 220)';
+    this.ctx.shadowBlur = 5;
+    this.ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+    this.ctx.beginPath();
+    this.ctx.arc(x, y, 8, 0, Math.PI * 2);
+    this.ctx.fill();
+    this.ctx.shadowBlur = 0;
+}
+
+/**
+ * Draw mummy with bandage wrapping
+ */
+Anim.prototype.drawSkeletonMummy = function(keypoints) {
+    const time = Date.now() / 1000;
+    
+    // Draw bandage-wrapped skeleton
+    poseDetection.util.getAdjacentPairs(poseDetection.SupportedModels.MoveNet).forEach(([i, j]) => {
+        const kp1 = keypoints[i];
+        const kp2 = keypoints[j];
+        if (kp1.score >= this.keypointScore && kp2.score >= this.keypointScore) {
+            this.drawBandagedBone(kp1.x, kp1.y, kp2.x, kp2.y);
+        }
+    });
+    
+    // Draw unwrapping trails
+    for(let kp of keypoints) {
+        if(kp.score < this.keypointScore) continue;
+        if(Math.random() > 0.7) {
+            this.drawUnwrappingBandage(kp.x, kp.y, time);
+        }
+    }
+}
+
+/**
+ * Helper: Draw bandaged bone
+ */
+Anim.prototype.drawBandagedBone = function(x1, y1, x2, y2) {
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+    const length = Math.hypot(x2 - x1, y2 - y1);
+    const wrapCount = Math.floor(length / 10);
+    
+    this.ctx.save();
+    this.ctx.translate(x1, y1);
+    this.ctx.rotate(angle);
+    
+    // Draw bandage strips
+    for(let i = 0; i < wrapCount; i++) {
+        const x = (length / wrapCount) * i;
+        const offset = (i % 2) * 3;
+        
+        this.ctx.fillStyle = 'rgb(230, 200, 160)';
+        this.ctx.fillRect(x, -5 + offset, length / wrapCount - 2, 8);
+        
+        // Hieroglyphic symbols
+        if(Math.random() > 0.7) {
+            this.ctx.fillStyle = 'rgb(100, 80, 60)';
+            this.ctx.fillRect(x + 2, -2, 3, 4);
+        }
+    }
+    
+    this.ctx.restore();
+}
+
+/**
+ * Helper: Draw unwrapping bandage trail
+ */
+Anim.prototype.drawUnwrappingBandage = function(x, y, time) {
+    const length = 30 + Math.sin(time + x) * 20;
+    const angle = time + y * 0.01;
+    
+    this.ctx.strokeStyle = 'rgba(230, 200, 160, 0.6)';
+    this.ctx.lineWidth = 4;
+    this.ctx.beginPath();
+    this.ctx.moveTo(x, y);
+    
+    for(let i = 0; i < 5; i++) {
+        const t = i / 5;
+        const bx = x + Math.cos(angle + t * Math.PI) * length * t;
+        const by = y + length * t + Math.sin(angle + t * Math.PI * 2) * 10;
+        this.ctx.lineTo(bx, by);
+    }
+    
+    this.ctx.stroke();
 }
 
 export {Anim, OverlayRenderer}
