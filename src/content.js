@@ -262,7 +262,11 @@ chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
         if (request.message === "intPoseDetection") {
             init();
+            // Send response to acknowledge message received
+            sendResponse({status: "initialized"});
         }
+        // Return true to indicate we will send a response (even if synchronously)
+        return true;
     }
 );
 
@@ -276,8 +280,14 @@ chrome.runtime.onMessage.addListener(
  */
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-        stopRandomMode(); // Stop random mode when animation is changed from popup
-        setNewAnimation(request.animation);
+        if (request.animation) {
+            stopRandomMode(); // Stop random mode when animation is changed from popup
+            setNewAnimation(request.animation);
+            // Send response to acknowledge animation changed
+            sendResponse({status: "animation_changed", animation: request.animation});
+        }
+        // Return true to indicate we will send a response
+        return true;
     }
 );
 
