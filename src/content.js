@@ -326,6 +326,17 @@ function initVideoPlayerPopup(){
     const allAnimations = AnimEnum.getAllAnimations();
 
     console.log('Halloween Edition - Total animations loaded:', allAnimations.length);
+    
+    // Debug: Check for undefined animations
+    allAnimations.forEach((anim, index) => {
+        if (!anim) {
+            console.error('[YT Motion Debug] ERROR: Animation at index', index, 'is undefined');
+        } else if (!anim.name) {
+            console.error('[YT Motion Debug] ERROR: Animation at index', index, 'has no name:', anim);
+        } else if (!anim.icon) {
+            console.error('[YT Motion Debug] ERROR: Animation at index', index, 'has no icon:', anim);
+        }
+    });
 
     // Define animation categories
     const categories = [
@@ -344,6 +355,13 @@ function initVideoPlayerPopup(){
         
         for (let i = category.start; i < category.end; i++) {
             const anim = allAnimations[i];
+            
+            // Safety check for undefined animations
+            if (!anim || !anim.name || !anim.icon) {
+                console.error('[YT Motion Debug] ERROR: Animation at index', i, 'is invalid:', anim);
+                continue;
+            }
+            
             const isFirst = (i === 0) ? ' selectButton' : '';
             animationButtonsHTML += '<div id="' + anim.name + '" class="col-3-Button' + isFirst + '">';
             animationButtonsHTML += '<span onclick="document.dispatchEvent(new CustomEvent(\'changeVisualizationFromPlayer\', { detail: {animationID:\'' + anim.name + '\'} }));">' + anim.icon + '</span>';
