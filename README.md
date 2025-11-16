@@ -68,6 +68,30 @@ This project is a [Google Chrome](https://www.google.com/intl/en/chrome/) browse
 To see the Halloween animations in action, [watch this demo](https://www.youtube.com/watch?v=P4DzAWm5mqg)
 
 # Features
+
+## 🎮 Motion Game Mode (NEW!)
+Turn YouTube videos into interactive games! The extension detects movements performed by people in the video and translates them into game actions.
+
+**How to Play:**
+1. Click the "👻🎮 Game Mode" button in the player popup
+2. Choose one of 5 movements to track:
+   - 💪 **Arm Curl** - Bicep curls
+   - 🔄 **Head Turn** - Head rotation
+   - 🙋 **Arm Raise** - Arms above head
+   - 🦵 **Squat** - Complete squat reps
+   - 🤸 **Jumping Jack** - Arms and legs spread
+3. Watch videos with people performing movements
+4. Ghost jumps when movement is detected
+5. 10 jumps = 1 point!
+
+**Features:**
+- Real-time movement detection from video content
+- Visual feedback with particle effects
+- Score tracking and high score persistence
+- Smart detection with false-positive prevention
+- Works with fitness videos, dance videos, sports content, etc.
+
+## 🎃 Halloween Animations
 A new Halloween-themed button appears in the video player.  
 ![newIcon](assets/newIcon.png)  
 

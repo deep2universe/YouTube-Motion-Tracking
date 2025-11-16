@@ -2,6 +2,66 @@
 
 All notable changes to the YouTube Motion Tracking extension will be documented in this file.
 
+## [2.2.0] - Motion Game Mode - 2024-11-16
+
+### 🎮 NEW: Interactive Motion Game Mode
+
+Added a completely new interactive gaming experience that turns YouTube videos into playable content by detecting movements in the video.
+
+### Added
+
+#### Game Mode System
+- **👻 Ghost Jump Challenge** - Interactive game where a ghost character jumps based on detected movements in YouTube videos
+- **5 Detectable Movements**:
+  - 💪 Arm Curl - Bicep curls (angle < 45°)
+  - 🔄 Head Turn - Head rotation detection
+  - 🙋 Arm Raise - Arms raised above head
+  - 🦵 Squat - Complete squat repetitions
+  - 🤸 Jumping Jack - Arms and legs spread simultaneously
+- **Motion Selection Panel** - Choose which movement to track before starting
+- **Game HUD** - Real-time display of score, jumps (X/10), and high score
+- **Progress Markers** - 10 visual markers showing jump progress
+- **Point System** - 10 detected movements = 1 point
+
+#### Visual Effects
+- **Particle Burst Effects** - Proton-based white/blue ghostly particles on each jump
+- **Jump Feedback** - "NICE!" text indicator on successful detection
+- **Point Reward Animation** - Floating "+1" text when earning points
+- **High Score Celebration** - Special effect for new high scores
+- **Ghost Animation** - Smooth easing animations with idle bounce effect
+
+#### Technical Features
+- **Smart Detection System**:
+  - Frame sampling (every 3rd frame) for performance
+  - Cooldown periods (400-800ms) to prevent false positives
+  - Time window analysis (60% threshold across 5 frames)
+  - Confidence filtering (>0.3 score required)
+- **State Persistence** - High scores and game stats saved via Chrome Storage
+- **Performance Optimized** - <5ms additional latency per frame
+- **Error Handling** - Graceful handling of missing keypoints and detection failures
+- **Canvas Resize Support** - Game elements reposition correctly on player resize
+
+#### New Files
+- `src/gameMode.js` - Main game state machine and orchestration
+- `src/motionDetector.js` - Motion detection engine with 5 movement algorithms
+- `src/ghostCharacter.js` - Ghost rendering and animation
+- `src/jumpMarkers.js` - Progress markers rendering
+- `src/gameModeEnum.js` - Game mode definitions
+- `src/motionEnum.js` - Movement type definitions
+- `src/gameConfig.js` - Configuration constants
+
+### Changed
+- **package.json** - Fixed build script to only include entry point files
+- **src/content.js** - Integrated game mode into detection loop with toggle support
+- **src/content.css** - Added complete game mode styling (motion panel, HUD, animations)
+
+### Technical Details
+- Game mode works with video content detection (not webcam)
+- Seamless integration with existing animation system
+- No conflicts with filters, themes, or random mode
+- Animations pause when game mode is active
+- Total bundle size: content.js 1.3 MB (includes TensorFlow + Proton + Game Mode)
+
 ## [2.1.0] - Halloween Skeleton Effects - 2024-11-15
 
 ### 🔥 New Halloween Skeleton Effects Category

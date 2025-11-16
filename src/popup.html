@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Motion Tracking Settings</title>
+    <style>
+        body {
+            width: 300px;
+            padding: 16px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a, #2d1a00);
+            color: #FFD700;
+            margin: 0;
+        }
+        
+        h2 {
+            margin: 0 0 16px 0;
+            font-size: 18px;
+            text-align: center;
+            color: #FF6600;
+            text-shadow: 0 0 10px rgba(255, 102, 0, 0.8);
+        }
+        
+        .game-mode-section {
+            margin-bottom: 16px;
+        }
+        
+        .game-toggle-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .game-toggle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .game-toggle-btn:active {
+            transform: translateY(0);
+        }
+        
+        .info {
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h2>🎮 Motion Game Mode</h2>
+    
+    <div class="game-mode-section">
+        <button id="gameToggleButton" class="game-toggle-btn">
+            Game Mode: OFF
+        </button>
+    </div>
+    
+    <div class="info">
+        Activate to play Ghost Jump Challenge with movements detected in YouTube videos
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>

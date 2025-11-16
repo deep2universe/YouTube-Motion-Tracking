@@ -9,7 +9,7 @@
     "copyCSS": "cp src/*.css dist/ && mkdir -p dist/themes && cp src/themes/*.css dist/themes/",
     "copy": "npm run copyManifest && npm run copyHTML && npm run copyImages && npm run copyCSS",
     "clean": "rm -rf dist .parcel-cache",
-    "build:parcel": "npx parcel build src/*.html src/*.js --public-url ./ && npm run copy",
+    "build:parcel": "npx parcel build src/*.html src/content.js src/background.js src/popup.js src/options.js --public-url ./ && npm run copy",
     "build:clean": "npm run clean && npm run build:parcel"
   },
   "keywords": [
