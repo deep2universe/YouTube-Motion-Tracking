@@ -245,6 +245,7 @@ function init() {
     cleanup();
     
     // FORCE GAME MODE RESET ON VIDEO CHANGE
+    // Note: Game mode is reset, but normal animations persist across videos
     console.log('[VIDEO CHANGE] Forcing game mode reset');
     isGameModeActive = false;
     
@@ -253,10 +254,9 @@ function init() {
         console.log('[VIDEO CHANGE] Game mode cleared from storage');
     });
     
-    // Force skeleton animation
-    currentAnimation = 'skeletonGlow';
-    saveCurrentAnimationName('skeletonGlow');
-    console.log('[VIDEO CHANGE] Set animation to skeletonGlow');
+    // Note: currentAnimation will be loaded from storage in readCurrentAnimationName()
+    // This allows animations to persist across video changes
+    // Only game mode gets reset to skeleton
     
     // Ensure animations are enabled (not disabled)
     isAnimDisabled = false;
@@ -463,7 +463,7 @@ function initVideoPlayerPopup(){
 
 <div style="padding: 0 15px; margin-top: 10px;">
     <button id="animDisabledDiv" class="pdAnimButtonGreen" onclick="document.dispatchEvent(new CustomEvent('changeIsAnimDisabled'));">⏯️ Stop/Play Animation</button>
-    <button id="canvasPauseButton" class="pdAnimButtonRed" onclick="document.dispatchEvent(new CustomEvent('toggleCanvasPause'));">⏸️ Pause Canvas</button>
+    <button id="canvasPauseButton" class="pdAnimButtonRed" onclick="document.dispatchEvent(new CustomEvent('toggleCanvasPause'));">👁️ Hide Effects</button>
 </div>
 
 <hr class="sep">
@@ -487,7 +487,7 @@ function initVideoPlayerPopup(){
     <div class="theme-section-title">🌙 YouTube UI Theme</div>
     
     <button id="themeToggleButton" class="theme-toggle-button" onclick="document.dispatchEvent(new CustomEvent('toggleHalloweenTheme'));">
-        🌙 Enable Halloween UI Theme
+        🌙 Enable UI Theme
     </button>
     
     <div class="theme-intensity-container">
@@ -977,10 +977,10 @@ function updateCanvasPauseButton() {
     const pauseButton = document.getElementById('canvasPauseButton');
     if (pauseButton) {
         if (isCanvasHidden) {
-            pauseButton.textContent = '▶️ Resume Canvas';
+            pauseButton.textContent = '👁️ Show Effects';
             pauseButton.className = 'pdAnimButtonGreen';
         } else {
-            pauseButton.textContent = '⏸️ Pause Canvas';
+            pauseButton.textContent = '👁️ Hide Effects';
             pauseButton.className = 'pdAnimButtonRed';
         }
     }
@@ -1058,6 +1058,38 @@ function ensurePopupExists() {
 
 document.addEventListener('displayPoseDreamPopup', function (e) {
     console.log('displayPoseDreamPopup event triggered');
+    
+    // Check if system is stable and initialize if needed
+    const systemReady = canvas && canvasGL && ctx && webGLtx && mainVideo;
+    if (!systemReady) {
+        console.log('[BUTTON CLICK] System not ready, initializing...');
+        console.log('[BUTTON CLICK] Status:', {
+            canvas: !!canvas,
+            canvasGL: !!canvasGL,
+            ctx: !!ctx,
+            webGLtx: !!webGLtx,
+            mainVideo: !!mainVideo,
+            videoReadyState: mainVideo?.readyState
+        });
+        
+        // Trigger initialization
+        if (mainVideo && mainVideo.readyState >= 2) {
+            console.log('[BUTTON CLICK] Triggering handleVideoPlaying to create canvas');
+            handleVideoPlaying();
+            
+            // Wait for canvas creation, then create popup
+            setTimeout(() => {
+                console.log('[BUTTON CLICK] Triggering handleVideoLoaded to create popup');
+                handleVideoLoaded();
+                
+                // Wait for popup creation, then toggle it
+                setTimeout(() => {
+                    togglePopup();
+                }, 600);
+            }, 600);
+            return;
+        }
+    }
     
     // Try to ensure popup exists (with retry logic)
     let popupReady = ensurePopupExists();
