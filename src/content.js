@@ -301,6 +301,30 @@ function init() {
     addOnPlayingEvent();
 
     addLoadedDataEvent();
+    
+    // CRITICAL FIX: If video is already loaded/playing, trigger handlers immediately
+    // This happens when init() is called after video has already started
+    if (mainVideo) {
+        console.log('[INIT] Checking if video already loaded/playing...');
+        console.log('[INIT] Video readyState:', mainVideo.readyState, 'paused:', mainVideo.paused);
+        
+        // If video is already playing, trigger both handlers
+        if (!mainVideo.paused && mainVideo.readyState >= 2) {
+            console.log('[INIT] Video already playing! Triggering handlers immediately...');
+            setTimeout(() => {
+                handleVideoPlaying();
+                handleVideoLoaded();
+            }, 100);
+        }
+        // If video is loaded but paused, at least create the UI
+        else if (mainVideo.readyState >= 2) {
+            console.log('[INIT] Video loaded but paused. Creating UI...');
+            setTimeout(() => {
+                handleVideoPlaying();
+                handleVideoLoaded();
+            }, 100);
+        }
+    }
 
     // Don't call these here, they will be called in loadeddata event
     // updateAnimDisabledDiv();
@@ -1216,10 +1240,8 @@ function handleVideoLoaded(event) {
         }
     }, 500);
 
-    if(isRequestAnimationFrame==false){
-        isRequestAnimationFrame=true;
-        startDetection();
-    }
+    // NOTE: startDetection() is called from handleVideoPlaying() after canvas is created
+    // Do NOT call it here as canvas doesn't exist yet
 }
 
 /**
@@ -1409,6 +1431,13 @@ function handleVideoPlaying(event) {
         filterManager = new FilterManager(mainVideo, canvas, ctx);
         // Load saved filter from storage
         filterManager.loadSavedFilter();
+    }
+    
+    // Start detection loop now that canvas is ready
+    if(isRequestAnimationFrame==false){
+        isRequestAnimationFrame=true;
+        console.log('Starting detection loop from handleVideoPlaying');
+        startDetection();
     }
 }
 
