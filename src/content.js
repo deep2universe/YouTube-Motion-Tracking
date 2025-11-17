@@ -46,6 +46,7 @@ var isRequestAnimationFrame = false;   // only request animation frame once
 
 var isVideoPlay = false;  // if true, video is playint, do detection and play animations if not anim disabled
 var isAnimDisabled = false; // if true, do not show animations
+var isCanvasHidden = false; // if true, canvas overlays are hidden from view
 
 /**
  * Name-IDs of all animations
@@ -151,6 +152,9 @@ function cleanup() {
         console.log('Reset game mode object');
     }
     
+    // Reset game mode flag
+    isGameModeActive = false;
+    
     // Reset flags
     isVideoPlay = false;
     showPlayerPopup = false;
@@ -240,6 +244,24 @@ function init() {
     // Cleanup old elements first
     cleanup();
     
+    // FORCE GAME MODE RESET ON VIDEO CHANGE
+    console.log('[VIDEO CHANGE] Forcing game mode reset');
+    isGameModeActive = false;
+    
+    // Clear game mode from storage
+    chrome.storage.sync.set({ gameModeActive: false }, function() {
+        console.log('[VIDEO CHANGE] Game mode cleared from storage');
+    });
+    
+    // Force skeleton animation
+    currentAnimation = 'skeletonGlow';
+    saveCurrentAnimationName('skeletonGlow');
+    console.log('[VIDEO CHANGE] Set animation to skeletonGlow');
+    
+    // Ensure animations are enabled (not disabled)
+    isAnimDisabled = false;
+    saveIsAnimDisabled(false);
+    
     // get video element, check if not null and set it to mainVideo
     // because YouTube loads videos dynamically I get a collection
     // the current played video is the last one
@@ -268,6 +290,7 @@ function init() {
     readIsAnimDisabled();
     readCurrentAnimationName();
     readRandomSettings(); // Load random mode settings
+    readCanvasHiddenState(); // Load canvas pause state
     // NOTE: readGameModeState() is called AFTER canvas creation in handleVideoPlaying()
     
     // Initialize theme system
@@ -327,6 +350,11 @@ chrome.runtime.onMessage.addListener(
  */
 function setNewAnimation(animationId){
     console.log('content.js setNewAnimation called with:', animationId);
+    
+    // Auto-resume canvas if it was paused
+    if (isCanvasHidden) {
+        resumeCanvas();
+    }
     
     // Validate animation ID - fallback to default if undefined or invalid
     if(!animationId || animationId === 'undefined') {
@@ -435,6 +463,7 @@ function initVideoPlayerPopup(){
 
 <div style="padding: 0 15px; margin-top: 10px;">
     <button id="animDisabledDiv" class="pdAnimButtonGreen" onclick="document.dispatchEvent(new CustomEvent('changeIsAnimDisabled'));">⏯️ Stop/Play Animation</button>
+    <button id="canvasPauseButton" class="pdAnimButtonRed" onclick="document.dispatchEvent(new CustomEvent('toggleCanvasPause'));">⏸️ Pause Canvas</button>
 </div>
 
 <hr class="sep">
@@ -544,6 +573,12 @@ function startDetection() {
         return;
     }
 
+    // Skip rendering if canvas is hidden
+    if (isCanvasHidden) {
+        requestAnimationFrame(startDetection);
+        return;
+    }
+
     // create or update animation object
     if(anim === null){
         // Only create anim if canvas elements exist
@@ -638,6 +673,17 @@ document.addEventListener('changeIsAnimDisabled', function (e) {
     saveIsAnimDisabled(isAnimDisabled);
 
     updateAnimDisabledDiv();
+});
+
+/**
+ * Event handler: Toggle canvas pause
+ */
+document.addEventListener('toggleCanvasPause', function (e) {
+    if (isCanvasHidden) {
+        resumeCanvas();
+    } else {
+        pauseCanvas();
+    }
 });
 
 /**
@@ -866,6 +912,81 @@ function updateGameModeButton(){
 }
 
 /**
+ * Pause canvas - hide overlays and clear content
+ */
+function pauseCanvas() {
+    isCanvasHidden = true;
+    
+    // Clear canvas content
+    if (ctx && canvas) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    if (webGLtx && canvasGL) {
+        webGLtx.clear(webGLtx.COLOR_BUFFER_BIT);
+    }
+    
+    // Hide canvas elements
+    if (canvas) {
+        canvas.style.display = 'none';
+    }
+    if (canvasGL) {
+        canvasGL.style.display = 'none';
+    }
+    
+    // Stop random mode if active
+    if (isRandomModeActive) {
+        stopRandomMode();
+    }
+    
+    // Save state
+    saveCanvasHiddenState(true);
+    
+    // Update button
+    updateCanvasPauseButton();
+    
+    console.log('Canvas paused and hidden');
+}
+
+/**
+ * Resume canvas - show overlays and resume rendering
+ */
+function resumeCanvas() {
+    isCanvasHidden = false;
+    
+    // Show canvas elements
+    if (canvas) {
+        canvas.style.display = 'block';
+    }
+    if (canvasGL) {
+        canvasGL.style.display = 'block';
+    }
+    
+    // Save state
+    saveCanvasHiddenState(false);
+    
+    // Update button
+    updateCanvasPauseButton();
+    
+    console.log('Canvas resumed and visible');
+}
+
+/**
+ * Update pause button appearance
+ */
+function updateCanvasPauseButton() {
+    const pauseButton = document.getElementById('canvasPauseButton');
+    if (pauseButton) {
+        if (isCanvasHidden) {
+            pauseButton.textContent = '▶️ Resume Canvas';
+            pauseButton.className = 'pdAnimButtonGreen';
+        } else {
+            pauseButton.textContent = '⏸️ Pause Canvas';
+            pauseButton.className = 'pdAnimButtonRed';
+        }
+    }
+}
+
+/**
  * Add border to selected animal icon in player
  * Remove previous selected animation icon
  *
@@ -950,8 +1071,7 @@ document.addEventListener('displayPoseDreamPopup', function (e) {
                 setTimeout(() => {
                     popupReady = ensurePopupExists();
                     if (!popupReady) {
-                        console.error('[POPUP] Failed to create popup after 3 attempts');
-                        alert('Please wait for the video to load completely, then try again.');
+                        console.error('[POPUP] Failed to create popup after 3 attempts - video may not be loaded yet');
                     } else {
                         togglePopup();
                     }
@@ -1054,6 +1174,8 @@ function handleVideoLoaded(event) {
     setTimeout(() => {
         initVideoPlayerPopup();
         updateAnimDisabledDiv();
+        updateCanvasPauseButton();
+        updateGameModeButton();
         updateSelectedButton(currentAnimation);
         
         // Update theme UI controls after popup is created
@@ -1078,6 +1200,16 @@ function addLoadedDataEvent() {
     
     // Add new event listener
     mainVideo.addEventListener('loadeddata', handleVideoLoaded);
+    
+    // If video is already loaded, trigger the handler immediately
+    if (mainVideo.readyState >= 2) {
+        console.log('[INIT] Video already loaded (readyState: ' + mainVideo.readyState + '), triggering handler immediately');
+        // Use longer delay to ensure YouTube player is fully ready
+        setTimeout(() => {
+            console.log('[INIT] Executing delayed handleVideoLoaded');
+            handleVideoLoaded();
+        }, 1000);
+    }
 }
 
 /**
@@ -1217,23 +1349,8 @@ function handleVideoPlaying(event) {
         return;
     }
     
-    // Now that canvas is ready, check if game mode should be activated
-    readGameModeState();
-    
-    // Auto-reinitialize game mode if it was active but got cleaned up
-    if (isGameModeActive && !gameMode && canvas && ctx) {
-        console.log('[GAME MODE] Auto-reinitializing after video change');
-        try {
-            gameMode = new GameMode(canvas, ctx);
-            gameMode.activate();
-            stopRandomMode();
-            isAnimDisabled = true;
-            updateGameModeButton();
-            updateAnimDisabledDiv();
-        } catch (error) {
-            console.error('[GAME MODE] Failed to auto-reinitialize:', error);
-        }
-    }
+    // NOTE: Game mode auto-reinitialization removed
+    // Game mode is now reset on video change and must be manually reactivated
     
     if(anim === null){
         console.log('Creating new Anim object');
@@ -1280,8 +1397,12 @@ function addOnPlayingEvent(){
     
     // If video is already playing, trigger the handler immediately
     if (!mainVideo.paused && mainVideo.readyState >= 2) {
-        console.log('[INIT] Video already playing, triggering handler immediately');
-        setTimeout(() => handleVideoPlaying(), 100);
+        console.log('[INIT] Video already playing (paused: ' + mainVideo.paused + ', readyState: ' + mainVideo.readyState + '), triggering handler immediately');
+        // Use longer delay to ensure YouTube player is fully ready
+        setTimeout(() => {
+            console.log('[INIT] Executing delayed handleVideoPlaying');
+            handleVideoPlaying();
+        }, 1000);
     }
 }
 
@@ -1362,6 +1483,26 @@ function readIsAnimDisabled(){
             isAnimDisabled = false;
         }else {
             isAnimDisabled = status;
+        }
+    });
+}
+
+function saveCanvasHiddenState(value){
+    chrome.storage.sync.set({isCanvasHidden: value}, function() {
+        console.log('Canvas hidden state saved:', value);
+    });
+}
+
+function readCanvasHiddenState(){
+    chrome.storage.sync.get(['isCanvasHidden'], function (result) {
+        isCanvasHidden = result.isCanvasHidden || false;
+        console.log('Canvas hidden state loaded:', isCanvasHidden);
+        
+        // Apply state if canvas exists
+        if (isCanvasHidden && canvas && canvasGL) {
+            canvas.style.display = 'none';
+            canvasGL.style.display = 'none';
+            console.log('Applied hidden state to canvas elements');
         }
     });
 }
