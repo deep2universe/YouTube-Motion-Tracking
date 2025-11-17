@@ -437,10 +437,6 @@ function initVideoPlayerPopup(){
     <button id="animDisabledDiv" class="pdAnimButtonGreen" onclick="document.dispatchEvent(new CustomEvent('changeIsAnimDisabled'));">⏯️ Stop/Play Animation</button>
 </div>
 
-<div style="padding: 0 15px; margin-top: 10px;">
-    <button id="gameModeToggleButton" class="pdVideoButton" onclick="document.dispatchEvent(new CustomEvent('toggleGameMode'));">👻🎮 Game Mode: OFF</button>
-</div>
-
 <hr class="sep">
 
 <div class="containerButton">
@@ -506,6 +502,12 @@ function initVideoPlayerPopup(){
     <button id="particleToggleButton" class="theme-particle-toggle" onclick="document.dispatchEvent(new CustomEvent('toggleParticles'));">
         ✨ Particle Effects: OFF
     </button>
+</div>
+
+<hr class="sep">
+
+<div style="padding: 0 15px; margin-bottom: 15px;">
+    <button id="gameModeToggleButton" class="pdVideoButton" onclick="document.dispatchEvent(new CustomEvent('toggleGameMode'));">👻🎮 Game Mode: OFF</button>
 </div>
     `;
 
