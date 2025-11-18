@@ -1083,39 +1083,63 @@ function ensurePopupExists() {
 document.addEventListener('displayPoseDreamPopup', function (e) {
     console.log('displayPoseDreamPopup event triggered');
     
-    // Check if system is stable and initialize if needed
+    // ROBUST INITIALIZATION: Ensure everything is ready
     const systemReady = canvas && canvasGL && ctx && webGLtx && mainVideo;
-    if (!systemReady) {
-        console.log('[BUTTON CLICK] System not ready, initializing...');
-        console.log('[BUTTON CLICK] Status:', {
-            canvas: !!canvas,
-            canvasGL: !!canvasGL,
-            ctx: !!ctx,
-            webGLtx: !!webGLtx,
-            mainVideo: !!mainVideo,
-            videoReadyState: mainVideo?.readyState
-        });
+    const popupExists = !!document.querySelector('.posedream-video-popup');
+    
+    console.log('[BUTTON CLICK] System check:', {
+        canvas: !!canvas,
+        canvasGL: !!canvasGL,
+        ctx: !!ctx,
+        webGLtx: !!webGLtx,
+        mainVideo: !!mainVideo,
+        popup: popupExists,
+        videoReadyState: mainVideo?.readyState
+    });
+    
+    // If system not ready OR popup doesn't exist, initialize everything
+    if (!systemReady || !popupExists) {
+        console.log('[BUTTON CLICK] Initializing system...');
         
-        // Trigger initialization
+        // Ensure we have video and it's ready
         if (mainVideo && mainVideo.readyState >= 2) {
-            console.log('[BUTTON CLICK] Triggering handleVideoPlaying to create canvas');
-            handleVideoPlaying();
+            console.log('[BUTTON CLICK] Video ready, creating canvas and popup...');
             
-            // Wait for canvas creation, then create popup
-            setTimeout(() => {
-                console.log('[BUTTON CLICK] Triggering handleVideoLoaded to create popup');
+            // Create canvas if missing
+            if (!canvas || !canvasGL) {
+                console.log('[BUTTON CLICK] Creating canvas...');
+                handleVideoPlaying();
+            }
+            
+            // Create popup if missing
+            if (!popupExists) {
+                console.log('[BUTTON CLICK] Creating popup...');
                 handleVideoLoaded();
-                
-                // Wait for popup creation, then toggle it
-                setTimeout(() => {
+            }
+            
+            // Wait for everything to be created, then toggle popup
+            setTimeout(() => {
+                console.log('[BUTTON CLICK] Initialization complete, toggling popup');
+                const popup = document.querySelector('.posedream-video-popup');
+                if (popup) {
                     togglePopup();
-                }, 600);
-            }, 600);
+                } else {
+                    console.error('[BUTTON CLICK] Popup still not found after initialization');
+                }
+            }, 800);
+            return;
+        } else {
+            console.error('[BUTTON CLICK] Video not ready (readyState:', mainVideo?.readyState, ')');
             return;
         }
     }
     
-    // Try to ensure popup exists (with retry logic)
+    // System ready and popup exists - just toggle it
+    console.log('[BUTTON CLICK] System ready, toggling popup');
+    togglePopup();
+    return;
+    
+    // OLD RETRY LOGIC (kept as fallback, but should not be reached)
     let popupReady = ensurePopupExists();
     
     if (!popupReady) {
