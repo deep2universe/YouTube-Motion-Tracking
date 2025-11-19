@@ -9,6 +9,13 @@ import {AnimEnum} from "./animEnum";
 import {FilterEnum} from "./filterEnum";
 import {GameMode} from "./gameMode";
 
+/**
+ * Debug flag for content.js
+ * Set to true to enable console logging for this file
+ * Set to false for production builds (default)
+ */
+const DEBUG = false;
+
 // pose detector from tensorflow
 var detector = null;
 
@@ -18,14 +25,14 @@ async function initDetector() {
         // Set backend to webgl explicitly and wait for it to be ready
         await tf.setBackend('webgl');
         await tf.ready();
-        console.log('TensorFlow.js backend initialized:', tf.getBackend());
+        if (DEBUG) console.log('TensorFlow.js backend initialized:', tf.getBackend());
 
         // Create detector after backend is ready
         detector = await poseDetection.createDetector(
             poseDetection.SupportedModels.MoveNet,
             {modelType: poseDetection.movenet.modelType.SINGLEPOSE_THUNDER}
         );
-        console.log("Pose detector created successfully");
+        if (DEBUG) console.log("Pose detector created successfully");
     } catch (error) {
         console.error("Failed to initialize pose detector:", error);
     }
@@ -76,13 +83,13 @@ var isGameModeActive = false;       // Track if game mode is active
  * Cleanup function to remove old canvas elements and reset state
  */
 function cleanup() {
-    console.log('Cleaning up old canvas elements and state');
+    if (DEBUG) console.log('Cleaning up old canvas elements and state');
     
     // Disconnect resize observer from old video
     if(mainVideo) {
         try {
             resizeObserver.unobserve(mainVideo);
-            console.log('Disconnected resize observer from old video');
+            if (DEBUG) console.log('Disconnected resize observer from old video');
         } catch(e) {
             // Ignore errors if observer wasn't attached
         }
@@ -92,20 +99,20 @@ function cleanup() {
     const oldCanvas = document.getElementById('canvasdummy');
     if (oldCanvas) {
         oldCanvas.remove();
-        console.log('Removed old 2D canvas');
+        if (DEBUG) console.log('Removed old 2D canvas');
     }
     
     const oldCanvasGL = document.getElementById('canvasdummyGL');
     if (oldCanvasGL) {
         oldCanvasGL.remove();
-        console.log('Removed old WebGL canvas');
+        if (DEBUG) console.log('Removed old WebGL canvas');
     }
     
     // Remove old popup
     const oldPopup = document.querySelector('.posedream-video-popup');
     if (oldPopup) {
         oldPopup.remove();
-        console.log('Removed old popup');
+        if (DEBUG) console.log('Removed old popup');
     }
     
     // Reset canvas variables
@@ -121,24 +128,24 @@ function cleanup() {
             try {
                 anim.proton.destroy();
             } catch(e) {
-                console.log('Error destroying proton:', e);
+                if (DEBUG) console.log('Error destroying proton:', e);
             }
         }
         anim = null;
-        console.log('Reset anim object');
+        if (DEBUG) console.log('Reset anim object');
     }
     
     // Clean up Game Mode UI elements
     const motionPanel = document.getElementById('motionSelectionPanel');
     if (motionPanel) {
         motionPanel.remove();
-        console.log('Removed old motion selection panel');
+        if (DEBUG) console.log('Removed old motion selection panel');
     }
     
     const gameHUD = document.getElementById('gameHUD');
     if (gameHUD) {
         gameHUD.remove();
-        console.log('Removed old game HUD');
+        if (DEBUG) console.log('Removed old game HUD');
     }
     
     // Reset game mode
@@ -146,10 +153,10 @@ function cleanup() {
         try {
             gameMode.deactivate();
         } catch(e) {
-            console.log('Error deactivating game mode:', e);
+            if (DEBUG) console.log('Error deactivating game mode:', e);
         }
         gameMode = null;
-        console.log('Reset game mode object');
+        if (DEBUG) console.log('Reset game mode object');
     }
     
     // Reset game mode flag
@@ -174,7 +181,7 @@ class FilterManager {
         this.ctx = ctx;
         this.currentFilter = FilterEnum.none;
         this.overlayRenderer = new OverlayRenderer(canvas, ctx);
-        console.log('FilterManager initialized');
+        if (DEBUG) console.log('FilterManager initialized');
     }
 
     /**
@@ -196,7 +203,7 @@ class FilterManager {
         // Persist to Chrome storage
         chrome.storage.sync.set({ currentFilter: filterName });
         
-        console.log(`Applied filter: ${filter.displayName} (${filterName})`);
+        if (DEBUG) console.log(`Applied filter: ${filter.displayName} (${filterName})`);
     }
 
     /**
@@ -223,7 +230,7 @@ class FilterManager {
             const result = await chrome.storage.sync.get('currentFilter');
             const filterName = result.currentFilter || 'none';
             this.applyFilter(filterName);
-            console.log(`Loaded saved filter: ${filterName}`);
+            if (DEBUG) console.log(`Loaded saved filter: ${filterName}`);
         } catch (error) {
             console.error('Error loading saved filter:', error);
             this.applyFilter('none');
@@ -239,19 +246,19 @@ class FilterManager {
  * - start motion detection from loadeddata event
  */
 function init() {
-    console.log('Init called for new video');
+    if (DEBUG) console.log('Init called for new video');
     
     // Cleanup old elements first
     cleanup();
     
     // FORCE GAME MODE RESET ON VIDEO CHANGE
     // Note: Game mode is reset, but normal animations persist across videos
-    console.log('[VIDEO CHANGE] Forcing game mode reset');
+    if (DEBUG) console.log('[VIDEO CHANGE] Forcing game mode reset');
     isGameModeActive = false;
     
     // Clear game mode from storage
     chrome.storage.sync.set({ gameModeActive: false }, function() {
-        console.log('[VIDEO CHANGE] Game mode cleared from storage');
+        if (DEBUG) console.log('[VIDEO CHANGE] Game mode cleared from storage');
     });
     
     // Note: currentAnimation will be loaded from storage in readCurrentAnimationName()
@@ -285,7 +292,7 @@ function init() {
        mainVideo = videoCollection ? videoCollection[videoCollection.length - 1] : null;
    }while (mainVideo === null || mainVideo === undefined);
 
-    console.log('Main video found:', !!mainVideo);
+    if (DEBUG) console.log('Main video found:', !!mainVideo);
 
     readIsAnimDisabled();
     readCurrentAnimationName();
@@ -305,12 +312,12 @@ function init() {
     // CRITICAL FIX: If video is already loaded/playing, trigger handlers immediately
     // This happens when init() is called after video has already started
     if (mainVideo) {
-        console.log('[INIT] Checking if video already loaded/playing...');
-        console.log('[INIT] Video readyState:', mainVideo.readyState, 'paused:', mainVideo.paused);
+        if (DEBUG) console.log('[INIT] Checking if video already loaded/playing...');
+        if (DEBUG) console.log('[INIT] Video readyState:', mainVideo.readyState, 'paused:', mainVideo.paused);
         
         // If video is already playing, trigger both handlers
         if (!mainVideo.paused && mainVideo.readyState >= 2) {
-            console.log('[INIT] Video already playing! Triggering handlers immediately...');
+            if (DEBUG) console.log('[INIT] Video already playing! Triggering handlers immediately...');
             setTimeout(() => {
                 handleVideoPlaying();
                 handleVideoLoaded();
@@ -318,7 +325,7 @@ function init() {
         }
         // If video is loaded but paused, at least create the UI
         else if (mainVideo.readyState >= 2) {
-            console.log('[INIT] Video loaded but paused. Creating UI...');
+            if (DEBUG) console.log('[INIT] Video loaded but paused. Creating UI...');
             setTimeout(() => {
                 handleVideoPlaying();
                 handleVideoLoaded();
@@ -373,7 +380,7 @@ chrome.runtime.onMessage.addListener(
  * @param animationId new animation ID
  */
 function setNewAnimation(animationId){
-    console.log('content.js setNewAnimation called with:', animationId);
+    if (DEBUG) console.log('content.js setNewAnimation called with:', animationId);
     
     // Auto-resume canvas if it was paused
     if (isCanvasHidden) {
@@ -382,7 +389,7 @@ function setNewAnimation(animationId){
     
     // Validate animation ID - fallback to default if undefined or invalid
     if(!animationId || animationId === 'undefined') {
-        console.log('Invalid animation ID, using default: skeletonGlow');
+        if (DEBUG) console.log('Invalid animation ID, using default: skeletonGlow');
         animationId = 'skeletonGlow';
     }
     
@@ -391,7 +398,7 @@ function setNewAnimation(animationId){
         currentAnimation=animationId;
         saveCurrentAnimationName(animationId);
     } else {
-        console.log('WARNING: anim is null, deferring animation switch to:', animationId);
+        if (DEBUG) console.log('WARNING: anim is null, deferring animation switch to:', animationId);
         // Store the desired animation to apply it once anim is initialized
         currentAnimation = animationId;
         saveCurrentAnimationName(animationId);
@@ -405,7 +412,7 @@ function setNewAnimation(animationId){
 function initVideoPlayerPopup(){
     // Check if popup already exists
     if (document.querySelector('.posedream-video-popup')) {
-        console.log('Popup already exists, skipping creation');
+        if (DEBUG) console.log('Popup already exists, skipping creation');
         return;
     }
 
@@ -417,7 +424,7 @@ function initVideoPlayerPopup(){
     let animationButtonsHTML = '';
     const allAnimations = AnimEnum.getAllAnimations();
 
-    console.log('Halloween Edition - Total animations loaded:', allAnimations.length);
+    if (DEBUG) console.log('Halloween Edition - Total animations loaded:', allAnimations.length);
     
     // Debug: Check for undefined animations
     allAnimations.forEach((anim, index) => {
@@ -578,13 +585,13 @@ function initVideoPlayerPopup(){
     }
 
     if (playerContainer) {
-        console.log('Appending popup to player container');
+        if (DEBUG) console.log('Appending popup to player container');
         playerContainer.appendChild(div);
-        console.log('Popup successfully created and appended');
+        if (DEBUG) console.log('Popup successfully created and appended');
     } else {
         console.error('Could not find player container to append popup!');
-        console.log('Tried selectors: .html5-video-player, #movie_player, #player');
-        console.log('videoCollection length:', videoCollection ? videoCollection.length : 'null');
+        if (DEBUG) console.log('Tried selectors: .html5-video-player, #movie_player, #player');
+        if (DEBUG) console.log('videoCollection length:', videoCollection ? videoCollection.length : 'null');
     }
 }
 
@@ -607,20 +614,20 @@ function startDetection() {
     if(anim === null){
         // Only create anim if canvas elements exist
         if(canvas && canvasGL && ctx && webGLtx) {
-            console.log('Creating Anim object in startDetection');
+            if (DEBUG) console.log('Creating Anim object in startDetection');
             anim = new Anim(mainVideo,canvas, canvasGL, ctx, webGLtx);
             
             // Apply the current animation after anim object is created
             if(currentAnimation && currentAnimation !== 'undefined') {
-                console.log('Applying current animation in startDetection:', currentAnimation);
+                if (DEBUG) console.log('Applying current animation in startDetection:', currentAnimation);
                 anim.setNewAnimation(currentAnimation);
             } else {
-                console.log('No current animation set in startDetection, using default: skeletonGlow');
+                if (DEBUG) console.log('No current animation set in startDetection, using default: skeletonGlow');
                 currentAnimation = 'skeletonGlow';
                 anim.setNewAnimation(currentAnimation);
             }
         } else {
-            console.log('Canvas elements not ready yet, skipping anim creation');
+            if (DEBUG) console.log('Canvas elements not ready yet, skipping anim creation');
         }
     }else{
         anim.updateCanvas(mainVideo,canvas, canvasGL, ctx, webGLtx);
@@ -715,11 +722,11 @@ document.addEventListener('toggleCanvasPause', function (e) {
  * This ensures canvas, detector, and all components are ready
  */
 function forceInitialization() {
-    console.log('[INIT] Force initialization triggered');
+    if (DEBUG) console.log('[INIT] Force initialization triggered');
     
     // 1. Ensure video is found
     if (!mainVideo) {
-        console.log('[INIT] Finding video element...');
+        if (DEBUG) console.log('[INIT] Finding video element...');
         videoCollection = document.getElementsByClassName("html5-main-video");
         if (!videoCollection || videoCollection.length === 0) {
             const videoElement = document.querySelector('video.video-stream');
@@ -730,28 +737,28 @@ function forceInitialization() {
             if (anyVideo) videoCollection = [anyVideo];
         }
         mainVideo = videoCollection ? videoCollection[videoCollection.length - 1] : null;
-        console.log('[INIT] Video found:', !!mainVideo);
+        if (DEBUG) console.log('[INIT] Video found:', !!mainVideo);
     }
     
     // 2. Create canvas if not exists
     if (!canvas && mainVideo) {
-        console.log('[INIT] Creating canvas...');
+        if (DEBUG) console.log('[INIT] Creating canvas...');
         createCanvas();
-        console.log('[INIT] Canvas created:', !!canvas, !!ctx);
+        if (DEBUG) console.log('[INIT] Canvas created:', !!canvas, !!ctx);
     }
     
     // 3. Create WebGL canvas if not exists
     if (!canvasGL && mainVideo) {
-        console.log('[INIT] Creating WebGL canvas...');
+        if (DEBUG) console.log('[INIT] Creating WebGL canvas...');
         createCanvasWebGL();
-        console.log('[INIT] WebGL canvas created:', !!canvasGL, !!webGLtx);
+        if (DEBUG) console.log('[INIT] WebGL canvas created:', !!canvasGL, !!webGLtx);
     }
     
     // 4. Create detector if not exists
     if (!detector) {
-        console.log('[INIT] Creating pose detector...');
+        if (DEBUG) console.log('[INIT] Creating pose detector...');
         createDetector().then(() => {
-            console.log('[INIT] Detector created successfully');
+            if (DEBUG) console.log('[INIT] Detector created successfully');
         }).catch(err => {
             console.error('[INIT] Failed to create detector:', err);
         });
@@ -759,15 +766,15 @@ function forceInitialization() {
     
     // 5. Create anim if not exists
     if (!anim && canvas && canvasGL && ctx && webGLtx) {
-        console.log('[INIT] Creating Anim object...');
+        if (DEBUG) console.log('[INIT] Creating Anim object...');
         anim = new Anim(canvas, canvasGL, ctx, webGLtx);
         anim.setNewAnimation(currentAnimation);
-        console.log('[INIT] Anim created with animation:', currentAnimation);
+        if (DEBUG) console.log('[INIT] Anim created with animation:', currentAnimation);
     }
     
     // 6. Start detection if not running
     if (mainVideo && !isVideoPlay) {
-        console.log('[INIT] Starting detection loop...');
+        if (DEBUG) console.log('[INIT] Starting detection loop...');
         isVideoPlay = true;
         startDetection();
     }
@@ -780,18 +787,18 @@ function forceInitialization() {
  * This is the MASTER TRIGGER that ensures everything is initialized
  */
 document.addEventListener('toggleGameMode', function (e) {
-    console.log('[GAME MODE] ========================================');
-    console.log('[GAME MODE] Toggle event triggered');
-    console.log('[GAME MODE] Current state:', isGameModeActive);
-    console.log('[GAME MODE] Canvas:', !!canvas, 'Ctx:', !!ctx);
-    console.log('[GAME MODE] Video:', !!mainVideo, 'Detector:', !!detector);
-    console.log('[GAME MODE] ========================================');
+    if (DEBUG) console.log('[GAME MODE] ========================================');
+    if (DEBUG) console.log('[GAME MODE] Toggle event triggered');
+    if (DEBUG) console.log('[GAME MODE] Current state:', isGameModeActive);
+    if (DEBUG) console.log('[GAME MODE] Canvas:', !!canvas, 'Ctx:', !!ctx);
+    if (DEBUG) console.log('[GAME MODE] Video:', !!mainVideo, 'Detector:', !!detector);
+    if (DEBUG) console.log('[GAME MODE] ========================================');
     
     isGameModeActive = !isGameModeActive;
     
     if (isGameModeActive) {
         // FORCE INITIALIZATION OF EVERYTHING
-        console.log('[GAME MODE] Forcing full initialization...');
+        if (DEBUG) console.log('[GAME MODE] Forcing full initialization...');
         const initialized = forceInitialization();
         
         if (!initialized) {
@@ -816,15 +823,15 @@ document.addEventListener('toggleGameMode', function (e) {
         
         // Wait a moment for everything to settle
         setTimeout(() => {
-            console.log('[GAME MODE] Initialization complete. Creating GameMode...');
-            console.log('[GAME MODE] Final check - Canvas:', !!canvas, 'Ctx:', !!ctx);
+            if (DEBUG) console.log('[GAME MODE] Initialization complete. Creating GameMode...');
+            if (DEBUG) console.log('[GAME MODE] Final check - Canvas:', !!canvas, 'Ctx:', !!ctx);
             
             // Initialize game mode if not exists
             if (!gameMode && canvas && ctx) {
-                console.log('[GAME MODE] Creating new GameMode instance');
+                if (DEBUG) console.log('[GAME MODE] Creating new GameMode instance');
                 try {
                     gameMode = new GameMode(canvas, ctx);
-                    console.log('[GAME MODE] GameMode created successfully');
+                    if (DEBUG) console.log('[GAME MODE] GameMode created successfully');
                 } catch (error) {
                     console.error('[GAME MODE] Failed to create GameMode:', error);
                     return;
@@ -832,10 +839,10 @@ document.addEventListener('toggleGameMode', function (e) {
             }
             
             if (gameMode) {
-                console.log('[GAME MODE] Activating game mode');
+                if (DEBUG) console.log('[GAME MODE] Activating game mode');
                 try {
                     gameMode.activate();
-                    console.log('[GAME MODE] Game mode activated. State:', gameMode.state);
+                    if (DEBUG) console.log('[GAME MODE] Game mode activated. State:', gameMode.state);
                     
                     // Stop random mode and animations when game mode is active
                     stopRandomMode();
@@ -844,10 +851,10 @@ document.addEventListener('toggleGameMode', function (e) {
                     // Check if panel was created
                     setTimeout(() => {
                         const panel = document.getElementById('motionSelectionPanel');
-                        console.log('[GAME MODE] Panel check - exists:', !!panel);
+                        if (DEBUG) console.log('[GAME MODE] Panel check - exists:', !!panel);
                         if (panel) {
-                            console.log('[GAME MODE] Panel display:', window.getComputedStyle(panel).display);
-                            console.log('[GAME MODE] Panel visibility:', window.getComputedStyle(panel).visibility);
+                            if (DEBUG) console.log('[GAME MODE] Panel display:', window.getComputedStyle(panel).display);
+                            if (DEBUG) console.log('[GAME MODE] Panel visibility:', window.getComputedStyle(panel).visibility);
                         }
                     }, 100);
                     
@@ -863,7 +870,7 @@ document.addEventListener('toggleGameMode', function (e) {
         }, 500); // Give 500ms for everything to initialize
         
     } else {
-        console.log('[GAME MODE] Deactivating game mode');
+        if (DEBUG) console.log('[GAME MODE] Deactivating game mode');
         if (gameMode) {
             gameMode.deactivate();
             isAnimDisabled = false;
@@ -882,7 +889,7 @@ document.addEventListener('toggleGameMode', function (e) {
  */
 document.addEventListener('changeFilter', function (e) {
     const filterName = e.detail.filterName;
-    console.log('Filter change requested:', filterName);
+    if (DEBUG) console.log('Filter change requested:', filterName);
     
     if(filterManager !== null) {
         filterManager.applyFilter(filterName);
@@ -968,7 +975,7 @@ function pauseCanvas() {
     // Update button
     updateCanvasPauseButton();
     
-    console.log('Canvas paused and hidden');
+    if (DEBUG) console.log('Canvas paused and hidden');
 }
 
 /**
@@ -991,7 +998,7 @@ function resumeCanvas() {
     // Update button
     updateCanvasPauseButton();
     
-    console.log('Canvas resumed and visible');
+    if (DEBUG) console.log('Canvas resumed and visible');
 }
 
 /**
@@ -1043,7 +1050,7 @@ function ensurePopupExists() {
     }
     
     // Popup doesn't exist, try to create it
-    console.log('[POPUP] Popup not found, attempting to create...');
+    if (DEBUG) console.log('[POPUP] Popup not found, attempting to create...');
     
     // Find video container with multiple fallback selectors
     let playerContainer = document.querySelector('.html5-video-container');
@@ -1058,18 +1065,18 @@ function ensurePopupExists() {
     }
     
     if (!playerContainer) {
-        console.warn('[POPUP] Could not find video container');
+        if (DEBUG) console.warn('[POPUP] Could not find video container');
         return false;
     }
     
     // Check if video is actually loaded
     const video = playerContainer.querySelector('video');
     if (!video || video.readyState < 2) {
-        console.warn('[POPUP] Video not ready yet (readyState:', video?.readyState, ')');
+        if (DEBUG) console.warn('[POPUP] Video not ready yet (readyState:', video?.readyState, ')');
         return false;
     }
     
-    console.log('[POPUP] Creating popup now...');
+    if (DEBUG) console.log('[POPUP] Creating popup now...');
     try {
         initButtonInPlayer(); // This creates the popup
         playerPopup = document.getElementsByClassName('posedream-video-popup');
@@ -1081,13 +1088,13 @@ function ensurePopupExists() {
 }
 
 document.addEventListener('displayPoseDreamPopup', function (e) {
-    console.log('displayPoseDreamPopup event triggered');
+    if (DEBUG) console.log('displayPoseDreamPopup event triggered');
     
     // ROBUST INITIALIZATION: Ensure everything is ready
     const systemReady = canvas && canvasGL && ctx && webGLtx && mainVideo;
     const popupExists = !!document.querySelector('.posedream-video-popup');
     
-    console.log('[BUTTON CLICK] System check:', {
+    if (DEBUG) console.log('[BUTTON CLICK] System check:', {
         canvas: !!canvas,
         canvasGL: !!canvasGL,
         ctx: !!ctx,
@@ -1099,27 +1106,27 @@ document.addEventListener('displayPoseDreamPopup', function (e) {
     
     // If system not ready OR popup doesn't exist, initialize everything
     if (!systemReady || !popupExists) {
-        console.log('[BUTTON CLICK] Initializing system...');
+        if (DEBUG) console.log('[BUTTON CLICK] Initializing system...');
         
         // Ensure we have video and it's ready
         if (mainVideo && mainVideo.readyState >= 2) {
-            console.log('[BUTTON CLICK] Video ready, creating canvas and popup...');
+            if (DEBUG) console.log('[BUTTON CLICK] Video ready, creating canvas and popup...');
             
             // Create canvas if missing
             if (!canvas || !canvasGL) {
-                console.log('[BUTTON CLICK] Creating canvas...');
+                if (DEBUG) console.log('[BUTTON CLICK] Creating canvas...');
                 handleVideoPlaying();
             }
             
             // Create popup if missing
             if (!popupExists) {
-                console.log('[BUTTON CLICK] Creating popup...');
+                if (DEBUG) console.log('[BUTTON CLICK] Creating popup...');
                 handleVideoLoaded();
             }
             
             // Wait for everything to be created, then toggle popup
             setTimeout(() => {
-                console.log('[BUTTON CLICK] Initialization complete, toggling popup');
+                if (DEBUG) console.log('[BUTTON CLICK] Initialization complete, toggling popup');
                 const popup = document.querySelector('.posedream-video-popup');
                 if (popup) {
                     togglePopup();
@@ -1135,7 +1142,7 @@ document.addEventListener('displayPoseDreamPopup', function (e) {
     }
     
     // System ready and popup exists - just toggle it
-    console.log('[BUTTON CLICK] System ready, toggling popup');
+    if (DEBUG) console.log('[BUTTON CLICK] System ready, toggling popup');
     togglePopup();
     return;
     
@@ -1143,11 +1150,11 @@ document.addEventListener('displayPoseDreamPopup', function (e) {
     let popupReady = ensurePopupExists();
     
     if (!popupReady) {
-        console.log('[POPUP] Popup not ready, retrying in 500ms...');
+        if (DEBUG) console.log('[POPUP] Popup not ready, retrying in 500ms...');
         setTimeout(() => {
             popupReady = ensurePopupExists();
             if (!popupReady) {
-                console.log('[POPUP] Second attempt, retrying in 1000ms...');
+                if (DEBUG) console.log('[POPUP] Second attempt, retrying in 1000ms...');
                 setTimeout(() => {
                     popupReady = ensurePopupExists();
                     if (!popupReady) {
@@ -1170,10 +1177,10 @@ function togglePopup() {
     var playerPopup = document.getElementsByClassName('posedream-video-popup');
     if (playerPopup && playerPopup.length > 0) {
         if (showPlayerPopup) {
-            console.log('Hiding popup');
+            if (DEBUG) console.log('Hiding popup');
             playerPopup[0].style.display = "none";
         } else {
-            console.log('Showing popup');
+            if (DEBUG) console.log('Showing popup');
             playerPopup[0].style.display = "block";
         }
         showPlayerPopup = !showPlayerPopup;
@@ -1223,7 +1230,7 @@ function startRandomMode() {
         setNewAnimation(allAnimationIDs[rndNum]);
     }, 1000*randomSwitchSec);
     
-    console.log('Random mode started with interval:', randomSwitchSec);
+    if (DEBUG) console.log('Random mode started with interval:', randomSwitchSec);
 }
 
 /**
@@ -1233,7 +1240,7 @@ function stopRandomMode() {
     clearRandomSwitchInterval();
     isRandomModeActive = false;
     saveRandomSettings(randomSwitchSec, false);
-    console.log('Random mode stopped');
+    if (DEBUG) console.log('Random mode stopped');
 }
 
 /**
@@ -1247,7 +1254,7 @@ document.addEventListener('runRandomAnimation', function (e) {
  * Handler for loadeddata event
  */
 function handleVideoLoaded(event) {
-    console.log('Video loadeddata event triggered');
+    if (DEBUG) console.log('Video loadeddata event triggered');
     isVideoPlay = true;
 
     // Wait a bit for YouTube's player to fully initialize
@@ -1281,10 +1288,10 @@ function addLoadedDataEvent() {
     
     // If video is already loaded, trigger the handler immediately
     if (mainVideo.readyState >= 2) {
-        console.log('[INIT] Video already loaded (readyState: ' + mainVideo.readyState + '), triggering handler immediately');
+        if (DEBUG) console.log('[INIT] Video already loaded (readyState: ' + mainVideo.readyState + '), triggering handler immediately');
         // Use longer delay to ensure YouTube player is fully ready
         setTimeout(() => {
-            console.log('[INIT] Executing delayed handleVideoLoaded');
+            if (DEBUG) console.log('[INIT] Executing delayed handleVideoLoaded');
             handleVideoLoaded();
         }, 1000);
     }
@@ -1394,9 +1401,9 @@ function createCanvasWebGL() {
               canvasGL.getContext("webgl2");
     
     if (!webGLtx) {
-        console.warn('WebGL not available, particle animations may not work');
+        if (DEBUG) console.warn('WebGL not available, particle animations may not work');
     } else {
-        console.log('WebGL context created successfully');
+        if (DEBUG) console.log('WebGL context created successfully');
     }
 }
 
@@ -1404,7 +1411,7 @@ function createCanvasWebGL() {
  * Handler for onplaying event
  */
 function handleVideoPlaying(event) {
-    console.log('Video onplaying event triggered');
+    if (DEBUG) console.log('Video onplaying event triggered');
     
     if (document.getElementById("canvasdummy") === null) {
         createCanvas();
@@ -1431,27 +1438,27 @@ function handleVideoPlaying(event) {
     // Game mode is now reset on video change and must be manually reactivated
     
     if(anim === null){
-        console.log('Creating new Anim object');
-        console.log('Canvas ready:', !!canvas, 'CanvasGL ready:', !!canvasGL, 'ctx ready:', !!ctx, 'webGLtx ready:', !!webGLtx);
+        if (DEBUG) console.log('Creating new Anim object');
+        if (DEBUG) console.log('Canvas ready:', !!canvas, 'CanvasGL ready:', !!canvasGL, 'ctx ready:', !!ctx, 'webGLtx ready:', !!webGLtx);
         anim = new Anim(mainVideo,canvas, canvasGL, ctx, webGLtx);
         
         // Apply the current animation after anim object is created
         if(currentAnimation && currentAnimation !== 'undefined') {
-            console.log('Applying current animation to new anim object:', currentAnimation);
+            if (DEBUG) console.log('Applying current animation to new anim object:', currentAnimation);
             anim.setNewAnimation(currentAnimation);
         } else {
-            console.log('No current animation set, using default: skeletonGlow');
+            if (DEBUG) console.log('No current animation set, using default: skeletonGlow');
             currentAnimation = 'skeletonGlow';
             anim.setNewAnimation(currentAnimation);
         }
     }else{
-        console.log('Updating existing Anim object canvas');
+        if (DEBUG) console.log('Updating existing Anim object canvas');
         anim.updateCanvas(mainVideo,canvas, canvasGL, ctx, webGLtx);
     }
     
     // Initialize FilterManager if not already created
     if(filterManager === null) {
-        console.log('Creating new FilterManager object');
+        if (DEBUG) console.log('Creating new FilterManager object');
         filterManager = new FilterManager(mainVideo, canvas, ctx);
         // Load saved filter from storage
         filterManager.loadSavedFilter();
@@ -1460,7 +1467,7 @@ function handleVideoPlaying(event) {
     // Start detection loop now that canvas is ready
     if(isRequestAnimationFrame==false){
         isRequestAnimationFrame=true;
-        console.log('Starting detection loop from handleVideoPlaying');
+        if (DEBUG) console.log('Starting detection loop from handleVideoPlaying');
         startDetection();
     }
 }
@@ -1482,10 +1489,10 @@ function addOnPlayingEvent(){
     
     // If video is already playing, trigger the handler immediately
     if (!mainVideo.paused && mainVideo.readyState >= 2) {
-        console.log('[INIT] Video already playing (paused: ' + mainVideo.paused + ', readyState: ' + mainVideo.readyState + '), triggering handler immediately');
+        if (DEBUG) console.log('[INIT] Video already playing (paused: ' + mainVideo.paused + ', readyState: ' + mainVideo.readyState + '), triggering handler immediately');
         // Use longer delay to ensure YouTube player is fully ready
         setTimeout(() => {
-            console.log('[INIT] Executing delayed handleVideoPlaying');
+            if (DEBUG) console.log('[INIT] Executing delayed handleVideoPlaying');
             handleVideoPlaying();
         }, 1000);
     }
@@ -1542,7 +1549,7 @@ function initButtonInPlayer() {
                     for (let i = 0; i < animControlsButton.length; i++) {
                         if(animControlsButton[i] !== undefined){
                             animControlsButton[i].insertBefore(button, animControlsButton[i].childNodes[0]);
-                            console.log('Halloween button added to player controls');
+                            if (DEBUG) console.log('Halloween button added to player controls');
                         }
                     }
                 }
@@ -1574,20 +1581,20 @@ function readIsAnimDisabled(){
 
 function saveCanvasHiddenState(value){
     chrome.storage.sync.set({isCanvasHidden: value}, function() {
-        console.log('Canvas hidden state saved:', value);
+        if (DEBUG) console.log('Canvas hidden state saved:', value);
     });
 }
 
 function readCanvasHiddenState(){
     chrome.storage.sync.get(['isCanvasHidden'], function (result) {
         isCanvasHidden = result.isCanvasHidden || false;
-        console.log('Canvas hidden state loaded:', isCanvasHidden);
+        if (DEBUG) console.log('Canvas hidden state loaded:', isCanvasHidden);
         
         // Apply state if canvas exists
         if (isCanvasHidden && canvas && canvasGL) {
             canvas.style.display = 'none';
             canvasGL.style.display = 'none';
-            console.log('Applied hidden state to canvas elements');
+            if (DEBUG) console.log('Applied hidden state to canvas elements');
         }
     });
 }
@@ -1602,15 +1609,15 @@ function readCurrentAnimationName(){
         let currentAnim = result.currentAnimationName;
         if(currentAnim === undefined || currentAnim === 'undefined' || currentAnim === null){
             currentAnimation = "skeletonGlow"; // Halloween Edition default
-            console.log('No saved animation found, using default: skeletonGlow');
+            if (DEBUG) console.log('No saved animation found, using default: skeletonGlow');
         }else {
             currentAnimation = currentAnim;
-            console.log('Loaded saved animation:', currentAnimation);
+            if (DEBUG) console.log('Loaded saved animation:', currentAnimation);
         }
         
         // If anim object exists, apply the loaded animation
         if(anim !== null) {
-            console.log('Applying loaded animation to anim object:', currentAnimation);
+            if (DEBUG) console.log('Applying loaded animation to anim object:', currentAnimation);
             anim.setNewAnimation(currentAnimation);
         }
     });
@@ -1621,7 +1628,7 @@ function saveRandomSettings(interval, isActive){
         randomSwitchSec: interval,
         isRandomModeActive: isActive
     }, function() {
-        console.log('Random settings saved:', interval, 'sec, active:', isActive);
+        if (DEBUG) console.log('Random settings saved:', interval, 'sec, active:', isActive);
     });
 }
 
@@ -1629,7 +1636,7 @@ function readRandomSettings(){
     chrome.storage.sync.get(['randomSwitchSec', 'isRandomModeActive'], function (result) {
         if(result.randomSwitchSec !== undefined){
             randomSwitchSec = result.randomSwitchSec;
-            console.log('Loaded random interval:', randomSwitchSec);
+            if (DEBUG) console.log('Loaded random interval:', randomSwitchSec);
             
             // Update UI if button exists
             const randomButton = document.getElementById("randomButton");
@@ -1640,7 +1647,7 @@ function readRandomSettings(){
         
         if(result.isRandomModeActive === true){
             isRandomModeActive = true;
-            console.log('Random mode was active, restarting...');
+            if (DEBUG) console.log('Random mode was active, restarting...');
             // Restart random mode
             startRandomMode();
         }
@@ -1654,17 +1661,17 @@ function readGameModeState(){
     chrome.storage.sync.get(['gameModeActive'], function (result) {
         if(result.gameModeActive === true){
             isGameModeActive = true;
-            console.log('[GAME MODE] Game mode was active, restoring...');
-            console.log('[GAME MODE] Canvas ready:', !!canvas, 'Ctx ready:', !!ctx);
+            if (DEBUG) console.log('[GAME MODE] Game mode was active, restoring...');
+            if (DEBUG) console.log('[GAME MODE] Canvas ready:', !!canvas, 'Ctx ready:', !!ctx);
             
             // Initialize and activate if canvas is ready
             if (canvas && ctx) {
                 if (!gameMode) {
-                    console.log('[GAME MODE] Creating GameMode instance from saved state');
+                    if (DEBUG) console.log('[GAME MODE] Creating GameMode instance from saved state');
                     gameMode = new GameMode(canvas, ctx);
                 }
                 if (gameMode) {
-                    console.log('[GAME MODE] Activating game mode from saved state');
+                    if (DEBUG) console.log('[GAME MODE] Activating game mode from saved state');
                     gameMode.activate();
                     stopRandomMode();
                     isAnimDisabled = true;
@@ -1725,7 +1732,7 @@ class ParticleManager {
         }
         
         document.body.appendChild(overlay);
-        console.log('Particle overlay created with', this.PARTICLE_COUNT, 'particles');
+        if (DEBUG) console.log('Particle overlay created with', this.PARTICLE_COUNT, 'particles');
     }
     
     /**
@@ -1735,7 +1742,7 @@ class ParticleManager {
         const existing = document.getElementById(this.OVERLAY_ID);
         if (existing) {
             existing.remove();
-            console.log('Particle overlay removed');
+            if (DEBUG) console.log('Particle overlay removed');
         }
     }
     
@@ -1785,7 +1792,7 @@ class ThemeStateManager {
             this.state.particlesEnabled = result.particlesEnabled || false;
             this.state.colorTheme = result.colorTheme || 'halloween';
             
-            console.log('Theme settings loaded:', this.state);
+            if (DEBUG) console.log('Theme settings loaded:', this.state);
             
             // Apply loaded settings
             if (this.state.enabled) {
@@ -1795,7 +1802,7 @@ class ThemeStateManager {
                 ParticleManager.createOverlay();
             }
         } catch (error) {
-            console.warn('Failed to load theme settings:', error);
+            if (DEBUG) console.warn('Failed to load theme settings:', error);
             // Continue with default state
         }
     }
@@ -1808,7 +1815,7 @@ class ThemeStateManager {
         const themeClass = this.state.colorTheme === 'halloween' ? 'halloween-theme' : `theme-${this.state.colorTheme}`;
         document.body.classList.add(themeClass);
         document.body.classList.add(`theme-intensity-${this.state.intensity}`);
-        console.log('Theme applied:', themeClass, 'with intensity:', this.state.intensity);
+        if (DEBUG) console.log('Theme applied:', themeClass, 'with intensity:', this.state.intensity);
     }
     
     /**
@@ -1825,7 +1832,7 @@ class ThemeStateManager {
         document.body.classList.remove('theme-intensity-low');
         document.body.classList.remove('theme-intensity-medium');
         document.body.classList.remove('theme-intensity-high');
-        console.log('Theme removed');
+        if (DEBUG) console.log('Theme removed');
     }
     
     /**
@@ -1854,7 +1861,7 @@ class ThemeStateManager {
      */
     setIntensity(level) {
         if (!['low', 'medium', 'high'].includes(level)) {
-            console.warn('Invalid intensity level:', level);
+            if (DEBUG) console.warn('Invalid intensity level:', level);
             return;
         }
         
@@ -1869,7 +1876,7 @@ class ThemeStateManager {
             document.body.classList.add(`theme-intensity-${level}`);
         }
         
-        console.log('Theme intensity set to:', level);
+        if (DEBUG) console.log('Theme intensity set to:', level);
         this.saveState();
     }
     
@@ -1895,11 +1902,11 @@ class ThemeStateManager {
     setColorTheme(themeName) {
         const validThemes = ['halloween', 'cyberpunk', 'matrix', 'synthwave', 'deepspace', 'toxic'];
         if (!validThemes.includes(themeName)) {
-            console.warn('Invalid color theme:', themeName);
+            if (DEBUG) console.warn('Invalid color theme:', themeName);
             return;
         }
         
-        console.log('setColorTheme called:', themeName, 'enabled:', this.state.enabled);
+        if (DEBUG) console.log('setColorTheme called:', themeName, 'enabled:', this.state.enabled);
         
         // Remove old theme class
         document.body.classList.remove('halloween-theme');
@@ -1915,16 +1922,16 @@ class ThemeStateManager {
         // If theme is enabled, apply the new color theme immediately
         if (this.state.enabled) {
             const themeClass = themeName === 'halloween' ? 'halloween-theme' : `theme-${themeName}`;
-            console.log('Adding theme class:', themeClass);
+            if (DEBUG) console.log('Adding theme class:', themeClass);
             document.body.classList.add(themeClass);
             // Re-apply intensity
             document.body.classList.add(`theme-intensity-${this.state.intensity}`);
-            console.log('Body classes after add:', document.body.className);
+            if (DEBUG) console.log('Body classes after add:', document.body.className);
         } else {
-            console.log('Theme not enabled, not applying class');
+            if (DEBUG) console.log('Theme not enabled, not applying class');
         }
         
-        console.log('Color theme set to:', themeName);
+        if (DEBUG) console.log('Color theme set to:', themeName);
         this.saveState();
     }
     
@@ -1940,9 +1947,9 @@ class ThemeStateManager {
                 particlesEnabled: this.state.particlesEnabled,
                 colorTheme: this.state.colorTheme
             });
-            console.log('Theme state saved:', this.state);
+            if (DEBUG) console.log('Theme state saved:', this.state);
         } catch (error) {
-            console.warn('Failed to save theme state:', error);
+            if (DEBUG) console.warn('Failed to save theme state:', error);
             // Continue - theme still works for current session
         }
     }
@@ -2090,13 +2097,13 @@ async function initThemeSystem() {
     if (themeStateManager === null) {
         themeStateManager = new ThemeStateManager();
         await themeStateManager.loadSettings();
-        console.log('ThemeStateManager initialized');
+        if (DEBUG) console.log('ThemeStateManager initialized');
     }
     
     // Create UI control manager
     if (uiControlManager === null) {
         uiControlManager = new UIControlManager(themeStateManager);
-        console.log('UIControlManager initialized');
+        if (DEBUG) console.log('UIControlManager initialized');
     }
 }
 

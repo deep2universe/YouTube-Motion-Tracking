@@ -4,6 +4,13 @@ import * as poseDetection from '@tensorflow-models/pose-detection';
 import {AnimEnum} from "./animEnum";
 
 /**
+ * Debug flag for anim.js
+ * Set to true to enable console logging for this file
+ * Set to false for production builds (default)
+ */
+const DEBUG = false;
+
+/**
  * Halloween Edition - Animation Engine
  * 
  * Handles all Halloween-themed animations including:
@@ -61,7 +68,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
      * @param animationId new animation ID
      */
     this.setNewAnimation = function (animationId) {
-        console.log('Halloween Edition - setNewAnimation called with:', animationId);
+        if (DEBUG) console.log('Halloween Edition - setNewAnimation called with:', animationId);
         this.clearWebGL();
 
         // ========== SKELETON ANIMATIONS (Canvas) ==========
@@ -2232,7 +2239,7 @@ function Anim(mainVideo, canvas, canvasGL, ctx, webGLtx) {
             this.rendererGL.blendFunc("SRC_ALPHA", "ONE");
             this.proton.addRenderer(this.rendererGL);
         } catch (e) {
-            console.log('WebGL not available, using Canvas renderer');
+            if (DEBUG) console.log('WebGL not available, using Canvas renderer');
             const renderer = new Proton.CanvasRenderer(this.canvas);
             this.proton.addRenderer(renderer);
         }

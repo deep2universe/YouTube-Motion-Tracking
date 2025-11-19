@@ -14,6 +14,13 @@ import {
 } from './motionDetectors.js';
 
 /**
+ * Debug flag for motionDetector.js
+ * Set to true to enable console logging for this file
+ * Set to false for production builds (default)
+ */
+const DEBUG = false;
+
+/**
  * CooldownManager
  * Prevents rapid-fire detections by enforcing cooldown periods
  */
@@ -61,7 +68,7 @@ class MotionDetector {
         this.detectors.squat = new SquatDetector(config);
         this.detectors.jumpingJack = new JumpingJackDetector(config);
         
-        console.log('[MOTION DETECTOR] Initialized with pattern-based detection');
+        if (DEBUG) console.log('[MOTION DETECTOR] Initialized with pattern-based detection');
     }
     
     // ========== HELPER METHODS ==========
@@ -101,10 +108,10 @@ class MotionDetector {
     detect(motionType, keypoints) {
         // Log first detection attempt
         if (!this._detectLogged) {
-            console.log('[MOTION DETECTOR] Pattern-based detection initialized');
-            console.log('[MOTION DETECTOR] Motion type:', motionType);
-            console.log('[MOTION DETECTOR] Keypoints count:', keypoints.length);
-            console.log('[MOTION DETECTOR] Analyzing every frame for patterns');
+            if (DEBUG) console.log('[MOTION DETECTOR] Pattern-based detection initialized');
+            if (DEBUG) console.log('[MOTION DETECTOR] Motion type:', motionType);
+            if (DEBUG) console.log('[MOTION DETECTOR] Keypoints count:', keypoints.length);
+            if (DEBUG) console.log('[MOTION DETECTOR] Analyzing every frame for patterns');
             this._detectLogged = true;
         }
         
@@ -113,7 +120,7 @@ class MotionDetector {
         if (!isValid) {
             if (!this._validationWarnCount) this._validationWarnCount = 0;
             if (this._validationWarnCount < 3) {
-                console.warn('[MOTION DETECTOR] Keypoint validation failed for:', motionType);
+                if (DEBUG) console.warn('[MOTION DETECTOR] Keypoint validation failed for:', motionType);
                 this._validationWarnCount++;
             }
             return false;
@@ -124,7 +131,7 @@ class MotionDetector {
         const detector = this.detectors[motionType];
         
         if (!detector) {
-            console.warn('[MOTION DETECTOR] No detector found for:', motionType);
+            if (DEBUG) console.warn('[MOTION DETECTOR] No detector found for:', motionType);
             return false;
         }
         
@@ -137,7 +144,7 @@ class MotionDetector {
                 return false; // Still in cooldown
             }
             
-            console.log('[MOTION DETECTOR] ✓ Pattern DETECTED:', motionType);
+            if (DEBUG) console.log('[MOTION DETECTOR] ✓ Pattern DETECTED:', motionType);
             return true;
         }
         
@@ -154,7 +161,7 @@ class MotionDetector {
         Object.values(this.cooldownManagers).forEach(manager => {
             manager.reset();
         });
-        console.log('[MOTION DETECTOR] All detectors reset');
+        if (DEBUG) console.log('[MOTION DETECTOR] All detectors reset');
     }
 }
 

@@ -1,3 +1,10 @@
+/**
+ * Debug flag for background.js
+ * Set to true to enable console logging for this file
+ * Set to false for production builds (default)
+ */
+const DEBUG = false;
+
 // current url
 var url = "---dummy---";
 
@@ -11,7 +18,7 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(function (details) {
         chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
             // Check if tabs exist and tab is valid
             if (!tabs || tabs.length === 0 || !tabs[0]) {
-                console.log('YouTube Motion Tracking: No active tab found');
+                if (DEBUG) console.log('YouTube Motion Tracking: No active tab found');
                 return;
             }
             
@@ -21,12 +28,12 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(function (details) {
                     // Check for runtime errors (e.g., content script not ready)
                     if (chrome.runtime.lastError) {
                         // Silently handle - content script might not be ready yet
-                        console.log('YouTube Motion Tracking: Content script not ready:', chrome.runtime.lastError.message);
+                        if (DEBUG) console.log('YouTube Motion Tracking: Content script not ready:', chrome.runtime.lastError.message);
                         return;
                     }
                 });
             } catch (error) {
-                console.log('YouTube Motion Tracking: Error sending message:', error);
+                if (DEBUG) console.log('YouTube Motion Tracking: Error sending message:', error);
             }
         });
     }

@@ -9,6 +9,13 @@ import { MotionDetector } from './motionDetector.js';
 import { GhostCharacter } from './ghostCharacter.js';
 import { JumpMarkers } from './jumpMarkers.js';
 
+/**
+ * Debug flag for gameMode.js
+ * Set to true to enable console logging for this file
+ * Set to false for production builds (default)
+ */
+const DEBUG = false;
+
 class GameMode {
     constructor(canvas, ctx, config = GAME_CONFIG) {
         this.canvas = canvas;
@@ -60,7 +67,7 @@ class GameMode {
      * @param {string} motionType - ID of selected motion
      */
     startGame(motionType) {
-        console.log('[GAME MODE] Starting game with motion:', motionType);
+        if (DEBUG) console.log('[GAME MODE] Starting game with motion:', motionType);
         this.state = 'PLAYING';
         this.selectedMotion = motionType;
         this.score = 0;
@@ -71,7 +78,7 @@ class GameMode {
         this.showHUD();
         this.updateHUD();
         
-        console.log('[GAME MODE] Game started. State:', this.state, 'Motion:', this.selectedMotion);
+        if (DEBUG) console.log('[GAME MODE] Game started. State:', this.state, 'Motion:', this.selectedMotion);
     }
     
     // ========== GAME LOGIC ==========
@@ -111,14 +118,14 @@ class GameMode {
     update(keypoints) {
         if (this.state !== 'PLAYING' || !this.selectedMotion) {
             if (this.state !== 'PLAYING') {
-                console.log('[GAME MODE] Not updating - state is:', this.state);
+                if (DEBUG) console.log('[GAME MODE] Not updating - state is:', this.state);
             }
             return;
         }
         
         // Validate keypoints exist
         if (!keypoints || keypoints.length === 0) {
-            console.warn('[GAME MODE] No keypoints received');
+            if (DEBUG) console.warn('[GAME MODE] No keypoints received');
             return;
         }
         
@@ -127,9 +134,9 @@ class GameMode {
         
         // Log first time to confirm update is being called
         if (!this._updateLogged) {
-            console.log('[GAME MODE] Update called with', keypoints.length, 'keypoints');
-            console.log('[GAME MODE] First keypoint:', keypoints[0]);
-            console.log('[GAME MODE] Selected motion:', this.selectedMotion);
+            if (DEBUG) console.log('[GAME MODE] Update called with', keypoints.length, 'keypoints');
+            if (DEBUG) console.log('[GAME MODE] First keypoint:', keypoints[0]);
+            if (DEBUG) console.log('[GAME MODE] Selected motion:', this.selectedMotion);
             this._updateLogged = true;
         }
         
@@ -137,7 +144,7 @@ class GameMode {
             // Detect movement
             const detected = this.motionDetector.detect(this.selectedMotion, keypoints);
             if (detected) {
-                console.log('[GAME MODE] ✓ Movement detected!');
+                if (DEBUG) console.log('[GAME MODE] ✓ Movement detected!');
                 this.onMovementDetected();
             }
         } catch (error) {
@@ -153,8 +160,8 @@ class GameMode {
         
         // Log first render to confirm rendering is working
         if (!this._renderLogged) {
-            console.log('[GAME MODE] Rendering - Canvas:', this.canvas.width, 'x', this.canvas.height);
-            console.log('[GAME MODE] Ghost position:', this.ghost.x, this.ghost.y);
+            if (DEBUG) console.log('[GAME MODE] Rendering - Canvas:', this.canvas.width, 'x', this.canvas.height);
+            if (DEBUG) console.log('[GAME MODE] Ghost position:', this.ghost.x, this.ghost.y);
             this._renderLogged = true;
         }
         
@@ -488,7 +495,7 @@ class GameMode {
             }, 1500);
             
         } catch (error) {
-            console.warn('Failed to create jump particles:', error);
+            if (DEBUG) console.warn('Failed to create jump particles:', error);
         }
     }
     
@@ -507,11 +514,11 @@ class GameMode {
             
             chrome.storage.local.set({ gameState: state }, () => {
                 if (chrome.runtime.lastError) {
-                    console.warn('Failed to save game state:', chrome.runtime.lastError);
+                    if (DEBUG) console.warn('Failed to save game state:', chrome.runtime.lastError);
                 }
             });
         } catch (error) {
-            console.warn('Error saving game state:', error);
+            if (DEBUG) console.warn('Error saving game state:', error);
         }
     }
     
@@ -527,7 +534,7 @@ class GameMode {
                 }
             });
         } catch (error) {
-            console.warn('Error loading game state:', error);
+            if (DEBUG) console.warn('Error loading game state:', error);
         }
     }
 }
