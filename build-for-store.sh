@@ -29,7 +29,9 @@ echo ""
 # Clean old builds
 echo -e "${YELLOW}🧹 Cleaning old builds...${NC}"
 rm -rf dist
+rm -rf .parcel-cache
 rm -f youtube-motion-tracking-*.zip
+rm -f release/youtube-motion-tracking-*.zip
 echo -e "${GREEN}✓ Cleanup complete${NC}"
 echo ""
 
