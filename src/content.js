@@ -14,7 +14,7 @@ import {GameMode} from "./gameMode";
  * Set to true to enable console logging for this file
  * Set to false for production builds (default)
  */
-const DEBUG = false;
+const DEBUG = true;
 
 // pose detector from tensorflow
 var detector = null;
@@ -46,7 +46,7 @@ var ctx;        // canvas context 2d
 var webGLtx;    // canvas context webGL
 var canvas;     // canvas 2d
 var canvasGL;   // canvas webGL
-var videoCollection;    // collection of main videos from YouTube
+// videoCollection removed - we now use findCurrentVideoElement() instead
 var anim = null;   // anim.js object
 var filterManager = null;  // FilterManager object for horror video filters
 var isRequestAnimationFrame = false;   // only request animation frame once
@@ -80,6 +80,177 @@ var gameMode = null;                // GameMode instance
 var isGameModeActive = false;       // Track if game mode is active
 
 /**
+ * Find the current video element with robust fallback selectors
+ * Prioritizes the video that is actually playing or has the most progress
+ * @returns {HTMLVideoElement|null} Current video element or null
+ */
+function findCurrentVideoElement() {
+    if (DEBUG) console.log('[VIDEO SEARCH] Searching for current video element...');
+    
+    // Try multiple selectors in order of preference
+    const selectors = [
+        'video.html5-main-video',
+        'video.video-stream',
+        '.html5-video-player video',
+        '#movie_player video',
+        'video'
+    ];
+    
+    let foundVideos = [];
+    
+    for (const selector of selectors) {
+        const videos = document.querySelectorAll(selector);
+        if (videos.length > 0) {
+            foundVideos = Array.from(videos);
+            if (DEBUG) console.log(`[VIDEO SEARCH] Found ${videos.length} video(s) with selector: ${selector}`);
+            break;
+        }
+    }
+    
+    if (foundVideos.length === 0) {
+        if (DEBUG) console.warn('[VIDEO SEARCH] No video elements found!');
+        return null;
+    }
+    
+    // If only one video, return it
+    if (foundVideos.length === 1) {
+        const video = foundVideos[0];
+        if (DEBUG) {
+            console.log('[VIDEO SEARCH] Single video found:', {
+                readyState: video.readyState,
+                paused: video.paused,
+                currentTime: video.currentTime,
+                duration: video.duration,
+                videoWidth: video.videoWidth,
+                videoHeight: video.videoHeight
+            });
+        }
+        return video;
+    }
+    
+    // Multiple videos found - choose the best one
+    if (DEBUG) console.log('[VIDEO SEARCH] Multiple videos found, selecting best candidate...');
+    
+    // Score each video based on multiple criteria
+    let bestVideo = null;
+    let bestScore = -1;
+    
+    foundVideos.forEach((video, index) => {
+        let score = 0;
+        
+        // Criteria 1: Video is playing (highest priority)
+        if (!video.paused && video.currentTime > 0) {
+            score += 1000;
+            if (DEBUG) console.log(`[VIDEO SEARCH]   Video ${index}: +1000 (playing)`);
+        }
+        
+        // Criteria 2: Has valid dimensions (loaded)
+        if (video.videoWidth > 0 && video.videoHeight > 0) {
+            score += 100;
+            if (DEBUG) console.log(`[VIDEO SEARCH]   Video ${index}: +100 (has dimensions)`);
+        }
+        
+        // Criteria 3: ReadyState >= 2 (has data)
+        if (video.readyState >= 2) {
+            score += 50;
+            if (DEBUG) console.log(`[VIDEO SEARCH]   Video ${index}: +50 (readyState >= 2)`);
+        }
+        
+        // Criteria 4: Has duration (metadata loaded)
+        if (!isNaN(video.duration) && video.duration > 0) {
+            score += 25;
+            if (DEBUG) console.log(`[VIDEO SEARCH]   Video ${index}: +25 (has duration)`);
+        }
+        
+        // Criteria 5: Has current time (has played)
+        if (video.currentTime > 0) {
+            score += 10;
+            if (DEBUG) console.log(`[VIDEO SEARCH]   Video ${index}: +10 (has currentTime)`);
+        }
+        
+        // Criteria 6: Prefer later videos (YouTube pattern)
+        score += index;
+        
+        if (DEBUG) console.log(`[VIDEO SEARCH]   Video ${index} total score: ${score}`, {
+            readyState: video.readyState,
+            paused: video.paused,
+            currentTime: video.currentTime.toFixed(2),
+            duration: video.duration,
+            videoWidth: video.videoWidth,
+            videoHeight: video.videoHeight
+        });
+        
+        if (score > bestScore) {
+            bestScore = score;
+            bestVideo = video;
+        }
+    });
+    
+    if (DEBUG) console.log(`[VIDEO SEARCH] Selected video with score: ${bestScore}`);
+    
+    return bestVideo;
+}
+
+/**
+ * Check if video is actually playing (alternative to readyState check)
+ * @param {HTMLVideoElement} video - Video element to check
+ * @returns {boolean} True if video is playing
+ */
+function isVideoActuallyPlaying(video) {
+    if (!video) return false;
+    
+    // Video is playing if:
+    // 1. Not paused
+    // 2. Has current time > 0 (started playing)
+    // 3. Has duration (loaded metadata)
+    const isPlaying = !video.paused && video.currentTime > 0 && video.duration > 0;
+    
+    if (DEBUG && isPlaying) {
+        console.log('[VIDEO CHECK] Video is actually playing (alternative check passed)');
+    }
+    
+    return isPlaying;
+}
+
+/**
+ * Wait for video to be ready with retry mechanism
+ * @param {Function} callback - Function to call when video is ready
+ * @param {number} maxAttempts - Maximum number of retry attempts
+ * @param {number} currentAttempt - Current attempt number (internal)
+ */
+function waitForVideoReady(callback, maxAttempts = 10, currentAttempt = 1) {
+    if (DEBUG) console.log(`[VIDEO WAIT] Attempt ${currentAttempt}/${maxAttempts} - Waiting for video...`);
+    
+    // Refresh video element
+    mainVideo = findCurrentVideoElement();
+    
+    if (!mainVideo) {
+        if (currentAttempt < maxAttempts) {
+            const delay = Math.min(100 * Math.pow(1.5, currentAttempt), 2000); // Exponential backoff
+            if (DEBUG) console.log(`[VIDEO WAIT] Video not found, retrying in ${delay}ms...`);
+            setTimeout(() => waitForVideoReady(callback, maxAttempts, currentAttempt + 1), delay);
+        } else {
+            console.error('[VIDEO WAIT] Failed to find video after', maxAttempts, 'attempts');
+        }
+        return;
+    }
+    
+    // Check if video is ready (either readyState >= 2 OR actually playing)
+    const isReady = mainVideo.readyState >= 2 || isVideoActuallyPlaying(mainVideo);
+    
+    if (isReady) {
+        if (DEBUG) console.log('[VIDEO WAIT] Video is ready! Executing callback...');
+        callback();
+    } else if (currentAttempt < maxAttempts) {
+        const delay = Math.min(100 * Math.pow(1.5, currentAttempt), 2000); // Exponential backoff
+        if (DEBUG) console.log(`[VIDEO WAIT] Video not ready (readyState: ${mainVideo.readyState}), retrying in ${delay}ms...`);
+        setTimeout(() => waitForVideoReady(callback, maxAttempts, currentAttempt + 1), delay);
+    } else {
+        console.error('[VIDEO WAIT] Video not ready after', maxAttempts, 'attempts. ReadyState:', mainVideo?.readyState);
+    }
+}
+
+/**
  * Cleanup function to remove old canvas elements and reset state
  */
 function cleanup() {
@@ -108,11 +279,11 @@ function cleanup() {
         if (DEBUG) console.log('Removed old WebGL canvas');
     }
     
-    // Remove old popup
-    const oldPopup = document.querySelector('.posedream-video-popup');
-    if (oldPopup) {
-        oldPopup.remove();
-        if (DEBUG) console.log('Removed old popup');
+    // Remove ALL old popups (there might be multiple from different players)
+    const oldPopups = document.querySelectorAll('.posedream-video-popup');
+    if (oldPopups.length > 0) {
+        if (DEBUG) console.log(`Removing ${oldPopups.length} old popup(s)`);
+        oldPopups.forEach(popup => popup.remove());
     }
     
     // Reset canvas variables
@@ -164,8 +335,10 @@ function cleanup() {
     
     // Reset flags
     isVideoPlay = false;
-    showPlayerPopup = false;
+    showPlayerPopup = false; // Reset to false so popup will be created fresh
     isRequestAnimationFrame = false;
+    
+    if (DEBUG) console.log('Cleanup complete - all elements reset');
 }
 
 /**
@@ -269,30 +442,32 @@ function init() {
     isAnimDisabled = false;
     saveIsAnimDisabled(false);
     
-    // get video element, check if not null and set it to mainVideo
-    // because YouTube loads videos dynamically I get a collection
-    // the current played video is the last one
-    // Try multiple selectors for better compatibility with YouTube updates
-   do {
-       videoCollection = document.getElementsByClassName("html5-main-video");
-       if (!videoCollection || videoCollection.length === 0) {
-           // Fallback: try to get video element directly
-           const videoElement = document.querySelector('video.video-stream');
-           if (videoElement) {
-               videoCollection = [videoElement];
-           }
-       }
-       if (!videoCollection || videoCollection.length === 0) {
-           // Second fallback: any video element in the page
-           const anyVideo = document.querySelector('video');
-           if (anyVideo) {
-               videoCollection = [anyVideo];
-           }
-       }
-       mainVideo = videoCollection ? videoCollection[videoCollection.length - 1] : null;
-   }while (mainVideo === null || mainVideo === undefined);
+    // Use the new robust video finding function
+    mainVideo = findCurrentVideoElement();
+    
+    // If video not found, wait for it
+    if (!mainVideo) {
+        if (DEBUG) console.log('[INIT] Video not found immediately, waiting...');
+        waitForVideoReady(() => {
+            if (DEBUG) console.log('[INIT] Video found after wait, continuing initialization...');
+            // Continue with rest of init
+            readIsAnimDisabled();
+            readCurrentAnimationName();
+            readRandomSettings();
+            readCanvasHiddenState();
+            initThemeSystem();
+            initButtonInPlayer();
+            addOnPlayingEvent();
+            addLoadedDataEvent();
+        });
+        return; // Exit early, will continue after video is found
+    }
 
-    if (DEBUG) console.log('Main video found:', !!mainVideo);
+    if (DEBUG) console.log('[INIT] Main video found:', {
+        readyState: mainVideo.readyState,
+        paused: mainVideo.paused,
+        currentTime: mainVideo.currentTime
+    });
 
     readIsAnimDisabled();
     readCurrentAnimationName();
@@ -330,6 +505,23 @@ function init() {
                 handleVideoPlaying();
                 handleVideoLoaded();
             }, 100);
+        }
+        // ALWAYS create popup even if video not ready yet
+        // This ensures popup exists for button clicks
+        else {
+            if (DEBUG) console.log('[INIT] Video not ready yet, but creating popup proactively...');
+            setTimeout(() => {
+                // Only create popup, canvas will be created when video plays
+                initVideoPlayerPopup();
+                updateAnimDisabledDiv();
+                updateCanvasPauseButton();
+                updateGameModeButton();
+                updateSelectedButton(currentAnimation);
+                
+                if (uiControlManager) {
+                    uiControlManager.updateAll();
+                }
+            }, 500);
         }
     }
 
@@ -591,7 +783,7 @@ function initVideoPlayerPopup(){
     } else {
         console.error('Could not find player container to append popup!');
         if (DEBUG) console.log('Tried selectors: .html5-video-player, #movie_player, #player');
-        if (DEBUG) console.log('videoCollection length:', videoCollection ? videoCollection.length : 'null');
+        if (DEBUG) console.log('mainVideo exists:', !!mainVideo);
     }
 }
 
@@ -724,20 +916,15 @@ document.addEventListener('toggleCanvasPause', function (e) {
 function forceInitialization() {
     if (DEBUG) console.log('[INIT] Force initialization triggered');
     
-    // 1. Ensure video is found
+    // 1. Ensure video is found using robust method
     if (!mainVideo) {
         if (DEBUG) console.log('[INIT] Finding video element...');
-        videoCollection = document.getElementsByClassName("html5-main-video");
-        if (!videoCollection || videoCollection.length === 0) {
-            const videoElement = document.querySelector('video.video-stream');
-            if (videoElement) videoCollection = [videoElement];
-        }
-        if (!videoCollection || videoCollection.length === 0) {
-            const anyVideo = document.querySelector('video');
-            if (anyVideo) videoCollection = [anyVideo];
-        }
-        mainVideo = videoCollection ? videoCollection[videoCollection.length - 1] : null;
+        mainVideo = findCurrentVideoElement();
         if (DEBUG) console.log('[INIT] Video found:', !!mainVideo);
+    } else {
+        // Refresh video element to ensure it's current
+        if (DEBUG) console.log('[INIT] Refreshing video element...');
+        mainVideo = findCurrentVideoElement();
     }
     
     // 2. Create canvas if not exists
@@ -1088,104 +1275,41 @@ function ensurePopupExists() {
 }
 
 document.addEventListener('displayPoseDreamPopup', function (e) {
-    if (DEBUG) console.log('displayPoseDreamPopup event triggered');
+    if (DEBUG) console.log('[BUTTON CLICK] Button clicked');
     
-    // ROBUST INITIALIZATION: Ensure everything is ready
-    const systemReady = canvas && canvasGL && ctx && webGLtx && mainVideo;
-    const popupExists = !!document.querySelector('.posedream-video-popup');
+    // Simple approach: Find or create popup, then toggle
+    let popup = document.querySelector('.posedream-video-popup');
     
-    if (DEBUG) console.log('[BUTTON CLICK] System check:', {
-        canvas: !!canvas,
-        canvasGL: !!canvasGL,
-        ctx: !!ctx,
-        webGLtx: !!webGLtx,
-        mainVideo: !!mainVideo,
-        popup: popupExists,
-        videoReadyState: mainVideo?.readyState
-    });
-    
-    // If system not ready OR popup doesn't exist, initialize everything
-    if (!systemReady || !popupExists) {
-        if (DEBUG) console.log('[BUTTON CLICK] Initializing system...');
-        
-        // Ensure we have video and it's ready
-        if (mainVideo && mainVideo.readyState >= 2) {
-            if (DEBUG) console.log('[BUTTON CLICK] Video ready, creating canvas and popup...');
-            
-            // Create canvas if missing
-            if (!canvas || !canvasGL) {
-                if (DEBUG) console.log('[BUTTON CLICK] Creating canvas...');
-                handleVideoPlaying();
-            }
-            
-            // Create popup if missing
-            if (!popupExists) {
-                if (DEBUG) console.log('[BUTTON CLICK] Creating popup...');
-                handleVideoLoaded();
-            }
-            
-            // Wait for everything to be created, then toggle popup
-            setTimeout(() => {
-                if (DEBUG) console.log('[BUTTON CLICK] Initialization complete, toggling popup');
-                const popup = document.querySelector('.posedream-video-popup');
-                if (popup) {
-                    togglePopup();
-                } else {
-                    console.error('[BUTTON CLICK] Popup still not found after initialization');
-                }
-            }, 800);
-            return;
-        } else {
-            console.error('[BUTTON CLICK] Video not ready (readyState:', mainVideo?.readyState, ')');
-            return;
+    // If popup doesn't exist, create it
+    if (!popup) {
+        if (DEBUG) console.log('[BUTTON CLICK] Popup not found, creating...');
+        initVideoPlayerPopup();
+        updateAnimDisabledDiv();
+        updateCanvasPauseButton();
+        updateGameModeButton();
+        updateSelectedButton(currentAnimation);
+        if (uiControlManager) {
+            uiControlManager.updateAll();
         }
+        popup = document.querySelector('.posedream-video-popup');
     }
     
-    // System ready and popup exists - just toggle it
-    if (DEBUG) console.log('[BUTTON CLICK] System ready, toggling popup');
-    togglePopup();
-    return;
-    
-    // OLD RETRY LOGIC (kept as fallback, but should not be reached)
-    let popupReady = ensurePopupExists();
-    
-    if (!popupReady) {
-        if (DEBUG) console.log('[POPUP] Popup not ready, retrying in 500ms...');
-        setTimeout(() => {
-            popupReady = ensurePopupExists();
-            if (!popupReady) {
-                if (DEBUG) console.log('[POPUP] Second attempt, retrying in 1000ms...');
-                setTimeout(() => {
-                    popupReady = ensurePopupExists();
-                    if (!popupReady) {
-                        console.error('[POPUP] Failed to create popup after 3 attempts - video may not be loaded yet');
-                    } else {
-                        togglePopup();
-                    }
-                }, 1000);
-            } else {
-                togglePopup();
-            }
-        }, 500);
-        return;
-    }
-    
-    togglePopup();
-});
-
-function togglePopup() {
-    var playerPopup = document.getElementsByClassName('posedream-video-popup');
-    if (playerPopup && playerPopup.length > 0) {
+    // Toggle popup visibility
+    if (popup) {
         if (showPlayerPopup) {
-            if (DEBUG) console.log('Hiding popup');
-            playerPopup[0].style.display = "none";
+            popup.style.display = 'none';
+            showPlayerPopup = false;
+            if (DEBUG) console.log('[BUTTON CLICK] Popup hidden');
         } else {
-            if (DEBUG) console.log('Showing popup');
-            playerPopup[0].style.display = "block";
+            popup.style.display = 'block';
+            showPlayerPopup = true;
+            if (DEBUG) console.log('[BUTTON CLICK] Popup shown');
         }
-        showPlayerPopup = !showPlayerPopup;
+    } else {
+        console.error('[BUTTON CLICK] Failed to create popup');
     }
-}
+    
+});
 
 /**
  * Event to change the random interval from popup
@@ -1254,11 +1378,28 @@ document.addEventListener('runRandomAnimation', function (e) {
  * Handler for loadeddata event
  */
 function handleVideoLoaded(event) {
-    if (DEBUG) console.log('Video loadeddata event triggered');
+    if (DEBUG) console.log('[VIDEO EVENT] loadeddata event triggered');
+    
+    // Refresh video element
+    mainVideo = findCurrentVideoElement();
+    
+    if (!mainVideo) {
+        console.error('[VIDEO EVENT] No video element found in handleVideoLoaded!');
+        return;
+    }
+    
+    if (DEBUG) console.log('[VIDEO EVENT] Video loaded:', {
+        readyState: mainVideo.readyState,
+        duration: mainVideo.duration,
+        videoWidth: mainVideo.videoWidth,
+        videoHeight: mainVideo.videoHeight
+    });
+    
     isVideoPlay = true;
 
     // Wait a bit for YouTube's player to fully initialize
     setTimeout(() => {
+        if (DEBUG) console.log('[VIDEO EVENT] Creating popup and updating UI...');
         initVideoPlayerPopup();
         updateAnimDisabledDiv();
         updateCanvasPauseButton();
@@ -1269,6 +1410,8 @@ function handleVideoLoaded(event) {
         if (uiControlManager) {
             uiControlManager.updateAll();
         }
+        
+        if (DEBUG) console.log('[VIDEO EVENT] Popup and UI initialization complete');
     }, 500);
 
     // NOTE: startDetection() is called from handleVideoPlaying() after canvas is created
@@ -1304,7 +1447,19 @@ function addLoadedDataEvent() {
  * @type {ResizeObserver}
  */
 const resizeObserver = new ResizeObserver(entries => {
-    mainVideo = document.getElementsByClassName("html5-main-video")[videoCollection.length - 1];
+    // Refresh video element to ensure we have the current one
+    mainVideo = findCurrentVideoElement();
+    
+    if (!mainVideo) {
+        if (DEBUG) console.warn('[RESIZE] No video element found during resize');
+        return;
+    }
+    
+    if (!canvas || !canvasGL || !ctx || !webGLtx) {
+        if (DEBUG) console.warn('[RESIZE] Canvas elements not ready during resize');
+        return;
+    }
+    
     setCanvasStyle(canvas);
     canvas.width = entries[0].target.clientWidth;
     canvas.height = entries[0].target.clientHeight;
@@ -1341,58 +1496,90 @@ const resizeObserver = new ResizeObserver(entries => {
  * Create canvas and 2d canvas context
  */
 function createCanvas() {
+    if (DEBUG) console.log('[CANVAS] Creating 2D canvas...');
+    
     canvas = document.createElement('canvas'); // creates new canvas element
     canvas.id = 'canvasdummy'; // gives canvas id
-    if (mainVideo.length !== 0) {
-        canvas.height = mainVideo.clientHeight; //get original canvas height
-        canvas.width = mainVideo.clientWidth; // get original canvas width
+    
+    // Check if mainVideo exists and has dimensions
+    if (mainVideo && mainVideo.clientHeight && mainVideo.clientWidth) {
+        canvas.height = mainVideo.clientHeight;
+        canvas.width = mainVideo.clientWidth;
+        if (DEBUG) console.log('[CANVAS] Canvas size from video:', canvas.width, 'x', canvas.height);
     } else {
         canvas.height = 600;
         canvas.width = 600;
+        if (DEBUG) console.log('[CANVAS] Using default canvas size: 600x600');
     }
 
     // Find video container with fallback options
-    let videoContainerDIV = document.getElementsByClassName("html5-video-container")[videoCollection.length - 1];
+    let videoContainerDIV = document.querySelector('.html5-video-container');
+    
     if (!videoContainerDIV) {
-        // Fallback: try to find container by other selectors
-        videoContainerDIV = document.querySelector('.html5-video-container') ||
-                           document.querySelector('#player-container') ||
-                           document.querySelector('#movie_player') ||
-                           mainVideo.parentElement;
+        videoContainerDIV = document.querySelector('#player-container');
     }
+    if (!videoContainerDIV) {
+        videoContainerDIV = document.querySelector('#movie_player');
+    }
+    if (!videoContainerDIV && mainVideo) {
+        videoContainerDIV = mainVideo.parentElement;
+    }
+    
     if (videoContainerDIV) {
-        videoContainerDIV.appendChild(canvas); // adds the canvas to the body element
+        videoContainerDIV.appendChild(canvas);
+        if (DEBUG) console.log('[CANVAS] Canvas appended to container');
+    } else {
+        console.error('[CANVAS] Could not find video container to append canvas!');
+        return;
     }
+    
     setCanvasStyle(canvas);
     ctx = canvas.getContext('2d', { willReadFrequently: true });
+    
+    if (DEBUG) console.log('[CANVAS] 2D canvas created successfully');
 }
 
 /**
  * Create canvas and webGL canvas context
  */
 function createCanvasWebGL() {
+    if (DEBUG) console.log('[CANVAS] Creating WebGL canvas...');
+    
     canvasGL = document.createElement('canvas'); // creates new canvas element
     canvasGL.id = 'canvasdummyGL'; // gives canvas id
-    if (mainVideo.length !== 0) {
-        canvasGL.height = mainVideo.clientHeight; //get original canvas height
-        canvasGL.width = mainVideo.clientWidth; // get original canvas width
+    
+    // Check if mainVideo exists and has dimensions
+    if (mainVideo && mainVideo.clientHeight && mainVideo.clientWidth) {
+        canvasGL.height = mainVideo.clientHeight;
+        canvasGL.width = mainVideo.clientWidth;
+        if (DEBUG) console.log('[CANVAS] WebGL canvas size from video:', canvasGL.width, 'x', canvasGL.height);
     } else {
         canvasGL.height = 600;
         canvasGL.width = 600;
+        if (DEBUG) console.log('[CANVAS] Using default WebGL canvas size: 600x600');
     }
 
     // Find video container with fallback options
-    let videoContainerDIV = document.getElementsByClassName("html5-video-container")[videoCollection.length - 1];
+    let videoContainerDIV = document.querySelector('.html5-video-container');
+    
     if (!videoContainerDIV) {
-        // Fallback: try to find container by other selectors
-        videoContainerDIV = document.querySelector('.html5-video-container') ||
-                           document.querySelector('#player-container') ||
-                           document.querySelector('#movie_player') ||
-                           mainVideo.parentElement;
+        videoContainerDIV = document.querySelector('#player-container');
     }
+    if (!videoContainerDIV) {
+        videoContainerDIV = document.querySelector('#movie_player');
+    }
+    if (!videoContainerDIV && mainVideo) {
+        videoContainerDIV = mainVideo.parentElement;
+    }
+    
     if (videoContainerDIV) {
-        videoContainerDIV.appendChild(canvasGL); // adds the canvas to the body element
+        videoContainerDIV.appendChild(canvasGL);
+        if (DEBUG) console.log('[CANVAS] WebGL canvas appended to container');
+    } else {
+        console.error('[CANVAS] Could not find video container to append WebGL canvas!');
+        return;
     }
+    
     setCanvasStyle(canvasGL);
     
     // Try to get WebGL context with fallbacks
@@ -1401,9 +1588,9 @@ function createCanvasWebGL() {
               canvasGL.getContext("webgl2");
     
     if (!webGLtx) {
-        if (DEBUG) console.warn('WebGL not available, particle animations may not work');
+        console.warn('[CANVAS] WebGL not available, particle animations may not work');
     } else {
-        if (DEBUG) console.log('WebGL context created successfully');
+        if (DEBUG) console.log('[CANVAS] WebGL context created successfully');
     }
 }
 
@@ -1411,13 +1598,35 @@ function createCanvasWebGL() {
  * Handler for onplaying event
  */
 function handleVideoPlaying(event) {
-    if (DEBUG) console.log('Video onplaying event triggered');
+    if (DEBUG) console.log('[VIDEO EVENT] ========================================');
+    if (DEBUG) console.log('[VIDEO EVENT] onplaying event triggered');
+    
+    // Set video play flag
+    isVideoPlay = true;
+    
+    // Refresh video element to ensure we have the current one
+    mainVideo = findCurrentVideoElement();
+    
+    if (!mainVideo) {
+        console.error('[VIDEO EVENT] No video element found in handleVideoPlaying!');
+        return;
+    }
+    
+    if (DEBUG) console.log('[VIDEO EVENT] Video status:', {
+        readyState: mainVideo.readyState,
+        paused: mainVideo.paused,
+        currentTime: mainVideo.currentTime,
+        videoWidth: mainVideo.videoWidth,
+        videoHeight: mainVideo.videoHeight
+    });
     
     if (document.getElementById("canvasdummy") === null) {
+        if (DEBUG) console.log('[VIDEO EVENT] Creating 2D canvas...');
         createCanvas();
     }
 
     if (document.getElementById("canvasdummyGL") === null) {
+        if (DEBUG) console.log('[VIDEO EVENT] Creating WebGL canvas...');
         createCanvasWebGL();
     }
 
@@ -1429,9 +1638,29 @@ function handleVideoPlaying(event) {
     }
 
     // Verify canvas elements are ready
-    if(!canvas || !canvasGL || !ctx) {
-        console.error('Canvas elements not properly created!');
-        return;
+    if(!canvas || !canvasGL || !ctx || !webGLtx) {
+        console.error('[VIDEO EVENT] Canvas elements not properly created!', {
+            canvas: !!canvas,
+            canvasGL: !!canvasGL,
+            ctx: !!ctx,
+            webGLtx: !!webGLtx
+        });
+        
+        // Try to create missing elements
+        if (!canvas || !ctx) {
+            if (DEBUG) console.log('[VIDEO EVENT] Retrying canvas creation...');
+            createCanvas();
+        }
+        if (!canvasGL || !webGLtx) {
+            if (DEBUG) console.log('[VIDEO EVENT] Retrying WebGL canvas creation...');
+            createCanvasWebGL();
+        }
+        
+        // Check again after retry
+        if(!canvas || !canvasGL || !ctx || !webGLtx) {
+            console.error('[VIDEO EVENT] Failed to create canvas elements after retry!');
+            return;
+        }
     }
     
     // NOTE: Game mode auto-reinitialization removed
@@ -1507,7 +1736,7 @@ function setCanvasStyle(tmpCanvas) {
     tmpCanvas.style.position = "absolute";
     tmpCanvas.style.top = "0px";
     tmpCanvas.style.right = "0px";
-    tmpCanvas.style.left = mainVideo.style.cssText.split("; ")[2].split(": ")[1]
+    tmpCanvas.style.left = "0px";
     tmpCanvas.style.bottom = "0px";
 }
 
