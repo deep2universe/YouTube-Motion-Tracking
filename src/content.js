@@ -1412,10 +1412,85 @@ function handleVideoLoaded(event) {
         }
         
         if (DEBUG) console.log('[VIDEO EVENT] Popup and UI initialization complete');
+        
+        // CRITICAL FIX: Create canvas elements here (when video is loaded)
+        // instead of waiting for video to start playing
+        if (DEBUG) console.log('[VIDEO EVENT] Creating canvas elements...');
+        
+        if (document.getElementById("canvasdummy") === null) {
+            if (DEBUG) console.log('[VIDEO EVENT] Creating 2D canvas...');
+            createCanvas();
+        }
+
+        if (document.getElementById("canvasdummyGL") === null) {
+            if (DEBUG) console.log('[VIDEO EVENT] Creating WebGL canvas...');
+            createCanvasWebGL();
+        }
+
+        // Only observe if not already observing
+        try {
+            resizeObserver.observe(mainVideo);
+        } catch(e) {
+            // Already observing, ignore
+        }
+
+        // Verify canvas elements are ready
+        if(!canvas || !canvasGL || !ctx || !webGLtx) {
+            console.error('[VIDEO EVENT] Canvas elements not properly created!', {
+                canvas: !!canvas,
+                canvasGL: !!canvasGL,
+                ctx: !!ctx,
+                webGLtx: !!webGLtx
+            });
+            
+            // Try to create missing elements
+            if (!canvas || !ctx) {
+                if (DEBUG) console.log('[VIDEO EVENT] Retrying canvas creation...');
+                createCanvas();
+            }
+            if (!canvasGL || !webGLtx) {
+                if (DEBUG) console.log('[VIDEO EVENT] Retrying WebGL canvas creation...');
+                createCanvasWebGL();
+            }
+            
+            // Check again after retry
+            if(!canvas || !canvasGL || !ctx || !webGLtx) {
+                console.error('[VIDEO EVENT] Failed to create canvas elements after retry!');
+                return;
+            }
+        }
+        
+        // Create Anim object now that canvas is ready
+        if(anim === null){
+            if (DEBUG) console.log('[VIDEO EVENT] Creating new Anim object');
+            anim = new Anim(mainVideo,canvas, canvasGL, ctx, webGLtx);
+            
+            // Apply the current animation after anim object is created
+            if(currentAnimation && currentAnimation !== 'undefined') {
+                if (DEBUG) console.log('[VIDEO EVENT] Applying current animation:', currentAnimation);
+                anim.setNewAnimation(currentAnimation);
+            } else {
+                if (DEBUG) console.log('[VIDEO EVENT] No current animation set, using default: skeletonGlow');
+                currentAnimation = 'skeletonGlow';
+                anim.setNewAnimation(currentAnimation);
+            }
+        }else{
+            if (DEBUG) console.log('[VIDEO EVENT] Updating existing Anim object canvas');
+            anim.updateCanvas(mainVideo,canvas, canvasGL, ctx, webGLtx);
+        }
+        
+        // Initialize FilterManager if not already created
+        if(filterManager === null) {
+            if (DEBUG) console.log('[VIDEO EVENT] Creating new FilterManager object');
+            filterManager = new FilterManager(mainVideo, canvas, ctx);
+            // Load saved filter from storage
+            filterManager.loadSavedFilter();
+        }
+        
+        if (DEBUG) console.log('[VIDEO EVENT] Canvas and animation setup complete');
     }, 500);
 
-    // NOTE: startDetection() is called from handleVideoPlaying() after canvas is created
-    // Do NOT call it here as canvas doesn't exist yet
+    // NOTE: startDetection() is still called from handleVideoPlaying() when video starts
 }
 
 /**
@@ -1620,83 +1695,50 @@ function handleVideoPlaying(event) {
         videoHeight: mainVideo.videoHeight
     });
     
+    // Canvas should already be created in handleVideoLoaded
+    // But create it here as fallback if it doesn't exist
     if (document.getElementById("canvasdummy") === null) {
-        if (DEBUG) console.log('[VIDEO EVENT] Creating 2D canvas...');
+        if (DEBUG) console.log('[VIDEO EVENT] Canvas missing, creating 2D canvas as fallback...');
         createCanvas();
     }
 
     if (document.getElementById("canvasdummyGL") === null) {
-        if (DEBUG) console.log('[VIDEO EVENT] Creating WebGL canvas...');
+        if (DEBUG) console.log('[VIDEO EVENT] Canvas missing, creating WebGL canvas as fallback...');
         createCanvasWebGL();
-    }
-
-    // Only observe if not already observing
-    try {
-        resizeObserver.observe(mainVideo);
-    } catch(e) {
-        // Already observing, ignore
     }
 
     // Verify canvas elements are ready
     if(!canvas || !canvasGL || !ctx || !webGLtx) {
-        console.error('[VIDEO EVENT] Canvas elements not properly created!', {
+        console.error('[VIDEO EVENT] Canvas elements not ready in handleVideoPlaying!', {
             canvas: !!canvas,
             canvasGL: !!canvasGL,
             ctx: !!ctx,
             webGLtx: !!webGLtx
         });
-        
-        // Try to create missing elements
-        if (!canvas || !ctx) {
-            if (DEBUG) console.log('[VIDEO EVENT] Retrying canvas creation...');
-            createCanvas();
-        }
-        if (!canvasGL || !webGLtx) {
-            if (DEBUG) console.log('[VIDEO EVENT] Retrying WebGL canvas creation...');
-            createCanvasWebGL();
-        }
-        
-        // Check again after retry
-        if(!canvas || !canvasGL || !ctx || !webGLtx) {
-            console.error('[VIDEO EVENT] Failed to create canvas elements after retry!');
-            return;
-        }
+        return;
     }
     
-    // NOTE: Game mode auto-reinitialization removed
-    // Game mode is now reset on video change and must be manually reactivated
-    
+    // Anim object should already be created in handleVideoLoaded
+    // But create it here as fallback if it doesn't exist
     if(anim === null){
-        if (DEBUG) console.log('Creating new Anim object');
-        if (DEBUG) console.log('Canvas ready:', !!canvas, 'CanvasGL ready:', !!canvasGL, 'ctx ready:', !!ctx, 'webGLtx ready:', !!webGLtx);
+        if (DEBUG) console.log('[VIDEO EVENT] Anim missing, creating as fallback...');
         anim = new Anim(mainVideo,canvas, canvasGL, ctx, webGLtx);
         
         // Apply the current animation after anim object is created
         if(currentAnimation && currentAnimation !== 'undefined') {
-            if (DEBUG) console.log('Applying current animation to new anim object:', currentAnimation);
+            if (DEBUG) console.log('[VIDEO EVENT] Applying current animation:', currentAnimation);
             anim.setNewAnimation(currentAnimation);
         } else {
-            if (DEBUG) console.log('No current animation set, using default: skeletonGlow');
+            if (DEBUG) console.log('[VIDEO EVENT] No current animation set, using default: skeletonGlow');
             currentAnimation = 'skeletonGlow';
             anim.setNewAnimation(currentAnimation);
         }
-    }else{
-        if (DEBUG) console.log('Updating existing Anim object canvas');
-        anim.updateCanvas(mainVideo,canvas, canvasGL, ctx, webGLtx);
     }
     
-    // Initialize FilterManager if not already created
-    if(filterManager === null) {
-        if (DEBUG) console.log('Creating new FilterManager object');
-        filterManager = new FilterManager(mainVideo, canvas, ctx);
-        // Load saved filter from storage
-        filterManager.loadSavedFilter();
-    }
-    
-    // Start detection loop now that canvas is ready
+    // Start detection loop now that video is playing
     if(isRequestAnimationFrame==false){
         isRequestAnimationFrame=true;
-        if (DEBUG) console.log('Starting detection loop from handleVideoPlaying');
+        if (DEBUG) console.log('[VIDEO EVENT] Starting detection loop from handleVideoPlaying');
         startDetection();
     }
 }
