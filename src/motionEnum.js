@@ -8,7 +8,7 @@ class MotionEnum {
         'armCurl',
         '💪',
         'Arm Curl',
-        'Winkel den Arm wie beim Hantel-Heben an'
+        'Bend your arm like lifting a dumbbell'
     );
     
     // Movement 2: Head Turn
@@ -16,7 +16,7 @@ class MotionEnum {
         'headTurn',
         '🔄',
         'Head Turn',
-        'Drehe deinen Kopf nach links und rechts'
+        'Turn your head left and right'
     );
     
     // Movement 3: Arm Raise
@@ -24,7 +24,7 @@ class MotionEnum {
         'armRaise',
         '🙋',
         'Arm Raise',
-        'Hebe deinen Arm über den Kopf'
+        'Raise your arm above your head'
     );
     
     // Movement 4: Squat
@@ -32,7 +32,7 @@ class MotionEnum {
         'squat',
         '🦵',
         'Squat',
-        'Gehe in die Knie wie bei einer Kniebeuge'
+        'Bend your knees like doing a squat'
     );
     
     // Movement 5: Jumping Jack
@@ -40,7 +40,7 @@ class MotionEnum {
         'jumpingJack',
         '🤸',
         'Jumping Jack',
-        'Springe mit Armen und Beinen auseinander'
+        'Jump with arms and legs spread apart'
     );
     
     constructor(id, icon, displayName, description) {
