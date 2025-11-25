@@ -1,6 +1,6 @@
 {
-  "name": "YouTube Motion Tracking - Halloween Edition",
-  "description": "AI-powered Halloween effects for YouTube videos with real-time pose detection. Features 38 spooky animations, 7 horror filters, 5 motion patterns, and interactive game mode with skeletons, pumpkins, bats, ghosts, and mystical effects!",
+  "name": "YouTube™ Motion Tracking - Halloween Edition",
+  "description": "AI-powered Halloween effects for YouTube™ videos with real-time pose detection. Features 38 spooky animations, 7 horror filters, 5 motion patterns, and interactive game mode with skeletons, pumpkins, bats, ghosts, and mystical effects!",
   "version": "2.0.0",
   "manifest_version": 3,
   "background": {
