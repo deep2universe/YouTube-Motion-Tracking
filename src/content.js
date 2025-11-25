@@ -14,7 +14,7 @@ import {GameMode} from "./gameMode";
  * Set to true to enable console logging for this file
  * Set to false for production builds (default)
  */
-const DEBUG = true;
+const DEBUG = false;
 
 // pose detector from tensorflow
 var detector = null;
